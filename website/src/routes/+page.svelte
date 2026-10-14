@@ -82,7 +82,7 @@
 	/>
 </svelte:head>
 
-<!-- SECTION 1: SIMPLIFIED, HIGH-IMPACT HERO -->
+<!-- SECTION 1: BALANCED, HIGH-IMPACT HERO -->
 <section id="hero-section" class="hero-clean-stage">
 	<div class="hero-clean-inner">
 		<!-- Authentic Drawn STAMP Vector Wordmark (uses colorScheme.primary) -->
@@ -91,6 +91,24 @@
 		</div>
 
 		<h1 class="hero-tagline">PEEL. PRESS. TOAST.</h1>
+
+		<p class="hero-lead">
+			Single-serve 10 g spread discs on release film. Pressed onto hot toast, it softens into an even layer in seconds — no knife, no messy jar, no wash-up.
+		</p>
+
+		<!-- Packshot Showcase (Flat Solid, Zero Outlines) -->
+		<div class="hero-pack-showcase">
+			<div class="hero-pack-wrap">
+				<img src="/pack.png" alt="STAMP 8-Stamp Sheet" class="hero-pack-img" />
+				<div class="hero-pack-pill">8 DISCS · 80 g</div>
+			</div>
+		</div>
+
+		<div class="hero-badges-row">
+			<span class="hero-badge">$5.00 NZD / Sheet</span>
+			<span class="hero-badge">12-Month Pantry Stable</span>
+			<span class="hero-badge">No Jar Waste</span>
+		</div>
 
 		<div class="hero-actions-row">
 			<a href="#flavours" class="hero-btn-primary">Explore The 4 Flavours ↓</a>
@@ -508,6 +526,7 @@
 	.steps-stage,
 	.flavour-screen,
 	.mixed-pack-stage,
+	.hero-badge,
 	.hero-btn-primary,
 	.hero-btn-secondary,
 	.step-card,
@@ -523,7 +542,7 @@
 		transition: background-color 0.45s ease, color 0.45s ease;
 	}
 
-	/* SECTION 1: SIMPLIFIED, HIGH-IMPACT HERO */
+	/* SECTION 1: BALANCED, HIGH-IMPACT HERO */
 	.hero-clean-stage {
 		position: relative;
 		min-height: 100vh;
@@ -531,36 +550,96 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 7.5rem 1.5rem 5rem;
+		padding: 7.5rem 1.5rem 4.5rem;
 		background: transparent;
 		text-align: center;
 	}
 
 	.hero-clean-inner {
-		max-width: 860px;
+		max-width: 840px;
 		width: 100%;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 2.25rem;
+		gap: 1.5rem;
 	}
 
 	.hero-wordmark-container {
 		width: 100%;
-		max-width: 660px;
-		height: 150px;
+		max-width: 580px;
+		height: 130px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 	}
 
 	.hero-tagline {
-		font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+		font-size: clamp(2rem, 5vw, 3.4rem);
 		font-weight: 900;
 		letter-spacing: 0.16em;
 		color: var(--color-primary);
 		margin: 0;
 		line-height: 1.05;
+	}
+
+	.hero-lead {
+		font-size: clamp(1.05rem, 2vw, 1.25rem);
+		line-height: 1.6;
+		color: #ffffff;
+		max-width: 660px;
+		margin: 0 auto;
+		font-weight: 600;
+		opacity: 0.95;
+	}
+
+	.hero-pack-showcase {
+		margin: 0.4rem 0 0.2rem;
+		display: flex;
+		justify-content: center;
+	}
+
+	.hero-pack-wrap {
+		position: relative;
+		max-width: 290px;
+		width: 100%;
+	}
+
+	.hero-pack-img {
+		width: 100%;
+		max-height: 230px;
+		object-fit: contain;
+		border-radius: 16px;
+	}
+
+	.hero-pack-pill {
+		position: absolute;
+		top: -8px;
+		right: -8px;
+		background: var(--color-primary);
+		color: var(--color-tertiary);
+		font-weight: 900;
+		font-size: 0.75rem;
+		letter-spacing: 0.08em;
+		padding: 0.35rem 0.8rem;
+		border-radius: 9999px;
+		transform: rotate(5deg);
+	}
+
+	.hero-badges-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.65rem;
+		justify-content: center;
+	}
+
+	.hero-badge {
+		font-size: 0.82rem;
+		font-weight: 800;
+		letter-spacing: 0.05em;
+		padding: 0.45rem 1.15rem;
+		border-radius: 9999px;
+		background: var(--color-tertiary);
+		color: var(--color-primary);
 	}
 
 	.hero-actions-row {
