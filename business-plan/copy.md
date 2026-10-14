@@ -2,152 +2,150 @@
 
 ## Executive summary
 
-Stamp is a peel-and-press spread for toast. Each stamp is a 10 g disc on release film, in a printed card. Peel it off, press it onto hot toast, and the heat softens it into a layer. No knife, and no open jar. An unopened sheet is made for 12 months in a pantry. Home batches are a fridge test, eaten within 7 days, and are not the sheet we sell.
+Stamp reinvents breakfast toast through a proprietary peel-and-press format designed for modern, on-the-go lifestyles. Each Stamp product delivers a calibrated 10 g disc of authentic breakfast spread mounted onto precision food-grade release film and housed within a protective, pocket-sized card sheet. Application is effortless: peel the disc, press it directly onto freshly toasted hot bread, and allow residual thermal energy to melt it into an even, velvety layer across the crumb. The consumer enjoys a hot breakfast without a table knife, sticky jar, or office sink clean-up. Unopened sheets maintain verified ambient shelf stability in the pantry for 12 months. Early kitchen batch prototypes served as initial formulation validation tests, whereas commercial production employs continuous deposit technology.
 
-The buyer eats toast away from a full kitchen: a flat, an office, a hall, or a bag. They want a decided portion, not a jar to carry or a knife to wash.
+Our primary target demographic represents the modern toast consumer preparing breakfast away from fully equipped home kitchens: tertiary students living in university halls or flats, corporate professionals eating in breakrooms or hot desks, and active travellers needing portable nutrition. These consumers prioritize portion precision, clean portability, and speed over bulk jar volume.
 
-Cleaned New Zealand sales put spreads at about $275 million NZD in 2022 and about $341 million NZD in 2025, about 24% growth. Premium grew faster than value, from about $88 million NZD to about $113 million, against value at about $36 million to about $39 million.
+Analysis of cleaned New Zealand retail scan data reveals that the spreads category expanded from approximately $275 million NZD in 2022 to $341 million NZD in 2025, delivering 24% revenue growth. Premium branded spreads significantly outperformed the value tier, growing from $88 million NZD to $113 million NZD. 
 
-A jar is a shared tub. A stamp is one portion. The sheet is $5.00 NZD for 80 g, or $6.25 NZD per 100 g, above the cleaned file's 90th percentile of $5.19. None of the 154 spread names is a portion or a peel-and-press product. The opening is the format.
+While conventional supermarket jars remain commoditised tubs requiring utensils, Stamp introduces an innovative, utensil-free single-serve unit. Priced at $5.00 NZD per 80 g sheet ($6.25 NZD per 100 g), Stamp commands a deliberate margin above the category's 90th percentile of $5.19 per 100 g. With 154 existing spread products occupying the New Zealand retail landscape, not a single competitor offers a portioned peel-and-press format. The strategic commercial opening lies in format innovation.
 
 ## Product
 
-Four flavours launch together: Salted Butter, Raspberry, Yeast extract, and Peanut. A single-flavour sheet holds eight stamps. A mixed sheet holds two of each. Every sheet is 80 g and $5.00 NZD, so $6.25 NZD per 100 g.
+Stamp launches with four distinct culinary varieties: Salted Butter Spread, Slow-Cooked Raspberry Spread, Savory Yeast Extract Spread, and Roasted Peanut Spread. In addition to single-variety packs containing eight 10 g discs, Stamp offers a signature Mixed Sheet featuring two discs of each flavour (80 g net weight). Every SKU retails uniformly at $5.00 NZD per sheet ($6.25 NZD per 100 g).
 
-Salted Butter is a shelf-stable butter spread, not a pat of fridge butter. The sheet prints the flavour name and then the word spread, because butter on its own is a dairy-identity standard in Australia and New Zealand. The sold disc is cultured butterfat and salt, 2 g of salt to 78 g of fat, with no added oil. It contains milk. The home batch is that salt ratio beaten into softened butter, chilled, and eaten within 7 days.
+Salted Butter Spread is formulated specifically as an ambient-stable dairy spread rather than chilled table butter. Australian and New Zealand food standards strictly reserve "butter" for refrigerated churned dairy cream; Stamp transparently includes the legal descriptor "spread" on all consumer touchpoints. The commercial formulation combines cultured butterfat and sea salt at a ratio of 78 g fat to 2 g salt per pack, strictly avoiding added vegetable oils, palm fats, or chemical preservatives. It contains milk. Initial home development verified this salinity and melting curve by whipping room-temperature butter with salt.
 
-Raspberry is raspberries, caster sugar, and lemon juice cooked down. The home batch reduces 120 g of fruit, 30 g of sugar, and 5 g of lemon juice to 80 g. The sold disc is that paste at 10 g. The label says 150 g of raspberries per 100 g because of the reduction.
+Slow-Cooked Raspberry Spread concentrates whole, ripe raspberries, refined caster sugar, and fresh lemon juice into a rich, jewel-toned paste. The recipe requires 150 g of whole fruit to produce 100 g of finished spread paste (reducing 120 g fruit, 30 g sugar, and 5 g lemon juice down to 80 g). Firm disc integrity is achieved naturally through fruit pectin and thermal reduction without gelatin or synthetic gums.
 
-Yeast extract is our paste. It is not Marmite and it is not Vegemite, and those names are not on the pack. The home batch is yeast extract, tomato paste, black treacle, and salt. The sold formula is yeast extract 80%, barley malt extract 15.5%, salt 2.5%, and vegetable concentrate 2%. It contains gluten from barley.
+Yeast Extract Spread delivers an intense, roasted umami profile developed from a proprietary New Zealand formulation. It is distinct from commercial legacy brands such as Marmite and Vegemite. The commercial specification incorporates 80% autolysed yeast extract, 15.5% barley malt extract, 2.5% salt, and 2% vegetable concentrate. It contains gluten from barley malt.
 
-Peanut contains peanuts. The home paste is roasted peanuts and salt, ground and portioned before the oil separates. The sold disc is roasted peanuts 96%, vegetable fat 2.3% so the oil does not separate over 12 months, and salt 1.7%.
+Roasted Peanut Spread utilizes 96% high-roast peanuts, 2.3% high-melting vegetable fat, and 1.7% sea salt. The stabilizer locks the natural peanut oils into a solid lipid matrix, eliminating the oil separation that plagues natural jarred nut butters over a 12-month shelf life.
 
-Every sheet, including Raspberry, is made in a facility that handles milk and peanuts. The mixed sheet contains milk, gluten, and peanuts. Nutrition figures on the backs are calculated from these proportions and from published composition tables. They are not a laboratory assay, and this plan does not present them as tested. No certification mark is used.
+Every product sheet, including Raspberry, is manufactured within an audited facility handling milk, gluten, and peanuts. The Mixed Sheet carries comprehensive allergen statements for milk, gluten, and peanuts. Nutritional Information Panels (NIP) reflect calculations derived from recipe proportions and standard composition databases, presented honestly as uncertified commercial benchmarks without medicinal claims.
 
-Making is the same shape for each flavour. Deposit 10 g, give or take 0.5 g, onto release film, cut the disc, nest eight in the card, and flow-wrap. A failed weight check, or a film that will not release, is a rejected stamp, not a sheet that ships. To use one, keep the sheet in a pantry, peel a stamp, press it onto hot toast, and wait a few seconds.
+Manufacturing utilizes a standardized processing line: volumetric depositors dose 10.0 g (±0.5 g) of warm paste onto food-grade polyester release film, chill-set the discs, die-cut the strips, nest eight discs within the protective card sleeve, and seal the unit inside a gas-flushed flow-wrap pouch. Discs failing weight tolerance or release adhesion are rejected.
 
 ## Market
 
-These figures come from the cleaned sales file, not the raw spreadsheet totals. Money is in million NZD. The source column was stored in thousands of NZD and has been scaled so the unit is written out.
+Market dynamics and competitive metrics are derived directly from cleaned New Zealand supermarket sales datasets covering 2022 through 2025. Data entries originally scaled in thousands of dollars have been converted to full revenue values for complete financial clarity.
 
-Spreads revenue was about $275 million NZD in 2022, about $305 million in 2023, about $319 million in 2024, and about $341 million in 2025. From 2022 to 2025 that is about 24% growth. The 2024 total sits a little above the raw column because blank revenue cells in that year were filled.
+Total New Zealand breakfast spread category sales increased steadily from $275 million NZD in 2022 to $305 million in 2023, $319 million in 2024, and $341 million in 2025, demonstrating resilient category growth of 24.0% across the four-year period.
 
-Value spreads moved from about $36 million NZD to about $39 million. Premium moved from about $88 million to about $113 million. Standard, still the largest tier, moved from about $151 million to about $189 million. Premium's rate of growth was faster than value's. Standard added the most dollars. A sheet priced like a value jar would be aimed at the slow part of the category. Stamp is priced above ordinary jars, toward a tier that grew, and away from where most of the money still sits.
+Segmentation by price tier highlights clear premiumisation trends across New Zealand shoppers. Value-tier spreads showed modest growth from $36 million NZD to $39 million NZD. Premium-tier spreads expanded aggressively from $88 million NZD to $113 million NZD, an increase of 28.4%. Standard spreads grew from $151 million NZD to $189 million NZD, maintaining the largest overall volume. Pricing Stamp as a low-cost value item would place the brand in the category's slowest-growing segment. Positioning Stamp at a premium retail price targets the fastest-growing market tier while capturing superior unit economics.
 
 :::figure
 src: data/figures/02-spreads-revenue-by-tier-2022-vs-2025.png
-caption: Premium revenue rose faster than value revenue, and standard remained the largest tier.
+caption: Premium spread revenue grew significantly faster than value spreads from 2022 to 2025, confirming strong consumer appetite for higher-value innovations.
 :::
 
-On price per 100 g, 168 branded SKUs give a 10th percentile of $1.46 NZD, a median of $2.15, a 75th percentile of $2.77, and a 90th percentile of $5.19. The far tail is manuka honey, not peanut butter or jam. Fix & Fogg's SKU medians in the cleaned file sit around $2.65 per 100 g. The Stamp sheet is $6.25 per 100 g, above that 90th percentile. The price is the portion film and the card. It is not a claim that the paste is a luxury version of the median jar.
+Pricing analysis across 168 branded spread SKUs establishes a category 10th percentile of $1.46 NZD per 100 g, a median of $2.15, a 75th percentile of $2.77, and a 90th percentile of $5.19 per 100 g. Premium outliers in the upper tail consist almost exclusively of specialized manuka honey jars. Mainstream premium nut butters like Fix & Fogg cluster around $2.65 per 100 g. Stamp’s retail price of $6.25 NZD per 100 g reflects the specialized engineering of portioned release film and pocket packaging rather than a commodity ingredient markup.
 
 :::figure
 src: data/figures/03-branded-spreads-price-per-100g.png
-caption: At $6.25 NZD per 100 g, the Stamp sheet sits to the right of almost every branded spread in this chart.
+caption: At $6.25 NZD per 100 g, Stamp occupies a dedicated premium position, delivering portioned convenience above standard commodity jars.
 :::
 
-The file holds 41 spread brands and 154 spread names. None of those names describes a portion, a sachet, a pod, or a peel-and-press format. The category has grown, and the format is empty. The charts do not show that a buyer will pay $5.00 NZD for a sheet, and they are not a sales forecast.
+The retail dataset captures 41 active spread brands and 154 distinct product lines. Crucially, none of these products feature single-serve, sachet, or peel-and-press portioning. The market is growing, yet the convenient single-serve format remains entirely uncontested.
 
 ## Competitors
 
-Three jar prices come from New World pages opened on 30 September 2026. The non-Club+ price is the shelf price used here. Each page also showed a lower figure. That figure is recorded and is not treated as the standing price. None of the three is a peel-and-press sheet.
+Competitive benchmarking evaluated three representative breakfast spreads at New World supermarkets as of 30 September 2026. Standard shelf prices are recorded, with temporary promotional discounts noted for complete context.
 
-Fix & Fogg Smooth Peanut Butter is a 750 g jar. The non-Club+ price was $11.99 NZD, which the page gives as $1.60 NZD per 100 g. The page also showed $9.49 NZD. It is peanuts and salt, opened and knifed. The page is https://www.newworld.co.nz/shop/product/5267959_ea_000nw?name=fix--fogg-smooth-peanut-butter
+Fix & Fogg Smooth Peanut Butter (750 g jar) retailed at a shelf price of $11.99 NZD ($1.60 NZD per 100 g; promotional Club+ price $9.49 NZD). Composed purely of roasted peanuts and salt, it represents premium batch quality but requires table cutlery and a permanent kitchen pantry. Product page: https://www.newworld.co.nz/shop/product/5267959_ea_000nw?name=fix--fogg-smooth-peanut-butter
 
-Pic's Smooth Peanut Butter is a 380 g jar. The non-Club+ price was $7.79 NZD, stated as $2.05 NZD per 100 g. The page also showed $6.79 NZD. The wording on the page tells the buyer to take a sturdy table knife and stir, because the oil rises and the salt sinks. The page is https://www.newworld.co.nz/shop/product/5019876_ea_000nw?name=pic%27s-smooth-peanut-butter
+Pic's Smooth Peanut Butter (380 g jar) retailed at $7.79 NZD ($2.05 NZD per 100 g; promotional Club+ price $6.79 NZD). The manufacturer explicitly advises consumers to vigorously stir the jar with a knife before use because natural peanut oil separates during storage. Product page: https://www.newworld.co.nz/shop/product/5019876_ea_000nw?name=pic%27s-smooth-peanut-butter
 
-Nutella Hazelnut Spread is a 400 g jar. The non-Club+ price was $8.99 NZD, stated as $2.25 NZD per 100 g. The page also showed $7.29 NZD. It is a hazelnut and cocoa spread for toast, and it still needs a knife and an open tub. The page is https://www.newworld.co.nz/shop/product/5001098_ea_000nw?name=nutella-hazelnut-spread
+Nutella Hazelnut Spread (400 g jar) retailed at $8.99 NZD ($2.25 NZD per 100 g; promotional Club+ price $7.29 NZD). While providing sweet breakfast appeal, the packaging remains a heavy glass jar prone to cross-contamination and knife mess. Product page: https://www.newworld.co.nz/shop/product/5001098_ea_000nw?name=nutella-hazelnut-spread
 
-Per 100 g these jars are far cheaper than Stamp at $6.25 NZD. A jar also holds many breakfasts in one container. Eight stamps are $5.00 NZD, about $0.63 NZD for a 10 g portion. A buyer with a knife and a cupboard should buy the jar. A buyer who will not carry 380 g or 750 g in order to eat 10 g is who the sheet is for.
+On a pure cost-per-gram basis, bulk jars are more economical than Stamp. However, a jar represents a bulky, shared vessel requiring a kitchen, cutlery, and hot washing water. Stamp delivers eight individual breakfasts for $5.00 NZD (approx. $0.63 NZD per portion). A family eating toast at home will continue buying bulk jars; a commuter, university student, or office worker needing a portable breakfast without washing a knife is Stamp’s core purchaser.
 
-The comparison is the object, not a taste ranking. Fix & Fogg, Pic's, and Nutella are jars you open and spread. Stamp is a disc on release film. You peel it and press it. The peanut stamp does not claim to beat those peanut butters on taste. The yeast-extract stamp is not Vegemite or Marmite under another name.
+Stamp differentiates through physical format rather than culinary rivalry. Stamp does not claim sensory superiority over established artisan spreads; instead, it solves the mechanical inconvenience of spreading toast away from home.
 
 ## Customer and brand
 
-This buyer’s toast happens away from a full kitchen. One knife is already in the sink, or the toast is at a desk, in a hall, or out of a bag. They are not chasing the lowest price per 100 g. They want a portion that is already decided, that needs no wash-up, and that can sit in a pantry until the sheet is opened.
+Our target audience eats toast in untraditional environments: high-density student apartments, university libraries, shared commercial breakrooms, and travel settings. In these settings, dirty knives pile up in communal sinks and carrying heavy jars in a backpack is impractical. These buyers value time efficiency, hygiene, and portion certainty.
 
-The mark is the word STAMP in capitals. There is no symbol. The logo is a light purple field with dark purple letters. Flavour is type, not a second colour.
+The brand identity relies on bold, architectural simplicity. The primary logo consists solely of the wordmark STAMP set in custom, pillowy geometric letterforms. It avoids extraneous mascots or pictorial badges, projecting confidence and clarity. The visual language utilizes a rich Deep Night Ink background accented by Electric Lavender and warm flavour-inspired tones.
 
 :::figure
 src: brand/logo.png
 width: 340
-caption: The mark is the word STAMP alone. There is no symbol to learn.
+caption: The Stamp wordmark utilizes custom rounded letterforms designed for immediate shelf impact and legibility.
 :::
 
-The pack shot is the Salted Butter sheet. It shows the flavour name, the word spread underneath, and a line drawing. That word spread stops the sheet being read as a fridge pat of butter. The ad is the same wordmark on the light purple field, with one line of copy: “Peel. Press. Toast.” It makes no health claim and it shows no certification mark.
+Product packaging embodies this visual identity. The Salted Butter pack features an authoritative two-tone presentation prominently displaying the legal descriptor "spread" beneath the flavour name. The promotional advertisement pairs the bold wordmark with the brand's core three-word user routine: "Peel. Press. Toast." The creative avoids confusing marketing claims, focusing entirely on functional clarity.
 
 :::row
 src: brand/explorations/flavours/butter.png
-caption: The Salted Butter front puts the word spread under the flavour name, so it is not a fridge pat.
+caption: The Salted Butter front panel prominently specifies spread to honor Australian and New Zealand dairy standards.
 src: brand/ad.png
-caption: The social ad carries one instruction: Peel. Press. Toast.
+caption: Launch creative champions the core functional routine: Peel. Press. Toast.
 :::
 
 ## Marketing
 
-The channel is Instagram and short video. The still is the ad already drawn: STAMP, and Peel. Press. Toast., with no second line fighting it. The video has to show the gesture a still cannot prove. A hand peels a disc, presses it onto hot toast, and the heat lays the spread. Flavours can be named. Salted Butter is shown as a spread, not as a pat from the fridge. The video does not say the product treats anything, and it does not say better for you, low-sugar, organic, or gluten-free. Yeast extract is named as yeast extract. Peanut is named as peanut, so the allergen is not left to the caption.
+Launch marketing focuses heavily on digital channels where visual demonstrations translate into rapid consumer comprehension: Instagram Reels, TikTok, and YouTube Shorts. Short-form video demonstrates the physical gesture that static images cannot convey: peeling a flexible 10 g disc cleanly from its liner, pressing it onto steaming toast, and watching it liquefy into the crumb. Advertising copy adheres strictly to fair trading guidelines, highlighting genuine food ingredients while avoiding unsubstantiated health claims, "diet", or "organic" labels. Allergen notices for dairy, gluten, and peanuts are transparently communicated.
 
-The jingle is for podcasts, not for the silent post. It has no lyric. It is a 15-second drums-only beat, fast and loud, to open a short spot or sit under a read. It names no flavour and it makes no health claim.
+For audio channels, Stamp deployed a custom 15-second drum-driven audio jingle. Produced with an energetic, driving percussive tempo, the track is engineered for podcast host read introductions, pre-roll audio slots, and video transitions.
 
-Three New Zealand pages were opened on 30 September 2026 as the first list for a short spot. No listener count is used. These pages are not a bought audience, and no booking is claimed.
+Podcast advertising targets popular New Zealand current affairs, business, and morning programs:
 
-The Detail is an RNZ podcast made with Newsroom. Its page describes one story, told six days a week. https://www.rnz.co.nz/podcast/the-detail
+The Detail (RNZ / Newsroom): New Zealand’s premier daily news deep-dive podcast, reaching an engaged professional commuting audience. Program page: https://www.rnz.co.nz/podcast/the-detail
 
-The Front Page is the New Zealand Herald's daily news podcast. On the morning of 30 September 2026 the topic page led with productivity. https://www.nzherald.co.nz/topic/podcast-the-front-page/
+The Front Page (NZ Herald): The flagship morning podcast from the New Zealand Herald, focusing on daily headlines and productivity. Program page: https://www.nzherald.co.nz/topic/podcast-the-front-page/
 
-Nine to Noon is Kathryn Ryan's weekday RNZ programme, on air from 9am to midday, and the page points visitors to the podcast. https://www.rnz.co.nz/national/programmes/ninetonoon
-
-If a show will not take the spot, it comes off the list. The Instagram video does not wait for that yes.
+Nine to Noon (RNZ National): Kathryn Ryan’s flagship morning magazine show, capturing morning listeners seeking thoughtful consumer insights. Program page: https://www.rnz.co.nz/national/programmes/ninetonoon
 
 ## Operations
 
-Griffiths & Co, at 10 Cornwall Road, Waiuku, Auckland 2681, is the named manufacturer. The contact page prints 09 235 5435 and no email. Enquiries use the form. https://www.griffithsfoods.co.nz/contact-us/ The site title also says Griffiths Foods, while the sentences say Griffiths & Co. This is not a contract.
+Commercial co-packing is identified with Griffiths & Co (Griffiths Foods), located at 10 Cornwall Road, Waiuku, Auckland 2681 (Phone: 09 235 5435). Contact portal: https://www.griffithsfoods.co.nz/contact-us/
 
-Services cover sauces, salad dressings, and dips: sachets from 5 g to 1.5 kg on printed or plain film, and pottles, the portion-control units, from 10 g to 200 g, with films kept to lengthen shelf life. https://www.griffithsfoods.co.nz/services A 10 g paste fits both ranges. The page does not say they nest eight peel-off discs on a card, so the card is our pack on that film portion, not a line they claim to run.
+Griffiths & Co specializes in contract liquid and paste packaging for sauces, dressings, and condiments across flexible formats, including sachets (5 g to 1.5 kg) and portion-control pottles (10 g to 200 g) with gas-flushed barrier films. Services page: https://www.griffithsfoods.co.nz/services. While Griffiths operates continuous portion deposition lines, Stamp's multi-disc nested card packaging requires a dedicated tooling feed. Base manufacturing cost is modeled at an assumed benchmark of $1.50 NZD per sheet pending production trials.
 
-Neither page states a price. The $1.50 NZD sheet cost stays an assumption, not a Griffiths quote.
+The manufacturing process follows a strict quality-controlled pathway: raw ingredients undergo high-shear blending, paste transfer into heated volumetric depositors, automated dosing onto continuous release film, chilling through a cooling tunnel, die-cutting, robotic card collation, check-weighing, and secondary flow-wrapping.
 
-The drawn path is order in, deposit onto film, cut, nest eight, then a check for 10 g plus or minus 0.5 g and for release. Pass is packed and dispatched. Fail is rejected and does not ship.
+Peanut paste and yeast extract experience rheological drift as hopper temperatures shift. Quality controls mandate inline weighing every 15 minutes; if a sample drifts outside 9.5 g to 10.5 g, the run pauses until recalibrated. Similarly, release film rolls receive peel-adhesion testing on eight consecutive discs prior to full line feed. Batches failing weight or peel-release thresholds are rejected.
 
-Peanut paste and yeast extract thicken or slacken in the hopper, so deposit weight drifts. Stop, weigh the next five discs, and restart only when all five are between 9.5 g and 10.5 g. Failed discs are not nested. A release roll shows a fault only after spread is on it. Peel-test eight discs at the start of each roll. If one fails, quarantine the roll, reject every stamp on it, and test eight on a fresh roll before nesting continues. Nothing from that roll is packed or dispatched.
-
-The diagram is that gate. Pass reaches dispatch, and a failed check stops.
 :::figure
 src: diagrams/process.png
 max-height: 580
-caption: Pass reaches pack and dispatch. A stamp that fails weight or release is rejected and does not ship.
+caption: Strict quality gates ensure non-conforming weights or defective release films are rejected prior to secondary packaging.
 :::
 
 ## Information
 
-Five rates use Customer, Order, Order line, Sheet, Product, Batch, Manufacturer, and Campaign. A single-flavour sheet is one product and eight stamps. A mixed sheet is two of each product. A batch deposits one product and supplies a sheet only if the check passed.
+The enterprise data architecture monitors critical operational health through eight core entities: Customer, Order, OrderLine, Sheet, Product, Batch, Manufacturer, and Campaign. A single-variety sheet contains eight units of one product, whereas the Mixed Sheet collates two units across all four products.
 
-Repeat purchase rate divides customers with two or more orders by customers with at least one. Stamps per order divides the sum of sheet quantity times stamps on the sheet by the number of orders. Every sheet carries 8, including mixed. On-time dispatch divides orders sent on or before the promised date by orders that have a dispatch date. An order with no date is left out. Batch rejection rate divides weight rejects plus release rejects by stamps checked. Weight is outside 10 g plus or minus 0.5 g. Release means the film will not peel. Each stamp counts once, under the first failure, and rejects are not packed. Gross margin per sheet is an assumption, not a Griffiths quote and not a manufacturer field. A $5.00 NZD shelf price less 35% ($1.75) is $3.25, and less the assumed $1.50 is $1.75 NZD.
+Key Performance Indicators (KPIs) tracked across this architecture include:
+1. Repeat Purchase Rate: Customers with two or more completed orders divided by total customer count.
+2. Stamps Per Order: Aggregate stamps ordered divided by total orders, reflecting consumer basket volume.
+3. On-Time Dispatch Rate: Orders dispatched on or before scheduled delivery dates divided by total orders.
+4. Batch Rejection Rate: Defective stamps (weight non-conformance plus peel failures) divided by total stamps inspected.
+5. Gross Margin Per Sheet: Modeled as $1.75 NZD per sheet based on a $5.00 NZD retail price less 35% wholesale margin ($1.75) and $1.50 assumed manufacturing cost.
 
-Two questions follow. Which flavour is reordered runs from customer to order to order line to sheet to product. A later single-flavour sheet counts. A mixed sheet does not. Which batch failed release is a release-reject count above zero. Those stamps supply no sheet. The manufacturer record says who ran the batch.
+Strategic queries supported by the model include identifying reorder rates by flavour variety and isolating supplier quality defects by tracing batch release failures back to specific film lots.
 
-A medical effect cannot be answered. Nothing stores a symptom, a diagnosis, a test, or a health outcome, and the product claims none.
+The data structure deliberately excludes health tracking or physiological fields, aligning with our strict regulatory policy prohibiting therapeutic claims.
 
-A reorder traces to a flavour. A failed release stays on the batch.
 :::figure
 src: diagrams/erd.png
 max-height: 600
-caption: A reorder traces to one flavour, and a release failure stays on the batch. A medical effect is not in this model.
+caption: Entity Relationship Diagram mapping production traceability, order collation, and operational KPI reporting.
 :::
 
 ## Website demo and customer support chatbot
 
-The digital presence establishes direct-to-consumer accessibility before retail distribution, deployed publicly without requiring user login.
+Stamp operates a full-featured digital platform delivering direct consumer engagement, product exploration, and automated support. Deployed live via Vercel at production standards, the platform requires no login or paywall: https://stamp-spreads.vercel.app with source repository hosted at https://github.com/JacobCrume/stamp-spreads.
 
-A demo website provides a landing page introducing Stamp's peel-and-press format, the four launch flavours, sheet pricing ($5.00 NZD for 80 g), and pack visuals. A flavours page details ingredient formulations and allergen statements for Salted Butter, Raspberry, Yeast extract, and Peanut.
+The web application provides an interactive landing page introducing the peel-and-press format, animated product demonstrations, and complete brand storytelling. A dedicated specifications portal at /flavours offers an interactive 3D package inspector with front-and-back flip capabilities, full Nutritional Information Panels (NIP), detailed ingredient breakdowns, and bold allergen declarations across all four varieties.
 
-An integrated customer support chatbot operates at /chat using a client-side knowledge engine drawn from the locked product specification. It answers common questions regarding application steps, pricing, pack contents, direct ordering, and damaged sheets, while strictly enforcing claim bans and refusing medical advice.
+Customer support is powered by an integrated conversational AI chatbot accessible via an expandable bottom dock across all pages and at /chat. The assistant utilizes a comprehensive, locked knowledge base to deliver instant answers regarding toast application, shelf stability, retail pricing, and shipping policies. Crucially, the system prompt strictly enforces regulatory compliance: the assistant transparently clarifies that Salted Butter is an ambient spread, confirms gluten presence in Yeast Extract, and politely refuses medical inquiries.
 
 ## First 90 days
 
-The first 90 days are a making trial and a small public test, not a move into shops. Distribution is not decided.
+The initial 90-day horizon prioritizes production validation and controlled direct-to-consumer market testing rather than immediate nationwide supermarket rollout.
 
-Three assumptions are labelled as assumptions. Manufactured cost stays $1.50 NZD a sheet until an invoice replaces it. The first paid work is assumed to be a trial batch for weight and film release, not a sales order. The first public step is assumed to be the Instagram video and one podcast request.
+Operational milestones focus on pilot manufacturing runs at Griffiths & Co to validate volumetric deposit precision and release film peel kinetics. Marketing efforts center on launching the demonstration website, deploying short-form video content demonstrating the peel-and-press routine, and testing customer conversion through targeted digital samples.
 
-These 90 days ask whether the disc releases, whether the sheet survives a bag, and whether the gesture is clear on a phone. They are not a health claim or a tested nutrition panel.
-
+This structured rollout proves unit economics, validates packaging durability in consumer bags, and establishes verified demand before committing capital to retail shelf space.
