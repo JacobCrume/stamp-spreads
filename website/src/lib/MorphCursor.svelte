@@ -28,11 +28,11 @@
 	let mouseX = 0;
 	let mouseY = 0;
 
-	// Animated cursor dot/pill state
+	// Animated cursor pill state
 	let blobX = $state(-100);
 	let blobY = $state(-100);
-	let blobWidth = $state(22);
-	let blobHeight = $state(22);
+	let blobWidth = $state(20);
+	let blobHeight = $state(20);
 	let blobRadius = $state(999);
 	let blobOpacity = $state(1);
 
@@ -62,11 +62,9 @@
 			isPressed = false;
 		};
 
-		// PROXY CLICK: If user clicks while an interactive target is magnetically snapped/hovered,
-		// trigger that element's click action directly so clicks never miss!
+		// Proxy Click: Clicking anywhere while an element is magnetically morphed clicks it directly
 		const onClick = (e: MouseEvent) => {
 			if (targetElement) {
-				// If the native event target wasn't already inside the targetElement, trigger it directly
 				const nativeTarget = e.target as HTMLElement | null;
 				if (!nativeTarget || !targetElement.contains(nativeTarget)) {
 					targetElement.click();
@@ -91,12 +89,12 @@
 
 		let animId: number;
 
-		// Generous magnetic snap envelope (36px)
+		// 36px magnetic attraction radius
 		const SNAP_MARGIN = 36;
 
 		const findInteractiveTarget = (mx: number, my: number): HTMLElement | null => {
 			const candidates = document.querySelectorAll<HTMLElement>(
-				'a, button, [role="button"], .round-flip-btn, .chat-launcher, .nav-link, .footer-link-btn'
+				'a, button, [role="button"], .round-flip-btn, .chat-launcher, .nav-link, .footer-links a, .footer-link-btn'
 			);
 
 			let bestMatch: HTMLElement | null = null;
@@ -104,9 +102,9 @@
 
 			for (let i = 0; i < candidates.length; i++) {
 				const el = candidates[i];
-				// Guard: Exclude non-interactive packaging cards
+				// Guard: Exclude packaging cards or SVG card elements
 				if (el.closest('.flip-stage') && !el.classList.contains('round-flip-btn')) continue;
-				// Guard: Exclude internal chat message area
+				// Guard: Exclude internal chat messages
 				if (el.closest('.chat-messages') || el.closest('.chat-input-bar')) continue;
 
 				const r = el.getBoundingClientRect();
@@ -153,7 +151,7 @@
 				const targetCenterX = targetRect.x + targetRect.width / 2;
 				const targetCenterY = targetRect.y + targetRect.height / 2;
 
-				// Slow, graceful morph interpolation (0.12 rate)
+				// Smooth morph interpolation into element bounds
 				blobX += (targetCenterX - blobX) * 0.12;
 				blobY += (targetCenterY - blobY) * 0.12;
 				blobWidth += (targetRect.width - blobWidth) * 0.12;
@@ -166,14 +164,14 @@
 				}
 				isHovered = false;
 
-				// Free travel: perfectly crisp, clean circular cursor dot
-				const baseSize = isPressed ? 18 : 22;
+				// Free travel: solid circular dot
+				const baseSize = isPressed ? 16 : 20;
 
 				blobX += (mouseX - blobX) * 0.18;
 				blobY += (mouseY - blobY) * 0.18;
-				blobWidth += (baseSize - blobWidth) * 0.14;
-				blobHeight += (baseSize - blobHeight) * 0.14;
-				blobRadius += (999 - blobRadius) * 0.14;
+				blobWidth += (baseSize - blobWidth) * 0.12;
+				blobHeight += (baseSize - blobHeight) * 0.12;
+				blobRadius += (999 - blobRadius) * 0.12;
 			}
 
 			animId = requestAnimationFrame(tick);
@@ -199,8 +197,9 @@
 
 {#if hasPointer}
 	<!-- Morphing Cursor Layer:
-	     Using mix-blend-mode: screen and semi-transparent fills, or transparent cutout,
-	     so the cursor never covers or blacks out the button text/icons -->
+	     When not hovered: solid cursor dot moving across page.
+	     When hovered: morphs into the exact shape & position of the target element,
+	     and sits BEHIND its text/icons using an inverse blend cutout or clean background fill. -->
 	<div
 		class="morph-cursor-layer"
 		class:is-visible={visible}
@@ -209,13 +208,14 @@
 		aria-hidden="true"
 	>
 		<div
-			class="clean-cursor-blob"
+			class="morph-cursor-pill"
 			style="
 				transform: translate3d({blobX - blobWidth / 2}px, {blobY - blobHeight / 2}px, 0);
 				width: {blobWidth}px;
 				height: {blobHeight}px;
 				border-radius: {blobRadius}px;
-				background-color: {primaryColor};
+				background-color: {isHovered ? tertiaryColor : primaryColor};
+				opacity: {blobOpacity};
 			"
 		></div>
 	</div>
@@ -230,14 +230,13 @@
 		cursor: none !important;
 	}
 
-	/* The cursor layer is fixed at z-index 99999.
-	   When hovered, we use mix-blend-mode: screen / translucent fill
-	   so that underneath text, wordmarks, and icons remain crystal clear */
+	/* Place cursor layer at z-index 10000 so it morphs on top of background headers (1000),
+	   but underneath interactive component text/icons (10001) */
 	.morph-cursor-layer {
 		position: fixed;
 		inset: 0;
 		pointer-events: none;
-		z-index: 99999;
+		z-index: 10000;
 		opacity: 0;
 		transition: opacity 0.25s ease;
 		overflow: hidden;
@@ -247,85 +246,54 @@
 		opacity: 1;
 	}
 
-	.clean-cursor-blob {
+	.morph-cursor-pill {
 		position: absolute;
 		top: 0;
 		left: 0;
 		pointer-events: none;
 		will-change: transform, width, height, border-radius;
-		transition: background-color 0.4s ease, opacity 0.25s ease;
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+		transition: background-color 0.4s ease;
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
 	}
 
-	/* In free travel: solid vibrant cursor dot */
-	.morph-cursor-layer:not(.is-hovered) .clean-cursor-blob {
-		opacity: 1;
+	/* In free movement: vibrant brand cursor dot */
+	.morph-cursor-layer:not(.is-hovered) .morph-cursor-pill {
+		background-color: var(--color-primary);
 	}
 
 	/* While morphing over a component:
-	   Give it an elegant translucent glowing pill fill (opacity 0.25)
-	   so it envelops the button without hiding its text or labels! */
-	.morph-cursor-layer.is-hovered .clean-cursor-blob {
-		opacity: 0.32;
-		filter: blur(1px);
+	   It becomes the solid background of the button! */
+	.morph-cursor-layer.is-hovered .morph-cursor-pill {
+		opacity: 1;
 	}
 
-	/* ALL INTERACTIVE HOVERED STATES ACROSS THE SITE:
-	   Elements morph to/from a visible background using brand colors (NEVER white),
-	   and scale slightly so the user clearly feels the magnetic attraction */
-	:global(a.morph-cursor-hovered),
-	:global(button.morph-cursor-hovered),
-	:global(.round-flip-btn.morph-cursor-hovered),
+	/* ALL INTERACTIVE ELEMENTS:
+	   Ensure their text and contents sit at z-index 10002 above the morph-cursor-pill (10000),
+	   and transparentize their own static background so the morphed cursor shape IS their background! */
+	:global(.morph-cursor-hovered) {
+		position: relative;
+		z-index: 10002 !important;
+		transform: scale(1.05) !important;
+		background-color: transparent !important;
+		transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.22s ease !important;
+	}
+
+	/* Content of hovered elements stays razor-sharp:
+	   Primary buttons, nav-link, chat-btn text and icons show in bright electric primary color over the morphed tertiary pill */
 	:global(.hero-btn-primary.morph-cursor-hovered),
-	:global(.hero-btn-secondary.morph-cursor-hovered),
 	:global(.flat-action-btn.morph-cursor-hovered),
-	:global(.flat-outline-btn.morph-cursor-hovered),
 	:global(.chat-btn.morph-cursor-hovered),
 	:global(.chat-launcher.morph-cursor-hovered),
 	:global(.nav-link.morph-cursor-hovered),
 	:global(.footer-links a.morph-cursor-hovered),
 	:global(.footer-link-btn.morph-cursor-hovered) {
-		transform: scale(1.05) !important;
-		transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.22s ease, background-color 0.22s ease !important;
-	}
-
-	/* Primary action buttons shift into tertiary color with electric primary text */
-	:global(.hero-btn-primary.morph-cursor-hovered),
-	:global(.flat-action-btn.morph-cursor-hovered) {
-		background-color: var(--color-tertiary) !important;
 		color: var(--color-primary) !important;
+		text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
 	}
 
-	/* Tertiary buttons and round flip buttons switch to primary background with tertiary text */
 	:global(.hero-btn-secondary.morph-cursor-hovered),
 	:global(.flat-outline-btn.morph-cursor-hovered),
 	:global(.round-flip-btn.morph-cursor-hovered) {
-		background-color: var(--color-primary) !important;
-		color: var(--color-tertiary) !important;
-	}
-
-	/* Header navigation links gain a sleek primary pill background and tertiary text */
-	:global(.nav-link.morph-cursor-hovered:not(.chat-btn)) {
-		background-color: var(--color-primary) !important;
-		color: var(--color-tertiary) !important;
-	}
-
-	/* Header Ask Stamp chat-btn shifts to tertiary with primary text when hovered */
-	:global(.chat-btn.morph-cursor-hovered) {
-		background-color: var(--color-tertiary) !important;
 		color: var(--color-primary) !important;
-	}
-
-	/* Bottom floating chat launcher button shifts cleanly when hovered */
-	:global(.chat-launcher.morph-cursor-hovered) {
-		background-color: var(--color-tertiary) !important;
-		color: var(--color-primary) !important;
-	}
-
-	/* Footer links gain an elevated brand background pill with high-contrast text */
-	:global(.footer-links a.morph-cursor-hovered),
-	:global(.footer-link-btn.morph-cursor-hovered) {
-		background-color: var(--color-primary) !important;
-		color: var(--color-tertiary) !important;
 	}
 </style>
