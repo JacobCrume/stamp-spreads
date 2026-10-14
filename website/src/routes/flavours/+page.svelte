@@ -197,7 +197,6 @@
 				<div class="data-identity">
 					<div class="identity-top">
 						<span class="flavour-index">0{current.num.slice(-1)} / 04</span>
-						<span class="pack-portion-tag">10 g Disc · 8 Servings</span>
 					</div>
 					<h2 class="flavour-title">{current.name}</h2>
 					<p class="formula-line">{current.formulaRatio}</p>
@@ -464,13 +463,6 @@
 		font-weight: 900;
 		letter-spacing: 0.14em;
 		color: var(--color-primary);
-	}
-
-	.pack-portion-tag {
-		font-size: 0.75rem;
-		font-weight: 800;
-		color: #ffffff;
-		opacity: 0.75;
 	}
 
 	.flavour-title {
