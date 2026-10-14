@@ -39,7 +39,7 @@
 				</div>
 			</a>
 			<nav class="site-nav">
-				<a href="/#steps" class="nav-link" style:color={colorScheme.primary}>Gesture</a>
+				<a href="/#steps" class="nav-link" style:color={colorScheme.primary}>How It Works</a>
 				<a href="/#flavours" class="nav-link" style:color={colorScheme.primary}>Flavours</a>
 				<a href="/flavours" class="nav-link" style:color={colorScheme.primary}>Specs</a>
 				<button

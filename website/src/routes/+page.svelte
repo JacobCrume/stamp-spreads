@@ -99,7 +99,7 @@
 <!-- SECTION 2: THE 3 STEPS WITH THRESHOLD EXPLOSION (FLAT, ZERO OUTLINES) -->
 <section id="steps" class="steps-stage">
 	<div class="steps-inner">
-		<div class="section-kicker">THE 3-SECOND GESTURE</div>
+		<div class="section-kicker">THE 3-SECOND ROUTINE</div>
 		<h2 class="section-title">HOW STAMP WORKS</h2>
 		<p class="section-sub">
 			Forget sticky jars, table knives, and office sinks. Breakfast happens in three rapid moves.
@@ -725,7 +725,7 @@
 	}
 
 	.flip-card.flipped {
-		transform: translateY(-16px) scale(1.04) rotateY(180deg);
+		transform: translateY(-12px) rotateY(180deg);
 	}
 
 	.flip-face {
