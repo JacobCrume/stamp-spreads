@@ -127,7 +127,8 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
     four_packs_path = work_dir / "four_packs_row.png"
     composite.save(four_packs_path, "PNG")
 
-    # 2. Spreads Category Tier Growth Chart on Peanut (#4E2408)
+
+    # 2. Spreads Category Tier Growth Chart on Peanut (#4E2408) - ZERO OUTLINES
     sales_csv = ROOT / "data" / "sales-clean.csv"
     frame = pd.read_csv(sales_csv)
     spreads = frame[frame["Category"] == "Spreads"].copy()
@@ -142,7 +143,6 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
     bg_peanut = "#4E2408"
     primary_peanut = "#FF8C30"
     white_hex = "#FFFFFF"
-    dim_hex = "#D4A373"
 
     fig, ax = plt.subplots(figsize=(6.8, 3.8), dpi=200)
     fig.patch.set_facecolor(bg_peanut)
@@ -151,14 +151,15 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
     positions = np.arange(3)
     width = 0.35
 
+    # Solid bars with no outlines (edgecolor='none', linewidth=0)
     rects1 = ax.bar(
         positions - width / 2,
         totals["2022"],
         width=width,
         label="2022 Revenue",
-        color="#2E1505",
-        edgecolor=primary_peanut,
-        linewidth=1.4,
+        color="#FFFFFF",
+        edgecolor="none",
+        linewidth=0,
         zorder=3,
     )
     rects2 = ax.bar(
@@ -168,6 +169,7 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
         label="2025 Revenue",
         color=primary_peanut,
         edgecolor="none",
+        linewidth=0,
         zorder=3,
     )
 
@@ -182,7 +184,7 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
             va="bottom",
             fontproperties=F_BOLD,
             fontsize=9.5,
-            color=dim_hex,
+            color=white_hex,
         )
 
     for rect in rects2:
@@ -196,7 +198,7 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
             va="bottom",
             fontproperties=F_BOLD,
             fontsize=9.5,
-            color=white_hex,
+            color=primary_peanut,
         )
 
     ax.set_xticks(positions)
@@ -206,12 +208,12 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
         label.set_fontsize(11)
         label.set_color(white_hex)
 
-    ax.set_ylabel("Revenue (Million NZD)", fontproperties=F_SEMI, fontsize=9.5, color=dim_hex, labelpad=8)
-    ax.grid(axis="y", linestyle="--", alpha=0.25, color=dim_hex, zorder=0)
+    ax.set_ylabel("Revenue (Million NZD)", fontproperties=F_SEMI, fontsize=9.5, color=white_hex, labelpad=8)
+    ax.grid(axis="y", linestyle="--", alpha=0.2, color=white_hex, zorder=0)
     for spine in ax.spines.values():
         spine.set_visible(False)
 
-    ax.tick_params(axis="y", colors=dim_hex)
+    ax.tick_params(axis="y", colors=white_hex)
     for label in ax.get_yticklabels():
         label.set_fontproperties(F_MED)
         label.set_fontsize(9)
@@ -229,10 +231,10 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
     fig.savefig(tier_path, dpi=200, facecolor=bg_peanut)
     plt.close(fig)
 
-    # 3. Process Flow Diagram on Butter (#4A3000)
+    # 3. Process Flow Diagram on Butter (#4A3000) - SOLID CARDS, ZERO OUTLINES
     bg_butter = "#4A3000"
     primary_butter = "#FFD640"
-    card_butter = "#2E1E00"
+    ink_butter = "#241600"
 
     fig, ax = plt.subplots(figsize=(8.2, 3.2), dpi=200)
     fig.patch.set_facecolor(bg_butter)
@@ -259,9 +261,9 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
             w,
             h,
             boxstyle="round,pad=0.8,rounding_size=2",
-            facecolor=card_butter,
-            edgecolor=primary_butter,
-            linewidth=1.4,
+            facecolor=primary_butter,
+            edgecolor="none",
+            linewidth=0,
         )
         ax.add_patch(rect)
 
@@ -273,7 +275,7 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
             va="center",
             fontproperties=F_BOLD,
             fontsize=10.5,
-            color=primary_butter,
+            color=ink_butter,
         )
 
         ax.text(
@@ -282,9 +284,9 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
             desc,
             ha="center",
             va="center",
-            fontproperties=F_MED,
+            fontproperties=F_SEMI,
             fontsize=8.5,
-            color=white_hex,
+            color=ink_butter,
             multialignment="center",
         )
 
@@ -293,7 +295,7 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
                 "",
                 xy=(x + w + 3.2, y + h / 2),
                 xytext=(x + w + 0.3, y + h / 2),
-                arrowprops=dict(arrowstyle="->", color=primary_butter, lw=1.8),
+                arrowprops=dict(arrowstyle="->", color=primary_butter, lw=2.0),
             )
 
     fig.tight_layout()
