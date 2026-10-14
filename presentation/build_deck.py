@@ -52,34 +52,42 @@ SCHEMES = {
     "yeast": {
         "secondary": RGBColor(36, 3, 64),      # #240340 (Deep Night Ink)
         "primary": RGBColor(226, 75, 255),     # #E24BFF (Electric Lavender)
+        "tertiary": RGBColor(59, 7, 100),      # #3B0764 (Deep Solid Purple)
         "white": RGBColor(255, 255, 255),
         "primary_rgb": (226, 75, 255),
         "secondary_hex": "#240340",
         "primary_hex": "#E24BFF",
+        "tertiary_hex": "#3B0764",
     },
     "butter": {
         "secondary": RGBColor(74, 48, 0),      # #4A3000 (Roasted Caramel Brown)
         "primary": RGBColor(255, 214, 64),     # #FFD640 (Electric Butter Gold)
+        "tertiary": RGBColor(45, 29, 0),       # #2D1D00 (Deep Umber)
         "white": RGBColor(255, 255, 255),
         "primary_rgb": (255, 214, 64),
         "secondary_hex": "#4A3000",
         "primary_hex": "#FFD640",
+        "tertiary_hex": "#2D1D00",
     },
     "raspberry": {
         "secondary": RGBColor(70, 8, 32),      # #460820 (Rich Berry)
         "primary": RGBColor(255, 70, 122),     # #FF467A (Neon Wild Raspberry)
+        "tertiary": RGBColor(45, 4, 20),       # #2D0414 (Dark Berry Maroon)
         "white": RGBColor(255, 255, 255),
         "primary_rgb": (255, 70, 122),
         "secondary_hex": "#460820",
         "primary_hex": "#FF467A",
+        "tertiary_hex": "#2D0414",
     },
     "peanut": {
         "secondary": RGBColor(78, 36, 8),      # #4E2408 (Deep Peanut Umber)
         "primary": RGBColor(255, 140, 48),     # #FF8C30 (Roasted Peanut Ochre)
+        "tertiary": RGBColor(45, 20, 3),       # #2D1403 (Dark Roasted Nut Brown)
         "white": RGBColor(255, 255, 255),
         "primary_rgb": (255, 140, 48),
         "secondary_hex": "#4E2408",
         "primary_hex": "#FF8C30",
+        "tertiary_hex": "#2D1403",
     },
 }
 
@@ -140,8 +148,9 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
     )
     totals = totals.reindex(["Value", "Standard", "Premium"])
 
-    bg_peanut = "#4E2408"
-    primary_peanut = "#FF8C30"
+    bg_peanut = SCHEMES["peanut"]["secondary_hex"]       # #4E2408
+    tertiary_peanut = SCHEMES["peanut"]["tertiary_hex"]   # #2D1403 (Peanut Tertiary)
+    primary_peanut = SCHEMES["peanut"]["primary_hex"]     # #FF8C30 (Peanut Primary)
     white_hex = "#FFFFFF"
 
     fig, ax = plt.subplots(figsize=(6.8, 3.8), dpi=200)
@@ -157,7 +166,7 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
         totals["2022"],
         width=width,
         label="2022 Revenue",
-        color="#FFFFFF",
+        color=tertiary_peanut, # Peanut tertiary color (#2D1403) instead of white
         edgecolor="none",
         linewidth=0,
         zorder=3,
@@ -167,7 +176,7 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
         totals["2025"],
         width=width,
         label="2025 Revenue",
-        color=primary_peanut,
+        color=primary_peanut, # Peanut primary color (#FF8C30)
         edgecolor="none",
         linewidth=0,
         zorder=3,
