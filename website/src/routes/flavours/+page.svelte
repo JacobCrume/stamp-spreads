@@ -1,4 +1,11 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { setSectionTheme } from '../../lib/theme.svelte';
+
+	onMount(() => {
+		setSectionTheme('mixed');
+	});
+
 	const flavours = [
 		{
 			id: 'butter',
@@ -185,6 +192,7 @@
 		max-width: 1120px;
 		margin: 0 auto;
 		padding: 3rem 1.5rem 5rem;
+		background: transparent;
 	}
 
 	.page-header {
@@ -195,25 +203,25 @@
 
 	.page-title {
 		font-size: 2.8rem;
-		font-weight: 800;
-		color: #3b0764;
+		font-weight: 900;
+		color: #e24bff;
 		margin-bottom: 1rem;
 		letter-spacing: -0.02em;
 	}
 
 	.page-intro {
 		font-size: 1.15rem;
-		color: #4a3560;
+		color: #f4c7ff;
 		line-height: 1.6;
 	}
 
 	.mixed-pack-banner {
 		background: #3b0764;
-		color: #ffffff;
-		border-radius: 12px;
+		color: #f4c7ff;
+		border-radius: 16px;
 		padding: 2.5rem;
 		margin-bottom: 3.5rem;
-		border: 2px solid #e24bff;
+		border: 3px solid #e24bff;
 	}
 
 	.banner-inner {
@@ -232,44 +240,45 @@
 	.badge {
 		display: inline-block;
 		background: #e24bff;
-		color: #3b0764;
+		color: #240340;
 		font-size: 0.75rem;
-		font-weight: 800;
-		letter-spacing: 0.06em;
-		padding: 0.25rem 0.6rem;
-		border-radius: 4px;
+		font-weight: 900;
+		letter-spacing: 0.08em;
+		padding: 0.35rem 0.75rem;
+		border-radius: 9999px;
 		margin-bottom: 0.75rem;
 	}
 
 	.banner-title {
 		font-size: 2rem;
-		font-weight: 800;
+		font-weight: 900;
 		margin-bottom: 0.5rem;
+		color: #ffd640;
 	}
 
 	.banner-desc {
 		font-size: 1rem;
-		opacity: 0.9;
+		color: #f4c7ff;
 		line-height: 1.5;
 	}
 
 	.banner-price {
-		background: rgba(255, 255, 255, 0.1);
-		border: 1px solid rgba(226, 75, 255, 0.4);
+		background: #240340;
+		border: 2px solid #e24bff;
 		padding: 1.25rem 2rem;
-		border-radius: 10px;
+		border-radius: 14px;
 		text-align: center;
 	}
 
 	.price-tag {
 		font-size: 2.2rem;
-		font-weight: 800;
-		color: #e24bff;
+		font-weight: 900;
+		color: #ffd640;
 	}
 
 	.price-sub {
 		font-size: 0.85rem;
-		opacity: 0.85;
+		color: #f4c7ff;
 	}
 
 	.flavour-list {
@@ -280,9 +289,9 @@
 	}
 
 	.flavour-detail-card {
-		background: #ffffff;
-		border: 2px solid #ebd4ff;
-		border-radius: 12px;
+		background: #240340;
+		border: 3px solid #e24bff;
+		border-radius: 16px;
 		overflow: hidden;
 		display: grid;
 		grid-template-columns: 320px 1fr;
@@ -290,6 +299,7 @@
 
 	.flavour-media {
 		background: #3b0764;
+		border-right: 3px solid #e24bff;
 		padding: 2.5rem 1.5rem;
 		display: flex;
 		flex-direction: column;
@@ -306,11 +316,11 @@
 
 	.pack-badge {
 		margin-top: 1.5rem;
-		background: rgba(226, 75, 255, 0.2);
-		border: 1px solid #e24bff;
-		color: #ffffff;
+		background: #3b0764;
+		border: 2px solid #e24bff;
+		color: #e24bff;
 		font-size: 0.82rem;
-		font-weight: 700;
+		font-weight: 800;
 		padding: 0.35rem 0.85rem;
 		border-radius: 999px;
 	}
@@ -328,26 +338,26 @@
 		gap: 1.25rem;
 		margin-bottom: 1.5rem;
 		padding-bottom: 1rem;
-		border-bottom: 2px solid #f2e4ff;
+		border-bottom: 2px solid #3b0764;
 	}
 
 	.flavour-number {
 		font-size: 2rem;
-		font-weight: 800;
+		font-weight: 900;
 		color: #e24bff;
 		line-height: 1;
 	}
 
 	.flavour-name {
 		font-size: 1.8rem;
-		font-weight: 800;
-		color: #3b0764;
+		font-weight: 900;
+		color: #ffd640;
 	}
 
 	.flavour-subtitle {
 		font-size: 0.95rem;
-		color: #6a4a85;
-		font-weight: 600;
+		color: #f4c7ff;
+		font-weight: 700;
 	}
 
 	.spec-grid {
@@ -357,57 +367,59 @@
 	}
 
 	.spec-block {
-		background: #fbf7ff;
+		background: #3b0764;
 		padding: 1.2rem;
-		border-radius: 8px;
-		border: 1px solid #f0deff;
+		border-radius: 12px;
+		border: 2px solid #e24bff;
 	}
 
 	.highlight-allergen {
-		background: #fff8f5;
-		border-color: #ffdcd1;
+		background: #460820;
+		border-color: #ff467a;
 	}
 
 	.spec-label {
 		font-size: 0.78rem;
-		font-weight: 800;
+		font-weight: 900;
 		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: #3b0764;
+		letter-spacing: 0.08em;
+		color: #e24bff;
 		margin-bottom: 0.4rem;
 	}
 
 	.spec-value {
 		font-size: 0.92rem;
-		color: #1a1024;
+		color: #f4c7ff;
 		line-height: 1.45;
+		font-weight: 700;
 	}
 
 	.spec-sub {
 		font-size: 0.82rem;
-		color: #634380;
+		color: #ffd640;
 		margin-top: 0.4rem;
 		line-height: 1.4;
 	}
 
 	.regulatory-box {
-		background: #ffffff;
-		border: 2px dashed #9333ea;
-		border-radius: 10px;
+		background: #240340;
+		border: 3px solid #e24bff;
+		border-radius: 16px;
 		padding: 2rem;
 	}
 
 	.reg-title {
 		font-size: 1.3rem;
-		font-weight: 800;
-		color: #3b0764;
+		font-weight: 900;
+		color: #ffd640;
 		margin-bottom: 0.75rem;
 	}
 
 	.reg-text {
 		font-size: 0.95rem;
-		color: #4a3560;
+		color: #f4c7ff;
 		margin-bottom: 1rem;
+		line-height: 1.5;
 	}
 
 	.reg-list {
@@ -417,7 +429,7 @@
 		flex-direction: column;
 		gap: 0.6rem;
 		font-size: 0.92rem;
-		color: #2e1c40;
+		color: #f4c7ff;
 	}
 
 	@media (max-width: 860px) {

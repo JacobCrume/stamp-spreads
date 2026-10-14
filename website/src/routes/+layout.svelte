@@ -2,64 +2,11 @@
 	import type { Snippet } from 'svelte';
 	import ChatWidget from '../lib/ChatWidget.svelte';
 	import Wordmark from '../lib/Wordmark.svelte';
-	import { themeState } from '../lib/theme.svelte';
+	import { themeState, THEME_CONFIG } from '../lib/theme.svelte';
 
 	let { children }: { children: Snippet } = $props();
 
-	// Color definitions for the floating dynamic header
-	const themeColors = {
-		hero: {
-			bg: '#240340',
-			border: '#e24bff',
-			text: '#e24bff',
-			btnBg: '#e24bff',
-			btnText: '#240340'
-		},
-		steps: {
-			bg: '#3b0764',
-			border: '#e24bff',
-			text: '#e24bff',
-			btnBg: '#e24bff',
-			btnText: '#3b0764'
-		},
-		butter: {
-			bg: '#4a3000',
-			border: '#ffd640',
-			text: '#ffd640',
-			btnBg: '#ffd640',
-			btnText: '#4a3000'
-		},
-		raspberry: {
-			bg: '#460820',
-			border: '#ff467a',
-			text: '#ff467a',
-			btnBg: '#ff467a',
-			btnText: '#460820'
-		},
-		yeast: {
-			bg: '#240340',
-			border: '#e24bff',
-			text: '#e24bff',
-			btnBg: '#e24bff',
-			btnText: '#240340'
-		},
-		peanut: {
-			bg: '#4e2408',
-			border: '#ff8c30',
-			text: '#ff8c30',
-			btnBg: '#ff8c30',
-			btnText: '#4e2408'
-		},
-		mixed: {
-			bg: '#240340',
-			border: '#e24bff',
-			text: '#e24bff',
-			btnBg: '#e24bff',
-			btnText: '#240340'
-		}
-	};
-
-	let currentTheme = $derived(themeColors[themeState.active] || themeColors.hero);
+	let currentTheme = $derived(THEME_CONFIG[themeState.active] || THEME_CONFIG.hero);
 </script>
 
 <svelte:head>
@@ -70,11 +17,18 @@
 	/>
 </svelte:head>
 
+<!-- FIXED STATIONARY BACKGROUND THAT FADES BETWEEN SECTION BRAND COLORS -->
+<div
+	class="stationary-viewport-bg"
+	style:background-color={currentTheme.screenBg}
+	aria-hidden="true"
+></div>
+
 <div class="site-container">
 	<!-- FLOATING DYNAMIC HEADER - MATCHES BACKGROUND SECTION COLOR -->
 	<header
 		class="site-header floating-header"
-		style:background-color={currentTheme.bg}
+		style:background-color={currentTheme.headerBg}
 		style:border-color={currentTheme.border}
 		style:color={currentTheme.text}
 	>
@@ -182,23 +136,35 @@
 
 	:global(html) {
 		scroll-behavior: smooth;
-		background-color: #3b0764;
+		background: #240340;
 	}
 
 	:global(body) {
 		font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-		background-color: #3b0764;
+		background: transparent;
 		color: #f4c7ff;
 		line-height: 1.6;
 		-webkit-font-smoothing: antialiased;
 		overflow-x: hidden;
 	}
 
+	.stationary-viewport-bg {
+		position: fixed;
+		inset: 0;
+		width: 100vw;
+		height: 100vh;
+		pointer-events: none;
+		z-index: -10;
+		transition: background-color 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+		will-change: background-color;
+	}
+
 	.site-container {
 		display: flex;
 		flex-direction: column;
 		min-height: 100vh;
-		background-color: #3b0764;
+		background: transparent;
+		position: relative;
 	}
 
 	/* FLOATING DYNAMIC HEADER - FLAT WITH NO SHADOW OR GLOW */
@@ -279,7 +245,7 @@
 
 	/* FLAT FOOTER */
 	.site-footer {
-		background-color: #1a0230;
+		background: transparent;
 		border-top: 3px solid #e24bff;
 		color: #f4c7ff;
 		padding: 4.5rem 1.5rem 2.5rem;
