@@ -27,17 +27,17 @@
 		num: string;
 		name: string;
 		shortName: string;
-		headline: string;
+		formulaRatio: string;
 		ingredients: string;
 		allergens: string;
 		shelfLife: string;
 		nip: {
 			energy: string;
-			protein: string;
 			fat: string;
 			satFat: string;
 			carbs: string;
 			sugars: string;
+			protein: string;
 			sodium: string;
 		};
 	}
@@ -46,76 +46,76 @@
 		butter: {
 			id: 'butter',
 			num: '01',
-			name: 'Salted Butter',
+			name: 'Salted Butter Spread',
 			shortName: 'Butter',
-			headline: 'Cultured butterfat (78 g) and sea salt (2 g). Low moisture formulation for 12-month ambient stability.',
+			formulaRatio: '78 g butterfat to 2 g salt per 80 g sheet',
 			ingredients: 'Cultured butterfat (milk), salt.',
-			allergens: 'Contains Milk. Produced in a facility handling milk, gluten, and peanuts.',
-			shelfLife: '12 months ambient and unopened in pantry.',
+			allergens: 'Contains Milk. Facility handles milk, gluten, peanuts.',
+			shelfLife: '12 months ambient and unopened in pantry',
 			nip: {
 				energy: '361 kJ',
-				protein: '0 g',
 				fat: '9.8 g',
 				satFat: '5.9 g',
 				carbs: '0 g',
 				sugars: '0 g',
+				protein: '0 g',
 				sodium: '98 mg'
 			}
 		},
 		raspberry: {
 			id: 'raspberry',
 			num: '02',
-			name: 'Raspberry',
+			name: 'Raspberry Spread',
 			shortName: 'Raspberry',
-			headline: 'Slow steam reduction made with 150 g whole raspberries per 100 g finished spread.',
+			formulaRatio: '150 g fruit input per 100 g finished spread',
 			ingredients: 'Raspberries, caster sugar, lemon juice.',
-			allergens: 'No declared allergens. Produced in a facility handling milk, gluten, and peanuts.',
-			shelfLife: '12 months ambient and unopened in pantry.',
+			allergens: 'No declared allergens. Facility handles milk, gluten, peanuts.',
+			shelfLife: '12 months ambient and unopened in pantry',
 			nip: {
 				energy: '93 kJ',
-				protein: '0.2 g',
 				fat: '0.1 g',
 				satFat: '0 g',
 				carbs: '4.6 g',
 				sugars: '4.4 g',
+				protein: '0.2 g',
 				sodium: '<5 mg'
 			}
 		},
 		yeast: {
 			id: 'yeast',
 			num: '03',
-			name: 'Yeast Extract',
+			name: 'Yeast Extract Spread',
 			shortName: 'Yeast',
-			headline: 'Proprietary New Zealand savory recipe. 80% yeast extract with roasted barley malt.',
+			formulaRatio: '80% yeast extract, 15.5% barley malt extract',
 			ingredients: 'Yeast extract (80%), barley malt extract (15.5%), salt (2.5%), vegetable concentrate (2%).',
-			allergens: 'Contains Gluten (barley). Produced in a facility handling milk, gluten, and peanuts.',
-			shelfLife: '12 months ambient and unopened in pantry.',
+			allergens: 'Contains Gluten (barley). Facility handles milk, gluten, peanuts.',
+			shelfLife: '12 months ambient and unopened in pantry',
 			nip: {
 				energy: '76 kJ',
-				protein: '2.3 g',
 				fat: '0 g',
 				satFat: '0 g',
 				carbs: '2.0 g',
 				sugars: '1.0 g',
+				protein: '2.3 g',
 				sodium: '280 mg'
 			}
 		},
 		peanut: {
 			id: 'peanut',
 			num: '04',
-			name: 'Roasted Peanut',
+			name: 'Roasted Peanut Spread',
 			shortName: 'Peanut',
-			headline: '96% high-roast peanuts with 2.3% vegetable fat to permanently eliminate oil separation.',
-			ingredients: 'Peanuts (96%), vegetable fat (2.3%), salt (1.7%).',
-			allergens: 'Contains Peanuts. Produced in a facility handling milk, gluten, and peanuts.',
-			shelfLife: '12 months ambient and unopened in pantry.',
+			formulaRatio: '96% roasted peanuts with 2.3% vegetable stabilizer',
+			ingredients: 'Roasted peanuts (96%), vegetable fat (2.3%), salt (1.7%).',
+			allergens: 'Contains Peanuts. Facility handles milk, gluten, peanuts.',
+			shelfLife: '12 months ambient and unopened in pantry',
 			nip: {
 				energy: '247 kJ',
-				protein: '2.6 g',
 				fat: '4.6 g',
 				satFat: '0.7 g',
 				carbs: '1.5 g',
 				sugars: '0.5 g',
+				protein: '2.6 g',
 				sodium: '67 mg'
 			}
 		}
@@ -132,17 +132,19 @@
 	/>
 </svelte:head>
 
-<div class="specs-clean-page">
-	<!-- MINIMAL CLEAN HEADER -->
-	<header class="specs-top">
-		<div class="specs-top-inner">
-			<h1 class="specs-title">SPECIFICATIONS</h1>
-			<p class="specs-meta">
-				80 g sheet · 8 × 10 g discs · $5.00 NZD ($6.25 / 100 g) · 12-month ambient shelf life
-			</p>
+<div class="specs-page">
+	<div class="specs-container">
+		<!-- HEADER WITH CLEAN FLUID SELECTOR -->
+		<header class="specs-header">
+			<div class="header-titles">
+				<h1 class="title">SPECIFICATIONS</h1>
+				<p class="subtitle">
+					80 g sheet · 8 × 10 g discs · $5.00 NZD · 12-month ambient shelf life
+				</p>
+			</div>
 
-			<!-- 4-TAB SELECTOR -->
-			<nav class="specs-tabs" aria-label="Select Flavour">
+			<!-- CLEAN FLUID TAB BAR WITHOUT RANDOM DOTS -->
+			<nav class="flavour-tabs" aria-label="Select Flavour">
 				{#each (['butter', 'raspberry', 'yeast', 'peanut'] as const) as fid}
 					<button
 						type="button"
@@ -150,19 +152,16 @@
 						class:active={activeFlavour === fid}
 						onclick={() => selectFlavour(fid)}
 					>
-						<span class="tab-dot" class:active={activeFlavour === fid}></span>
-						<span>{SPECS[fid].shortName}</span>
+						{SPECS[fid].shortName}
 					</button>
 				{/each}
 			</nav>
-		</div>
-	</header>
+		</header>
 
-	<!-- FOCUSED SPEC CONTENT -->
-	<main class="specs-content-wrap">
-		<div class="specs-grid">
-			<!-- LEFT: PACK VIEW (FRONT & BACK WITH QUICK TOGGLE) -->
-			<div class="pack-col">
+		<!-- CRISP 2-COLUMN GRID ALIGNED TO STRICT BASELINE -->
+		<div class="specs-main-grid">
+			<!-- LEFT COLUMN: PACK VIEWER WITH FLIP BUTTON -->
+			<div class="pack-panel">
 				<div class="pack-stage">
 					<div class="pack-card" class:flipped={isFlipped}>
 						<div class="pack-face front">
@@ -176,144 +175,157 @@
 
 				<button
 					type="button"
-					class="flip-pill-btn"
+					class="flip-btn"
 					onclick={toggleFlip}
 					aria-label={isFlipped ? 'View pack front' : 'View pack back and nutrition panel'}
 				>
-					<svg class="flip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+					<svg class="flip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
 						<path d="M21 2v6h-6"></path>
 						<path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
 						<path d="M3 22v-6h6"></path>
 						<path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
 					</svg>
-					<span>{isFlipped ? 'Show Pack Front' : 'Show NIP & Back'}</span>
+					<span>{isFlipped ? 'View Front Panel' : 'View Nutrition & Back'}</span>
 				</button>
 			</div>
 
-			<!-- RIGHT: CONCISE TECHNICAL DATA -->
-			<div class="data-col">
-				<div class="flavour-heading-block">
-					<span class="flavour-num">{current.num}</span>
-					<h2 class="flavour-name">{current.name}</h2>
-					<p class="flavour-summary">{current.headline}</p>
+			<!-- RIGHT COLUMN: ALIGNED TECHNICAL SPECIFICATION GRID -->
+			<div class="data-panel">
+				<!-- FLAVOUR IDENTITY -->
+				<div class="data-identity">
+					<div class="identity-top">
+						<span class="flavour-index">0{current.num.slice(-1)} / 04</span>
+						<span class="pack-portion-tag">10 g Disc · 8 Servings</span>
+					</div>
+					<h2 class="flavour-title">{current.name}</h2>
+					<p class="formula-line">{current.formulaRatio}</p>
 				</div>
 
-				<!-- SPECS LIST -->
-				<div class="tech-specs-card">
-					<div class="spec-row">
-						<span class="spec-term">Ingredients</span>
-						<span class="spec-desc">{current.ingredients}</span>
+				<!-- TECHNICAL PARAMETERS GRID -->
+				<div class="tech-grid">
+					<div class="grid-card">
+						<span class="card-label">Ingredients</span>
+						<p class="card-val">{current.ingredients}</p>
 					</div>
 
-					<div class="spec-row">
-						<span class="spec-term">Allergen Notice</span>
-						<span class="spec-desc"><strong>{current.allergens}</strong></span>
+					<div class="grid-card">
+						<span class="card-label">Allergens</span>
+						<p class="card-val"><strong>{current.allergens}</strong></p>
 					</div>
 
-					<div class="spec-row">
-						<span class="spec-term">Shelf Stability</span>
-						<span class="spec-desc">{current.shelfLife}</span>
+					<div class="grid-card">
+						<span class="card-label">Stability</span>
+						<p class="card-val">{current.shelfLife}</p>
+					</div>
+
+					<div class="grid-card">
+						<span class="card-label">Standard</span>
+						<p class="card-val">FSANZ compliant. No therapeutic or false organic claims.</p>
 					</div>
 				</div>
 
-				<!-- NUTRITION PER 10G SERVE -->
-				<div class="nip-summary-card">
-					<div class="nip-card-header">
-						<span class="nip-label">Nutrition per 10 g Disc</span>
-						<span class="nip-sub">1 serving</span>
+				<!-- NIP GRID (7-CELL BALANCED ROW) -->
+				<div class="nip-grid-panel">
+					<div class="nip-header">
+						<span class="nip-heading">NIP — Per 10 g Disc</span>
+						<span class="nip-metric">1 Toast Serve</span>
 					</div>
 
-					<div class="nip-inline-grid">
-						<div class="nip-cell">
+					<div class="nip-row">
+						<div class="nip-item">
 							<span class="nip-val">{current.nip.energy}</span>
-							<span class="nip-key">Energy</span>
+							<span class="nip-tag">Energy</span>
 						</div>
-						<div class="nip-cell">
+						<div class="nip-item">
 							<span class="nip-val">{current.nip.fat}</span>
-							<span class="nip-key">Fat (tot)</span>
+							<span class="nip-tag">Fat</span>
 						</div>
-						<div class="nip-cell">
+						<div class="nip-item">
 							<span class="nip-val">{current.nip.satFat}</span>
-							<span class="nip-key">Sat Fat</span>
+							<span class="nip-tag">Sat Fat</span>
 						</div>
-						<div class="nip-cell">
+						<div class="nip-item">
 							<span class="nip-val">{current.nip.carbs}</span>
-							<span class="nip-key">Carbs</span>
+							<span class="nip-tag">Carbs</span>
 						</div>
-						<div class="nip-cell">
+						<div class="nip-item">
 							<span class="nip-val">{current.nip.sugars}</span>
-							<span class="nip-key">Sugars</span>
+							<span class="nip-tag">Sugars</span>
 						</div>
-						<div class="nip-cell">
+						<div class="nip-item">
 							<span class="nip-val">{current.nip.protein}</span>
-							<span class="nip-key">Protein</span>
+							<span class="nip-tag">Protein</span>
 						</div>
-						<div class="nip-cell">
+						<div class="nip-item">
 							<span class="nip-val">{current.nip.sodium}</span>
-							<span class="nip-key">Sodium</span>
+							<span class="nip-tag">Sodium</span>
 						</div>
 					</div>
 				</div>
 
-				<!-- MINIMAL COMPLIANCE & MIXED PACK LINE -->
-				<div class="specs-foot-note">
-					<p>
-						Also available in the <strong>Mixed Sheet</strong> (2× Butter, 2× Raspberry, 2× Yeast, 2× Peanut) for $5.00 NZD. Contains milk, gluten, and peanuts. All Stamp products comply with the NZ Food Standards Code; no therapeutic or medicinal claims made.
+				<!-- SUBTLE MIXED PACK ACCORD -->
+				<div class="mixed-note-row">
+					<span class="note-pill">Mixed Sheet</span>
+					<p class="note-text">
+						Available with 2× Butter, 2× Raspberry, 2× Yeast, 2× Peanut for $5.00 NZD (contains milk, gluten, peanuts).
 					</p>
 				</div>
 			</div>
 		</div>
-	</main>
+	</div>
 </div>
 
 <style>
-	.specs-clean-page {
+	.specs-page {
 		min-height: 100vh;
 		background: transparent;
 		color: #ffffff;
-		padding-top: 5.5rem;
-		padding-bottom: 3rem;
+		padding-top: 6rem;
+		padding-bottom: 4rem;
 		font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 	}
 
-	/* TOP SECTION */
-	.specs-top {
-		padding: 2.5rem 1.5rem 2rem;
-		text-align: center;
+	.specs-container {
+		max-width: 1060px;
+		margin: 0 auto;
+		padding: 0 1.5rem;
 	}
 
-	.specs-top-inner {
-		max-width: 800px;
-		margin: 0 auto;
+	/* HEADER */
+	.specs-header {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		text-align: center;
+		margin-bottom: 3.5rem;
+		gap: 1.5rem;
 	}
 
-	.specs-title {
-		font-size: clamp(2.4rem, 5vw, 3.6rem);
+	.title {
+		font-size: clamp(2.4rem, 5vw, 3.4rem);
 		font-weight: 900;
 		color: var(--color-primary);
 		letter-spacing: -0.03em;
-		margin: 0 0 0.5rem;
 		line-height: 1;
+		margin: 0 0 0.45rem;
 	}
 
-	.specs-meta {
+	.subtitle {
 		font-size: 0.95rem;
 		font-weight: 700;
 		color: #ffffff;
 		opacity: 0.85;
-		margin: 0 0 1.75rem;
+		margin: 0;
 	}
 
-	/* 4 TABS */
-	.specs-tabs {
+	/* TABS WITHOUT RANDOM DOTS */
+	.flavour-tabs {
 		display: inline-flex;
-		gap: 0.4rem;
 		padding: 0.35rem;
 		background: var(--color-tertiary);
 		border-radius: 9999px;
+		gap: 0.25rem;
+		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 		transition: background-color 0.45s ease;
 	}
 
@@ -321,54 +333,35 @@
 		background: transparent;
 		border: none;
 		border-radius: 9999px;
-		padding: 0.55rem 1.3rem;
+		padding: 0.6rem 1.6rem;
 		cursor: pointer;
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
 		font-family: inherit;
-		font-size: 0.9rem;
+		font-size: 0.92rem;
 		font-weight: 800;
 		color: #ffffff;
-		transition: background-color 0.2s, transform 0.15s, color 0.2s;
+		transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
 	}
 
 	.tab-btn:hover {
-		transform: scale(1.03);
+		transform: scale(1.02);
 	}
 
 	.tab-btn.active {
 		background: var(--color-primary);
 		color: var(--color-tertiary);
+		box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
 	}
 
-	.tab-dot {
-		width: 8px;
-		height: 8px;
-		border-radius: 50%;
-		background: var(--color-primary);
-	}
-
-	.tab-btn.active .tab-dot {
-		background: var(--color-tertiary);
-	}
-
-	/* MAIN CONTENT */
-	.specs-content-wrap {
-		max-width: 1040px;
-		margin: 0 auto;
-		padding: 1.5rem 1.5rem 3rem;
-	}
-
-	.specs-grid {
+	/* 2-COLUMN MAIN GRID */
+	.specs-main-grid {
 		display: grid;
 		grid-template-columns: 360px 1fr;
 		gap: 3.5rem;
-		align-items: flex-start;
+		align-items: start;
 	}
 
-	/* PACK COLUMN */
-	.pack-col {
+	/* PACK PANEL */
+	.pack-panel {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -410,12 +403,12 @@
 		transform: rotateY(180deg);
 	}
 
-	.flip-pill-btn {
+	.flip-btn {
 		background: var(--color-tertiary);
 		color: var(--color-primary);
 		border: none;
 		border-radius: 9999px;
-		padding: 0.6rem 1.25rem;
+		padding: 0.6rem 1.4rem;
 		cursor: pointer;
 		display: inline-flex;
 		align-items: center;
@@ -423,130 +416,147 @@
 		font-family: inherit;
 		font-size: 0.85rem;
 		font-weight: 800;
-		box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+		box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
 		transition: transform 0.15s, background-color 0.45s ease, color 0.45s ease;
 	}
 
-	.flip-pill-btn:hover {
+	.flip-btn:hover {
 		transform: scale(1.05);
 	}
 
 	.flip-icon {
-		width: 18px;
-		height: 18px;
+		width: 17px;
+		height: 17px;
 	}
 
-	/* DATA COLUMN */
-	.data-col {
+	/* DATA PANEL */
+	.data-panel {
 		display: flex;
 		flex-direction: column;
 		gap: 1.5rem;
 	}
 
-	.flavour-heading-block {
+	/* IDENTITY HEADER */
+	.data-identity {
 		border-bottom: 2px solid var(--color-primary);
-		padding-bottom: 1.2rem;
+		padding-bottom: 1.15rem;
 		transition: border-color 0.45s ease;
 	}
 
-	.flavour-num {
-		font-size: 0.85rem;
+	.identity-top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 0.3rem;
+	}
+
+	.flavour-index {
+		font-size: 0.82rem;
 		font-weight: 900;
 		letter-spacing: 0.14em;
 		color: var(--color-primary);
 	}
 
-	.flavour-name {
-		font-size: clamp(2rem, 4vw, 2.8rem);
+	.pack-portion-tag {
+		font-size: 0.75rem;
+		font-weight: 800;
+		color: #ffffff;
+		opacity: 0.75;
+	}
+
+	.flavour-title {
+		font-size: clamp(2rem, 3.8vw, 2.7rem);
 		font-weight: 900;
 		color: var(--color-primary);
 		letter-spacing: -0.03em;
-		margin: 0.2rem 0 0.5rem;
+		margin: 0.15rem 0 0.4rem;
 		line-height: 1;
 	}
 
-	.flavour-summary {
-		font-size: 1.05rem;
+	.formula-line {
+		font-size: 1rem;
+		font-weight: 600;
 		color: #ffffff;
-		line-height: 1.5;
-		margin: 0;
 		opacity: 0.95;
+		margin: 0;
 	}
 
-	/* TECH SPECS CARD */
-	.tech-specs-card {
+	/* 4-CELL TECHNICAL GRID */
+	.tech-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1rem;
+	}
+
+	.grid-card {
 		background: var(--color-tertiary);
-		border-radius: 20px;
-		padding: 1.5rem 1.75rem;
+		border-radius: 16px;
+		padding: 1.2rem 1.4rem;
 		display: flex;
 		flex-direction: column;
-		gap: 1.15rem;
+		gap: 0.3rem;
 		transition: background-color 0.45s ease;
 	}
 
-	.spec-row {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-
-	.spec-term {
+	.card-label {
 		font-size: 0.72rem;
 		font-weight: 900;
+		letter-spacing: 0.1em;
 		text-transform: uppercase;
-		letter-spacing: 0.08em;
 		color: var(--color-primary);
 		opacity: 0.9;
 	}
 
-	.spec-desc {
-		font-size: 0.95rem;
+	.card-val {
+		font-size: 0.92rem;
+		font-weight: 600;
 		color: #ffffff;
 		line-height: 1.45;
+		margin: 0;
 	}
 
-	/* NUTRITION INLINE CARD */
-	.nip-summary-card {
+	/* NIP PANEL */
+	.nip-grid-panel {
 		background: var(--color-tertiary);
-		border-radius: 20px;
-		padding: 1.4rem 1.75rem;
+		border-radius: 16px;
+		padding: 1.25rem 1.4rem;
 		display: flex;
 		flex-direction: column;
-		gap: 0.9rem;
+		gap: 0.85rem;
 		transition: background-color 0.45s ease;
 	}
 
-	.nip-card-header {
+	.nip-header {
 		display: flex;
 		justify-content: space-between;
 		align-items: baseline;
 	}
 
-	.nip-label {
-		font-size: 0.78rem;
+	.nip-heading {
+		font-size: 0.75rem;
 		font-weight: 900;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 		color: var(--color-primary);
 	}
 
-	.nip-sub {
-		font-size: 0.75rem;
+	.nip-metric {
+		font-size: 0.72rem;
 		font-weight: 700;
 		color: #ffffff;
 		opacity: 0.75;
 	}
 
-	.nip-inline-grid {
+	.nip-row {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(68px, 1fr));
+		grid-template-columns: repeat(7, 1fr);
 		gap: 0.5rem;
 	}
 
-	.nip-cell {
+	.nip-item {
 		background: rgba(0, 0, 0, 0.22);
-		border-radius: 12px;
-		padding: 0.75rem 0.5rem;
+		border-radius: 10px;
+		padding: 0.65rem 0.35rem;
 		text-align: center;
 		display: flex;
 		flex-direction: column;
@@ -554,60 +564,77 @@
 	}
 
 	.nip-val {
-		font-size: 0.95rem;
+		font-size: 0.88rem;
 		font-weight: 900;
 		color: #ffffff;
+		line-height: 1.1;
 	}
 
-	.nip-key {
-		font-size: 0.68rem;
+	.nip-tag {
+		font-size: 0.64rem;
 		font-weight: 800;
 		text-transform: uppercase;
 		color: var(--color-primary);
+		letter-spacing: 0.03em;
+	}
+
+	/* NOTE ROW */
+	.mixed-note-row {
+		display: flex;
+		align-items: center;
+		gap: 0.85rem;
+		padding: 0.3rem 0;
+	}
+
+	.note-pill {
+		font-size: 0.72rem;
+		font-weight: 900;
+		background: var(--color-primary);
+		color: var(--color-tertiary);
+		padding: 0.3rem 0.7rem;
+		border-radius: 9999px;
+		flex-shrink: 0;
 		letter-spacing: 0.04em;
+		transition: background-color 0.45s ease, color 0.45s ease;
 	}
 
-	/* FOOT NOTE */
-	.specs-foot-note {
-		padding: 0.5rem 0.25rem;
-		font-size: 0.85rem;
-		line-height: 1.5;
+	.note-text {
+		font-size: 0.82rem;
 		color: #ffffff;
-		opacity: 0.75;
+		opacity: 0.8;
+		margin: 0;
+		line-height: 1.4;
 	}
 
-	.specs-foot-note strong {
-		color: var(--color-primary);
-	}
-
-	/* RESPONSIVE */
+	/* RESPONSIVE LAYOUT */
 	@media (max-width: 860px) {
-		.specs-grid {
+		.specs-main-grid {
 			grid-template-columns: 1fr;
 			gap: 2.5rem;
 		}
 
-		.pack-col {
+		.pack-panel {
 			margin: 0 auto;
 		}
 
-		.nip-inline-grid {
+		.nip-row {
 			grid-template-columns: repeat(4, 1fr);
 		}
 	}
 
 	@media (max-width: 600px) {
-		.specs-top {
-			padding: 1.5rem 1rem;
+		.specs-header {
+			margin-bottom: 2rem;
+			gap: 1rem;
 		}
 
-		.specs-tabs {
+		.flavour-tabs {
 			width: 100%;
 			justify-content: center;
 		}
 
 		.tab-btn {
-			padding: 0.45rem 0.85rem;
+			padding: 0.5rem 1rem;
 			font-size: 0.82rem;
 		}
 
@@ -616,7 +643,11 @@
 			height: 373px;
 		}
 
-		.nip-inline-grid {
+		.tech-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.nip-row {
 			grid-template-columns: repeat(3, 1fr);
 		}
 	}
