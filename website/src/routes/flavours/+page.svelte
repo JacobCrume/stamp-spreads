@@ -581,9 +581,15 @@
 
 	/* RESPONSIVE LAYOUT */
 	@media (max-width: 860px) {
+		.specs-page {
+			min-height: auto;
+			padding-top: 6.5rem;
+			padding-bottom: 5rem;
+		}
+
 		.specs-main-grid {
 			grid-template-columns: 1fr;
-			gap: 2.5rem;
+			gap: 2.75rem;
 		}
 
 		.pack-panel {
@@ -596,32 +602,96 @@
 	}
 
 	@media (max-width: 600px) {
+		.specs-page {
+			padding-top: 5.5rem;
+			padding-bottom: 6rem;
+		}
+
+		.specs-container {
+			padding: 0 1rem;
+		}
+
 		.specs-header {
 			margin-bottom: 2rem;
 			gap: 1rem;
 		}
 
+		.title {
+			font-size: 2.1rem;
+		}
+
+		.subtitle {
+			font-size: 0.85rem;
+			line-height: 1.4;
+		}
+
 		.flavour-tabs {
 			width: 100%;
-			justify-content: center;
+			max-width: 360px;
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 0.2rem;
+			padding: 0.25rem;
 		}
 
 		.tab-btn {
-			padding: 0.5rem 1rem;
-			font-size: 0.82rem;
+			padding: 0.5rem 0.4rem;
+			font-size: 0.8rem;
+			text-align: center;
+			justify-content: center;
 		}
 
 		.pack-stage {
-			max-width: 280px;
-			height: 373px;
+			max-width: 270px;
+			height: 360px;
+		}
+
+		.round-flip-btn {
+			width: 48px;
+			height: 48px;
+		}
+
+		.round-flip-btn .flip-svg {
+			width: 22px;
+			height: 22px;
+		}
+
+		.flavour-title {
+			font-size: 1.85rem;
+		}
+
+		.formula-line {
+			font-size: 0.92rem;
 		}
 
 		.tech-grid {
 			grid-template-columns: 1fr;
+			gap: 0.75rem;
+		}
+
+		.grid-card {
+			padding: 1rem 1.15rem;
+		}
+
+		.nip-grid-panel {
+			padding: 1.15rem 1.15rem;
 		}
 
 		.nip-row {
-			grid-template-columns: repeat(3, 1fr);
+			grid-template-columns: repeat(auto-fit, minmax(68px, 1fr));
+			gap: 0.4rem;
+		}
+
+		.nip-item {
+			padding: 0.55rem 0.25rem;
+		}
+
+		.nip-val {
+			font-size: 0.82rem;
+		}
+
+		.nip-tag {
+			font-size: 0.6rem;
 		}
 	}
 </style>
