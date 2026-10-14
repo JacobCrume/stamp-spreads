@@ -433,4 +433,49 @@
 			padding: 1.75rem;
 		}
 	}
+
+	@media (max-width: 640px) {
+		.page-header {
+			padding: 2.5rem 1rem 2rem;
+		}
+		.page-title {
+			font-size: 2.2rem;
+		}
+		.page-intro {
+			font-size: 1rem;
+		}
+		.page-body {
+			padding: 0 1rem;
+		}
+		.mixed-pack-banner {
+			padding: 2rem 1.25rem;
+		}
+		.banner-inner {
+			flex-direction: column;
+			text-align: center;
+			gap: 1.5rem;
+		}
+		.banner-price {
+			width: 100%;
+			padding: 1rem;
+		}
+		.flavour-media {
+			padding: 1.75rem 1rem;
+		}
+		.flavour-pack-img {
+			max-height: 180px;
+		}
+		.flavour-info {
+			padding: 1.25rem 1rem;
+		}
+		.flavour-name {
+			font-size: 1.5rem;
+		}
+		.regulatory-box {
+			padding: 1.5rem 1rem;
+		}
+		.reg-title {
+			font-size: 1.2rem;
+		}
+	}
 </style>

@@ -505,4 +505,55 @@
 			padding: 2rem 1.5rem;
 		}
 	}
+
+	@media (max-width: 640px) {
+		.hero-section {
+			padding: 2.5rem 1rem 3rem;
+		}
+		.hero-title {
+			font-size: 2.2rem;
+			letter-spacing: -0.02em;
+		}
+		.hero-lead {
+			font-size: 1.05rem;
+		}
+		.hero-actions {
+			flex-direction: column;
+			gap: 0.75rem;
+			width: 100%;
+		}
+		.hero-actions :global(.btn) {
+			width: 100%;
+			justify-content: center;
+			text-align: center;
+		}
+		.hero-price-badge {
+			justify-content: center;
+			flex-wrap: wrap;
+			text-align: center;
+		}
+		.hero-img {
+			max-height: 280px;
+		}
+		.how-it-works,
+		.flavours-preview,
+		.market-section {
+			padding: 3rem 1rem;
+		}
+		.section-header {
+			margin-bottom: 2rem;
+		}
+		.section-title {
+			font-size: 1.8rem;
+		}
+		.step-card {
+			padding: 1.5rem 1.25rem;
+		}
+		.market-card {
+			padding: 1.75rem 1.25rem;
+		}
+		.market-heading {
+			font-size: 1.6rem;
+		}
+	}
 </style>

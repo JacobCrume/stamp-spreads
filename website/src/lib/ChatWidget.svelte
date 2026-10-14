@@ -1,31 +1,32 @@
 <script lang="ts">
 	import { onMount, onDestroy, tick } from 'svelte';
+	import { marked } from 'marked';
+
+	// Configure marked for clean, safe GFM formatting
+	marked.setOptions({
+		gfm: true,
+		breaks: true
+	});
+
+	function renderMarkdown(raw: string): string {
+		if (!raw) return '';
+		try {
+			return marked.parse(raw) as string;
+		} catch {
+			return raw;
+		}
+	}
 
 	interface Message {
 		id: number;
 		sender: 'user' | 'bot';
 		text: string;
-		topicTitle?: string;
-		isRefusal?: boolean;
-		source?: 'openrouter' | 'fallback_deterministic' | 'local_client';
-		model?: string;
 		timestamp: string;
-	}
-
-	interface ChatStatus {
-		checked: boolean;
-		openrouterConfigured: boolean;
-		model: string;
 	}
 
 	let isOpen = $state(false);
 	let userInput = $state('');
 	let isThinking = $state(false);
-	let chatStatus: ChatStatus = $state({
-		checked: false,
-		openrouterConfigured: false,
-		model: 'nvidia/nemotron-3-ultra-550b-a55b:free'
-	});
 
 	let messagesContainer: HTMLDivElement | null = $state(null);
 	let inputElement: HTMLInputElement | null = $state(null);
@@ -34,9 +35,7 @@
 		{
 			id: 1,
 			sender: 'bot',
-			text: "Kia ora! I'm Stamp's assistant. Ask me anything about our peel-and-press toast spreads, launch flavours, allergens, pricing ($5.00 NZD), or how to apply Stamp.",
-			topicTitle: 'Support Guide',
-			source: 'fallback_deterministic',
+			text: "Kia ora! I'm Stamp's assistant. Ask me anything about our peel-and-press toast spreads, launch flavours, allergens, pricing ($5.00 NZD / sheet), or how to apply Stamp.",
 			timestamp: 'Just now'
 		}
 	]);
@@ -66,24 +65,6 @@
 	let handleOpenChat: (() => void) | null = null;
 
 	onMount(() => {
-		(async () => {
-			try {
-				const res = await fetch('/api/chat');
-				if (res.ok) {
-					const data = await res.json();
-					chatStatus = {
-						checked: true,
-						openrouterConfigured: !!data.openrouterConfigured,
-						model: data.model || 'nvidia/nemotron-3-ultra-550b-a55b:free'
-					};
-				} else {
-					chatStatus.checked = true;
-				}
-			} catch {
-				chatStatus.checked = true;
-			}
-		})();
-
 		if (typeof window !== 'undefined') {
 			const url = new URL(window.location.href);
 			if (url.searchParams.get('chat') === 'open' || window.location.hash === '#chat') {
@@ -154,10 +135,6 @@
 					id: Date.now() + 1,
 					sender: 'bot',
 					text: data.answer,
-					topicTitle: data.topicTitle,
-					isRefusal: !!data.isRefusal,
-					source: data.source,
-					model: data.model,
 					timestamp: getTimeString()
 				});
 			} else {
@@ -165,8 +142,6 @@
 					id: Date.now() + 1,
 					sender: 'bot',
 					text: "I couldn't reach the server right now. Stamp is a 10 g peel-and-press spread disc for hot toast ($5.00 NZD / sheet). Please try again shortly.",
-					topicTitle: 'Connection Error',
-					source: 'fallback_deterministic',
 					timestamp: getTimeString()
 				});
 			}
@@ -174,9 +149,7 @@
 			messages.push({
 				id: Date.now() + 1,
 				sender: 'bot',
-				text: "Network error. Stamp discs are 10 g each, 8 per sheet for $5.00 NZD. Feel free to re-ask your question.",
-				topicTitle: 'Network Notice',
-				source: 'fallback_deterministic',
+				text: "Network connection error. Stamp discs are 10 g each, 8 per sheet for $5.00 NZD. Feel free to re-ask your question.",
 				timestamp: getTimeString()
 			});
 		} finally {
@@ -195,20 +168,15 @@
 
 <div class="chat-widget-root">
 	{#if isOpen}
-		<div class="chat-window" role="dialog" aria-label="Stamp Support Chat">
+		<div class="chat-window" role="dialog" aria-label="Stamp Customer Support">
 			<div class="chat-header">
 				<div class="header-left">
 					<div class="avatar">S</div>
 					<div>
 						<div class="header-title">Stamp Support</div>
 						<div class="header-sub">
-							{#if chatStatus.openrouterConfigured}
-								<span class="status-dot green"></span>
-								<span class="model-tag" title="Powered by OpenRouter">{chatStatus.model.split('/').pop()}</span>
-							{:else}
-								<span class="status-dot purple"></span>
-								<span class="model-tag">Spec Knowledge Engine</span>
-							{/if}
+							<span class="status-dot green"></span>
+							<span>Online · Ready to help</span>
 						</div>
 					</div>
 				</div>
@@ -229,18 +197,12 @@
 						{#if msg.sender === 'bot'}
 							<div class="bot-badge">S</div>
 						{/if}
-						<div class="msg-bubble {msg.sender} {msg.isRefusal ? 'refusal' : ''}">
-							{#if msg.topicTitle}
-								<div class="msg-topic {msg.isRefusal ? 'refusal' : ''}">{msg.topicTitle}</div>
-							{/if}
-							<div class="msg-text">{msg.text}</div>
+						<div class="msg-bubble {msg.sender}">
+							<div class="msg-text prose">
+								{@html renderMarkdown(msg.text)}
+							</div>
 							<div class="msg-meta">
 								<span>{msg.timestamp}</span>
-								{#if msg.source === 'openrouter'}
-									<span class="source-tag ai">OpenRouter</span>
-								{:else if msg.source === 'fallback_deterministic'}
-									<span class="source-tag spec">Verified Spec</span>
-								{/if}
 							</div>
 						</div>
 					</div>
@@ -284,7 +246,7 @@
 	<button
 		class="chat-launcher {isOpen ? 'open' : ''}"
 		onclick={toggleChat}
-		aria-label={isOpen ? 'Close chat' : 'Open customer support chat'}
+		aria-label={isOpen ? 'Close support chat' : 'Open customer support chat'}
 	>
 		{#if isOpen}
 			<span class="launcher-icon">✕</span>
@@ -318,6 +280,7 @@
 		transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 		font-weight: 700;
 		font-size: 0.95rem;
+		min-height: 48px;
 	}
 
 	.chat-launcher:hover {
@@ -330,6 +293,7 @@
 		padding: 12px 16px;
 		border-radius: 50%;
 		background: #2a0547;
+		min-width: 48px;
 	}
 
 	.launcher-icon {
@@ -343,7 +307,7 @@
 		position: absolute;
 		bottom: 64px;
 		right: 0;
-		width: 380px;
+		width: 390px;
 		max-width: calc(100vw - 32px);
 		height: 560px;
 		max-height: calc(100vh - 100px);
@@ -376,6 +340,7 @@
 		justify-content: space-between;
 		align-items: center;
 		border-bottom: 2px solid #e24bff;
+		flex-shrink: 0;
 	}
 
 	.header-left {
@@ -399,7 +364,7 @@
 
 	.header-title {
 		font-weight: 700;
-		font-size: 0.95rem;
+		font-size: 0.98rem;
 		line-height: 1.2;
 	}
 
@@ -407,8 +372,9 @@
 		display: flex;
 		align-items: center;
 		gap: 6px;
-		font-size: 0.72rem;
+		font-size: 0.74rem;
 		color: #e6dbf4;
+		margin-top: 1px;
 	}
 
 	.status-dot {
@@ -423,24 +389,19 @@
 		box-shadow: 0 0 6px #10b981;
 	}
 
-	.status-dot.purple {
-		background: #e24bff;
-	}
-
-	.model-tag {
-		font-family: monospace;
-		font-size: 0.68rem;
-		opacity: 0.9;
-	}
-
 	.close-btn {
 		background: transparent;
 		border: none;
 		color: #f3e8ff;
-		font-size: 1.1rem;
+		font-size: 1.2rem;
 		cursor: pointer;
-		padding: 4px 8px;
-		border-radius: 6px;
+		padding: 6px 10px;
+		border-radius: 8px;
+		min-width: 36px;
+		min-height: 36px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.close-btn:hover {
@@ -456,19 +417,24 @@
 		white-space: nowrap;
 		border-bottom: 1px solid #ebdcfc;
 		scrollbar-width: thin;
+		flex-shrink: 0;
+		-webkit-overflow-scrolling: touch;
 	}
 
 	.chip {
 		background: #ffffff;
 		border: 1px solid #d8b4fe;
 		color: #3b0764;
-		padding: 4px 10px;
-		border-radius: 12px;
-		font-size: 0.73rem;
+		padding: 6px 12px;
+		border-radius: 14px;
+		font-size: 0.75rem;
 		font-weight: 600;
 		cursor: pointer;
 		transition: all 0.15s;
 		flex-shrink: 0;
+		min-height: 32px;
+		display: inline-flex;
+		align-items: center;
 	}
 
 	.chip:hover:not(:disabled) {
@@ -479,12 +445,13 @@
 
 	.chat-messages {
 		flex: 1;
-		padding: 12px;
+		padding: 14px;
 		overflow-y: auto;
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
+		gap: 12px;
 		background: #fdfcff;
+		-webkit-overflow-scrolling: touch;
 	}
 
 	.msg-row {
@@ -520,8 +487,8 @@
 	.msg-bubble {
 		padding: 10px 14px;
 		border-radius: 14px;
-		font-size: 0.86rem;
-		line-height: 1.45;
+		font-size: 0.88rem;
+		line-height: 1.5;
 		word-break: break-word;
 	}
 
@@ -538,49 +505,45 @@
 		border: 1px solid #e9d5ff;
 	}
 
-	.msg-bubble.refusal {
-		border-left: 3px solid #dc2626;
-		background: #fff1f2;
+	/* Markdown prose styling */
+	.msg-text.prose :global(p) {
+		margin: 0 0 0.5rem 0;
 	}
 
-	.msg-topic {
-		font-size: 0.68rem;
+	.msg-text.prose :global(p:last-child) {
+		margin-bottom: 0;
+	}
+
+	.msg-text.prose :global(ul),
+	.msg-text.prose :global(ol) {
+		margin: 0.35rem 0 0.5rem 1.25rem;
+		padding: 0;
+	}
+
+	.msg-text.prose :global(li) {
+		margin-bottom: 0.3rem;
+	}
+
+	.msg-text.prose :global(strong) {
 		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.5px;
-		color: #7e22ce;
-		margin-bottom: 4px;
+		color: inherit;
 	}
 
-	.msg-topic.refusal {
-		color: #b91c1c;
+	.msg-text.prose :global(code) {
+		background: rgba(0, 0, 0, 0.08);
+		padding: 1px 4px;
+		border-radius: 4px;
+		font-size: 0.88em;
+		font-family: monospace;
 	}
 
 	.msg-meta {
 		display: flex;
 		justify-content: flex-end;
 		align-items: center;
-		gap: 6px;
 		margin-top: 4px;
-		font-size: 0.65rem;
-		opacity: 0.75;
-	}
-
-	.source-tag {
-		font-size: 0.62rem;
-		padding: 1px 5px;
-		border-radius: 4px;
-		font-weight: 600;
-	}
-
-	.source-tag.ai {
-		background: #dbeafe;
-		color: #1e40af;
-	}
-
-	.source-tag.spec {
-		background: #dcfce7;
-		color: #166534;
+		font-size: 0.68rem;
+		opacity: 0.65;
 	}
 
 	.msg-bubble.thinking {
@@ -617,20 +580,22 @@
 
 	.chat-input-area {
 		display: flex;
-		padding: 10px 12px;
+		padding: 12px 14px;
 		border-top: 1px solid #ebdcfc;
 		background: #ffffff;
 		gap: 8px;
+		flex-shrink: 0;
 	}
 
 	.chat-input-area input {
 		flex: 1;
 		border: 1px solid #d8b4fe;
-		padding: 8px 12px;
-		border-radius: 8px;
-		font-size: 0.86rem;
+		padding: 10px 14px;
+		border-radius: 10px;
+		font-size: 0.9rem;
 		outline: none;
 		font-family: inherit;
+		min-height: 44px;
 	}
 
 	.chat-input-area input:focus {
@@ -642,15 +607,16 @@
 		background: #3b0764;
 		color: #ffffff;
 		border: none;
-		width: 36px;
-		height: 36px;
-		border-radius: 8px;
+		width: 44px;
+		height: 44px;
+		border-radius: 10px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		cursor: pointer;
 		transition: background 0.15s;
-		font-size: 0.9rem;
+		font-size: 1rem;
+		flex-shrink: 0;
 	}
 
 	.send-btn:hover:not(:disabled) {
@@ -660,5 +626,48 @@
 	.send-btn:disabled {
 		opacity: 0.4;
 		cursor: not-allowed;
+	}
+
+	/* Mobile full-screen / bottom-sheet responsiveness */
+	@media (max-width: 640px) {
+		.chat-widget-root {
+			bottom: 16px;
+			right: 16px;
+		}
+
+		.chat-launcher {
+			padding: 10px 16px;
+			font-size: 0.9rem;
+		}
+
+		.chat-window {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			width: 100vw;
+			max-width: 100vw;
+			height: 100dvh;
+			max-height: 100dvh;
+			border-radius: 0;
+			border: none;
+			box-shadow: none;
+			z-index: 10000;
+		}
+
+		.chat-header {
+			padding: 16px;
+			padding-top: max(16px, env(safe-area-inset-top, 16px));
+		}
+
+		.chat-input-area {
+			padding: 10px 12px;
+			padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+		}
+
+		.msg-row {
+			max-width: 92%;
+		}
 	}
 </style>

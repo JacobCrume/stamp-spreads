@@ -279,14 +279,26 @@
 		.header-inner {
 			padding: 0.75rem 1rem;
 		}
+		.brand-logo {
+			height: 36px;
+		}
 		.site-nav {
-			gap: 0.75rem;
+			gap: 0.4rem;
 		}
 		.nav-link {
-			font-size: 0.88rem;
+			font-size: 0.84rem;
+			padding: 0.35rem 0.55rem;
 		}
 		.chat-btn {
-			padding: 0.4rem 0.75rem;
+			padding: 0.35rem 0.75rem;
+			font-size: 0.84rem;
+		}
+		.site-footer {
+			padding: 2.5rem 1rem 1.5rem;
+		}
+		.footer-inner {
+			grid-template-columns: 1fr;
+			gap: 1.75rem;
 		}
 	}
 </style>
