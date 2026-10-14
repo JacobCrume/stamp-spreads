@@ -173,7 +173,7 @@
 			class="chat-window"
 			role="dialog"
 			aria-label="Stamp Customer Support"
-			style:background-color={colorScheme.secondary}
+			style:background-color={colorScheme.tertiary}
 		>
 			<div
 				class="chat-header"
@@ -181,7 +181,7 @@
 				style:color={colorScheme.primary}
 			>
 				<div class="header-left">
-					<div class="avatar" style:background-color={colorScheme.primary} style:color={colorScheme.secondary}>S</div>
+					<div class="avatar" style:background-color={colorScheme.primary} style:color={colorScheme.tertiary}>S</div>
 					<div>
 						<div class="header-title" style:color={colorScheme.primary}>Stamp Support</div>
 						<div class="header-sub">
@@ -202,29 +202,29 @@
 						onclick={() => handleSend(q)}
 						disabled={isThinking}
 						style:background-color={colorScheme.secondary}
-						style:color={colorScheme.primary}
+						style:color={colorScheme.tertiary}
 					>
 						{q}
 					</button>
 				{/each}
 			</div>
 
-			<div class="chat-messages" bind:this={messagesContainer} style:background-color={colorScheme.secondary}>
+			<div class="chat-messages" bind:this={messagesContainer} style:background-color={colorScheme.tertiary}>
 				{#each messages as msg (msg.id)}
 					<div class="msg-row {msg.sender}">
 						{#if msg.sender === 'bot'}
-							<div class="bot-badge" style:background-color={colorScheme.primary} style:color={colorScheme.secondary}>S</div>
+							<div class="bot-badge" style:background-color={colorScheme.primary} style:color={colorScheme.tertiary}>S</div>
 						{/if}
 						<div
 							class="msg-bubble {msg.sender}"
-							style:background-color={msg.sender === 'user' ? colorScheme.primary : colorScheme.tertiary}
-							style:color={msg.sender === 'user' ? colorScheme.secondary : '#ffffff'}
+							style:background-color={msg.sender === 'user' ? colorScheme.primary : 'rgba(255, 255, 255, 0.12)'}
+							style:color={msg.sender === 'user' ? colorScheme.tertiary : '#ffffff'}
 						>
 							<div class="msg-text prose">
 								{@html renderMarkdown(msg.text)}
 							</div>
 							<div class="msg-meta">
-								<span style:color={msg.sender === 'user' ? colorScheme.secondary : colorScheme.primary}>{msg.timestamp}</span>
+								<span style:color={msg.sender === 'user' ? colorScheme.tertiary : colorScheme.primary}>{msg.timestamp}</span>
 							</div>
 						</div>
 					</div>
@@ -232,8 +232,8 @@
 
 				{#if isThinking}
 					<div class="msg-row bot">
-						<div class="bot-badge" style:background-color={colorScheme.primary} style:color={colorScheme.secondary}>S</div>
-						<div class="msg-bubble bot thinking" style:background-color={colorScheme.tertiary}>
+						<div class="bot-badge" style:background-color={colorScheme.primary} style:color={colorScheme.tertiary}>S</div>
+						<div class="msg-bubble bot thinking" style:background-color="rgba(255, 255, 255, 0.12)">
 							<span class="dot" style:background-color={colorScheme.primary}></span>
 							<span class="dot" style:background-color={colorScheme.primary}></span>
 							<span class="dot" style:background-color={colorScheme.primary}></span>
@@ -251,8 +251,8 @@
 					placeholder="Ask about flavours, allergens, price..."
 					disabled={isThinking}
 					aria-label="Your question"
-					style:background-color={colorScheme.secondary}
-					style:color={colorScheme.primary}
+					style:background-color="rgba(255, 255, 255, 0.1)"
+					style:color="#ffffff"
 				/>
 				<button
 					class="send-btn"
@@ -260,7 +260,7 @@
 					disabled={!userInput.trim() || isThinking}
 					aria-label="Send message"
 					style:background-color={colorScheme.primary}
-					style:color={colorScheme.secondary}
+					style:color={colorScheme.tertiary}
 				>
 					➤
 				</button>
@@ -274,7 +274,7 @@
 		onclick={toggleChat}
 		aria-label={isOpen ? 'Close support chat' : 'Open customer support chat'}
 		style:background-color={isOpen ? colorScheme.tertiary : colorScheme.primary}
-		style:color={isOpen ? colorScheme.primary : colorScheme.secondary}
+		style:color={isOpen ? colorScheme.primary : colorScheme.tertiary}
 	>
 		{#if isOpen}
 			<span class="launcher-icon">✕</span>

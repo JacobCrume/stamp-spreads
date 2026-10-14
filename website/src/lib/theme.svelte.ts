@@ -9,7 +9,7 @@ export type SectionTheme = 'hero' | 'steps' | 'butter' | 'raspberry' | 'yeast' |
 export const THEME_PALETTES: Record<SectionTheme, ColorScheme> = {
 	hero: {
 		primary: '#e24bff',    // Wordmark, primary actions, highlights
-		secondary: '#240340',  // Screen background
+		secondary: '#240340',  // Screen background (Deep Night Ink)
 		tertiary: '#3b0764'    // Header background, cards, solid badges
 	},
 	steps: {
@@ -18,24 +18,24 @@ export const THEME_PALETTES: Record<SectionTheme, ColorScheme> = {
 		tertiary: '#3b0764'
 	},
 	butter: {
-		primary: '#ffd640',    // Electric Butter Gold
-		secondary: '#4a3000',  // Roasted Caramel Brown (screen background)
-		tertiary: '#2d1d00'    // Deep Roast Umber (header & cards)
+		primary: '#ffd640',    // Electric Butter Gold (wordmark on header, button accents)
+		secondary: '#ffd640',  // Bright Electric Butter Gold screen background (as before)
+		tertiary: '#4a3000'    // Roasted Caramel Brown (header bg, cards, text contrast)
 	},
 	raspberry: {
-		primary: '#ff467a',    // Neon Wild Raspberry
-		secondary: '#460820',  // Dark Berry Maroon (screen background)
-		tertiary: '#2d0414'    // Deepest Maroon (header & cards)
+		primary: '#ff467a',    // Neon Wild Raspberry (wordmark on header, button accents)
+		secondary: '#ff467a',  // Bright Neon Wild Raspberry screen background (as before)
+		tertiary: '#460820'    // Dark Berry Maroon (header bg, cards, text contrast)
 	},
 	yeast: {
-		primary: '#e24bff',    // Electric Violet
-		secondary: '#240340',  // Deep Night Ink (screen background)
-		tertiary: '#18012b'    // Deepest Violet (header & cards)
+		primary: '#e24bff',    // Electric Violet (wordmark on header, button accents)
+		secondary: '#e24bff',  // Bright Electric Violet screen background (as before)
+		tertiary: '#240340'    // Deep Night Ink (header bg, cards, text contrast)
 	},
 	peanut: {
-		primary: '#ff8c30',    // Roasted Peanut Ochre
-		secondary: '#4e2408',  // Deep Peanut Umber (screen background)
-		tertiary: '#2d1403'    // Dark Roast Peanut (header & cards)
+		primary: '#ff8c30',    // Roasted Peanut Ochre (wordmark on header, button accents)
+		secondary: '#ff8c30',  // Bright Roasted Peanut Ochre screen background (as before)
+		tertiary: '#4e2408'    // Deep Peanut Umber (header bg, cards, text contrast)
 	},
 	mixed: {
 		primary: '#e24bff',

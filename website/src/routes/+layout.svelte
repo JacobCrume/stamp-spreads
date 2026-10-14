@@ -46,7 +46,7 @@
 					type="button"
 					class="nav-link chat-btn"
 					style:background-color={colorScheme.primary}
-					style:color={colorScheme.secondary}
+					style:color={colorScheme.tertiary}
 					onclick={() => {
 						if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('stamp:open-chat'));
 					}}>Ask Stamp</button

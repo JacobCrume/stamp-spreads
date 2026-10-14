@@ -1015,7 +1015,8 @@
 		font-size: 0.95rem;
 		font-weight: 900;
 		letter-spacing: 0.16em;
-		color: var(--color-primary);
+		color: var(--color-tertiary);
+		opacity: 0.85;
 	}
 
 	.flavour-headline {
@@ -1024,15 +1025,15 @@
 		line-height: 0.95;
 		letter-spacing: -0.03em;
 		margin: 0;
-		color: var(--color-primary);
+		color: var(--color-tertiary);
 	}
 
 	.flavour-lead {
 		font-size: 1.2rem;
 		line-height: 1.5;
 		font-weight: 600;
-		color: #ffffff;
-		opacity: 0.95;
+		color: var(--color-tertiary);
+		opacity: 0.92;
 	}
 
 	.flat-specs-grid {
