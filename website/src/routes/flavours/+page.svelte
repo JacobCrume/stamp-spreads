@@ -359,6 +359,7 @@
 
 	/* PACK PANEL */
 	.pack-panel {
+		width: 100%;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -367,9 +368,8 @@
 
 	.pack-stage {
 		width: 100%;
-		max-width: 360px;
-		aspect-ratio: 3 / 4;
-		height: auto;
+		max-width: 340px;
+		height: 450px;
 		perspective: 1200px;
 	}
 
@@ -644,14 +644,13 @@
 
 		.pack-stage {
 			width: 100%;
-			max-width: 330px;
-			aspect-ratio: 3 / 4;
-			height: auto;
+			max-width: 300px;
+			height: 400px;
 		}
 
 		.round-flip-btn {
-			width: 50px;
-			height: 50px;
+			width: 52px;
+			height: 52px;
 		}
 
 		.round-flip-btn .flip-svg {
