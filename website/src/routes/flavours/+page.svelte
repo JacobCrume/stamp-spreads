@@ -367,8 +367,9 @@
 
 	.pack-stage {
 		width: 100%;
-		max-width: 340px;
-		height: 453px;
+		max-width: 360px;
+		aspect-ratio: 3 / 4;
+		height: auto;
 		perspective: 1200px;
 	}
 
@@ -642,13 +643,15 @@
 		}
 
 		.pack-stage {
-			max-width: 270px;
-			height: 360px;
+			width: 100%;
+			max-width: 330px;
+			aspect-ratio: 3 / 4;
+			height: auto;
 		}
 
 		.round-flip-btn {
-			width: 48px;
-			height: 48px;
+			width: 50px;
+			height: 50px;
 		}
 
 		.round-flip-btn .flip-svg {
