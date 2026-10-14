@@ -50,7 +50,13 @@
 			</p>
 			<div class="hero-actions">
 				<a href="/flavours" class="btn btn-primary">Explore 4 Launch Flavours</a>
-				<a href="/chat" class="btn btn-outline">Ask our Support Bot</a>
+				<button
+					type="button"
+					class="btn btn-outline"
+					onclick={() => {
+						if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('stamp:open-chat'));
+					}}>Ask our Support Bot</button
+				>
 			</div>
 			<div class="hero-price-badge">
 				<span class="price-val">$5.00 NZD</span>

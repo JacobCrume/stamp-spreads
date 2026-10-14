@@ -21,7 +21,13 @@
 			<nav class="site-nav">
 				<a href="/" class="nav-link">Home</a>
 				<a href="/flavours" class="nav-link">Flavours</a>
-				<a href="/chat" class="nav-link chat-btn">Support Chat</a>
+				<button
+					type="button"
+					class="nav-link chat-btn"
+					onclick={() => {
+						if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('stamp:open-chat'));
+					}}>Ask Stamp</button
+				>
 			</nav>
 		</div>
 	</header>
@@ -47,7 +53,15 @@
 				<ul class="footer-links">
 					<li><a href="/">Home</a></li>
 					<li><a href="/flavours">Flavours & Range</a></li>
-					<li><a href="/chat">Customer Support Bot</a></li>
+					<li>
+						<button
+							type="button"
+							class="footer-link-btn"
+							onclick={() => {
+								if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('stamp:open-chat'));
+							}}>Customer Support Bot</button
+						>
+					</li>
 				</ul>
 			</div>
 			<div class="footer-col">
@@ -224,15 +238,23 @@
 		gap: 0.5rem;
 	}
 
-	.footer-links a {
+	.footer-links a,
+	.footer-link-btn {
 		color: #ffffff;
 		text-decoration: none;
 		font-size: 0.9rem;
 		opacity: 0.85;
 		transition: opacity 0.15s;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		padding: 0;
+		text-align: left;
+		font-family: inherit;
 	}
 
-	.footer-links a:hover {
+	.footer-links a:hover,
+	.footer-link-btn:hover {
 		opacity: 1;
 		color: #e24bff;
 	}

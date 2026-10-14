@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, tick } from 'svelte';
+	import { onMount, onDestroy, tick } from 'svelte';
 
 	interface Message {
 		id: number;
@@ -63,29 +63,44 @@
 		}
 	}
 
-	onMount(async () => {
-		try {
-			const res = await fetch('/api/chat');
-			if (res.ok) {
-				const data = await res.json();
-				chatStatus = {
-					checked: true,
-					openrouterConfigured: !!data.openrouterConfigured,
-					model: data.model || 'nvidia/nemotron-3-ultra-550b-a55b:free'
-				};
-			} else {
+	let handleOpenChat: (() => void) | null = null;
+
+	onMount(() => {
+		(async () => {
+			try {
+				const res = await fetch('/api/chat');
+				if (res.ok) {
+					const data = await res.json();
+					chatStatus = {
+						checked: true,
+						openrouterConfigured: !!data.openrouterConfigured,
+						model: data.model || 'nvidia/nemotron-3-ultra-550b-a55b:free'
+					};
+				} else {
+					chatStatus.checked = true;
+				}
+			} catch {
 				chatStatus.checked = true;
 			}
-		} catch {
-			chatStatus.checked = true;
-		}
+		})();
 
-		// If URL has #chat or ?chat=open, open widget automatically
 		if (typeof window !== 'undefined') {
 			const url = new URL(window.location.href);
 			if (url.searchParams.get('chat') === 'open' || window.location.hash === '#chat') {
 				isOpen = true;
 			}
+			handleOpenChat = () => {
+				isOpen = true;
+				scrollToBottom();
+				setTimeout(() => inputElement?.focus(), 150);
+			};
+			window.addEventListener('stamp:open-chat', handleOpenChat);
+		}
+	});
+
+	onDestroy(() => {
+		if (typeof window !== 'undefined' && handleOpenChat) {
+			window.removeEventListener('stamp:open-chat', handleOpenChat);
 		}
 	});
 
