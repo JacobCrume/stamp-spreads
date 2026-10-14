@@ -42,13 +42,6 @@
 				<a href="/#steps" class="nav-link">How It Works</a>
 				<a href="/#flavours" class="nav-link">Flavours</a>
 				<a href="/flavours" class="nav-link">Specs</a>
-				<button
-					type="button"
-					class="nav-link chat-btn"
-					onclick={() => {
-						if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('stamp:open-chat'));
-					}}>Ask Stamp</button
-				>
 			</nav>
 		</div>
 	</header>
@@ -227,24 +220,6 @@
 		background: rgba(255, 255, 255, 0.12);
 	}
 
-	.chat-btn {
-		background: var(--color-primary);
-		color: var(--color-tertiary);
-		padding: 0.5rem 1.3rem;
-		border-radius: 9999px;
-		font-weight: 900;
-		font-size: 0.88rem;
-		letter-spacing: 0.03em;
-		border: none;
-		cursor: pointer;
-		transition: transform 0.15s ease, opacity 0.15s ease;
-	}
-
-	.chat-btn:hover {
-		transform: scale(1.04);
-		opacity: 0.92;
-	}
-
 	.site-main {
 		flex: 1;
 	}
@@ -353,10 +328,6 @@
 			gap: 0.5rem;
 		}
 		.nav-link {
-			font-size: 0.8rem;
-		}
-		.chat-btn {
-			padding: 0.35rem 0.75rem;
 			font-size: 0.8rem;
 		}
 		.site-footer {

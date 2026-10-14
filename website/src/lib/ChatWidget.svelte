@@ -3,7 +3,6 @@
 	import { marked } from 'marked';
 	import { colorScheme } from './theme.svelte';
 
-	// Configure marked for clean, safe GFM formatting
 	marked.setOptions({
 		gfm: true,
 		breaks: true
@@ -31,6 +30,7 @@
 
 	let messagesContainer: HTMLDivElement | null = $state(null);
 	let inputElement: HTMLInputElement | null = $state(null);
+	let barElement: HTMLDivElement | null = $state(null);
 
 	let messages: Message[] = $state([
 		{
@@ -42,13 +42,11 @@
 	]);
 
 	const quickQuestions = [
-		'What is a Stamp?',
+		'What is Stamp?',
 		'How do I use it?',
-		'What flavours are there?',
-		'Does Peanut contain nuts?',
-		'Is it gluten-free?',
-		'How much is a sheet?',
-		'Will this help my stomach?'
+		'4 Launch Flavours',
+		'Allergens info',
+		'Pantry shelf life'
 	];
 
 	function getTimeString() {
@@ -63,7 +61,20 @@
 		}
 	}
 
+	function expandBar() {
+		if (!isOpen) {
+			isOpen = true;
+			scrollToBottom();
+			setTimeout(() => inputElement?.focus(), 150);
+		}
+	}
+
+	function collapseBar() {
+		isOpen = false;
+	}
+
 	let handleOpenChat: (() => void) | null = null;
+	let handleClickOutside: ((e: MouseEvent) => void) | null = null;
 
 	onMount(() => {
 		if (typeof window !== 'undefined') {
@@ -71,34 +82,37 @@
 			if (url.searchParams.get('chat') === 'open' || window.location.hash === '#chat') {
 				isOpen = true;
 			}
+
 			handleOpenChat = () => {
 				isOpen = true;
 				scrollToBottom();
 				setTimeout(() => inputElement?.focus(), 150);
 			};
 			window.addEventListener('stamp:open-chat', handleOpenChat);
+
+			// Hide chat responses when clicking away from the bar
+			handleClickOutside = (e: MouseEvent) => {
+				if (!isOpen) return;
+				const target = e.target as HTMLElement | null;
+				if (!target) return;
+
+				// If click was inside the bar container or popup, keep open
+				if (barElement && barElement.contains(target)) {
+					return;
+				}
+
+				collapseBar();
+			};
+			document.addEventListener('click', handleClickOutside);
 		}
 	});
 
 	onDestroy(() => {
-		if (typeof window !== 'undefined' && handleOpenChat) {
-			window.removeEventListener('stamp:open-chat', handleOpenChat);
+		if (typeof window !== 'undefined') {
+			if (handleOpenChat) window.removeEventListener('stamp:open-chat', handleOpenChat);
+			if (handleClickOutside) document.removeEventListener('click', handleClickOutside);
 		}
 	});
-
-	function toggleChat() {
-		isOpen = !isOpen;
-		if (isOpen) {
-			scrollToBottom();
-			setTimeout(() => inputElement?.focus(), 150);
-		}
-	}
-
-	export function openChat() {
-		isOpen = true;
-		scrollToBottom();
-		setTimeout(() => inputElement?.focus(), 150);
-	}
 
 	async function handleSend(textToSend?: string) {
 		const query = (textToSend || userInput).trim();
@@ -113,6 +127,7 @@
 		messages.push(userMsg);
 		userInput = '';
 		isThinking = true;
+		isOpen = true;
 		scrollToBottom();
 
 		const history = messages
@@ -163,68 +178,78 @@
 		if (e.key === 'Enter' && !e.shiftKey) {
 			e.preventDefault();
 			handleSend();
+		} else if (e.key === 'Escape') {
+			collapseBar();
 		}
 	}
 </script>
 
-<div class="chat-widget-root">
+<!-- FIXED BOTTOM CHAT BAR DOCKED AT SCREEN BOTTOM IN SAME COLOR AS HEADER (TERTIARY BG) -->
+<div class="bottom-chat-wrapper" bind:this={barElement}>
+	<!-- CHAT RESPONSES FLYOUT (APPEARS ABOVE THE BAR) -->
 	{#if isOpen}
 		<div
-			class="chat-window"
+			class="responses-flyout"
 			role="dialog"
-			aria-label="Stamp Customer Support"
+			aria-label="Stamp Conversation"
 			style:background-color={colorScheme.tertiary}
 		>
-			<div
-				class="chat-header"
-				style:background-color={colorScheme.tertiary}
-				style:color={colorScheme.primary}
-			>
-				<div class="header-left">
-					<div class="avatar" style:background-color={colorScheme.primary} style:color={colorScheme.tertiary}>S</div>
-					<div>
-						<div class="header-title" style:color={colorScheme.primary}>Stamp Support</div>
-						<div class="header-sub">
-							<span class="status-dot green"></span>
-							<span style:color={colorScheme.primary}>Online · Ready to help</span>
-						</div>
+			<!-- Top Header of the Flyout -->
+			<div class="flyout-header" style:color={colorScheme.primary}>
+				<div class="flyout-title-wrap">
+					<span class="bot-badge-small" style:background-color={colorScheme.primary} style:color={colorScheme.tertiary}>S</span>
+					<div class="flyout-title">
+						<strong>Stamp Assistant</strong>
+						<span class="online-pill">
+							<span class="online-dot" style:background-color={colorScheme.primary}></span>
+							Live
+						</span>
 					</div>
 				</div>
-				<button class="close-btn" onclick={toggleChat} aria-label="Close Chat" style:color={colorScheme.primary}>
+				<button
+					type="button"
+					class="close-flyout-btn"
+					onclick={collapseBar}
+					aria-label="Close responses"
+					style:color={colorScheme.primary}
+				>
 					✕
 				</button>
 			</div>
 
-			<div class="quick-chips" style:background-color={colorScheme.tertiary}>
+			<!-- Quick Chips -->
+			<div class="flyout-chips">
 				{#each quickQuestions as q}
 					<button
-						class="chip"
+						type="button"
+						class="chip-pill"
 						onclick={() => handleSend(q)}
 						disabled={isThinking}
-						style:background-color={colorScheme.secondary}
-						style:color={colorScheme.tertiary}
+						style:color={colorScheme.primary}
+						style:background-color="rgba(255, 255, 255, 0.08)"
 					>
 						{q}
 					</button>
 				{/each}
 			</div>
 
-			<div class="chat-messages" bind:this={messagesContainer} style:background-color={colorScheme.tertiary}>
+			<!-- Scrollable Messages Window -->
+			<div class="flyout-messages" bind:this={messagesContainer}>
 				{#each messages as msg (msg.id)}
 					<div class="msg-row {msg.sender}">
 						{#if msg.sender === 'bot'}
-							<div class="bot-badge" style:background-color={colorScheme.primary} style:color={colorScheme.tertiary}>S</div>
+							<div class="bot-icon" style:background-color={colorScheme.primary} style:color={colorScheme.tertiary}>S</div>
 						{/if}
 						<div
 							class="msg-bubble {msg.sender}"
-							style:background-color={msg.sender === 'user' ? colorScheme.primary : 'rgba(255, 255, 255, 0.12)'}
+							style:background-color={msg.sender === 'user' ? colorScheme.primary : 'rgba(255, 255, 255, 0.1)'}
 							style:color={msg.sender === 'user' ? colorScheme.tertiary : '#ffffff'}
 						>
 							<div class="msg-text prose">
 								{@html renderMarkdown(msg.text)}
 							</div>
-							<div class="msg-meta">
-								<span style:color={msg.sender === 'user' ? colorScheme.tertiary : colorScheme.primary}>{msg.timestamp}</span>
+							<div class="msg-time" style:color={msg.sender === 'user' ? colorScheme.tertiary : colorScheme.primary}>
+								{msg.timestamp}
 							</div>
 						</div>
 					</div>
@@ -232,125 +257,218 @@
 
 				{#if isThinking}
 					<div class="msg-row bot">
-						<div class="bot-badge" style:background-color={colorScheme.primary} style:color={colorScheme.tertiary}>S</div>
-						<div class="msg-bubble bot thinking" style:background-color="rgba(255, 255, 255, 0.12)">
-							<span class="dot" style:background-color={colorScheme.primary}></span>
-							<span class="dot" style:background-color={colorScheme.primary}></span>
-							<span class="dot" style:background-color={colorScheme.primary}></span>
+						<div class="bot-icon" style:background-color={colorScheme.primary} style:color={colorScheme.tertiary}>S</div>
+						<div class="msg-bubble bot thinking" style:background-color="rgba(255, 255, 255, 0.1)">
+							<span class="thinking-dot" style:background-color={colorScheme.primary}></span>
+							<span class="thinking-dot" style:background-color={colorScheme.primary}></span>
+							<span class="thinking-dot" style:background-color={colorScheme.primary}></span>
 						</div>
 					</div>
 				{/if}
 			</div>
-
-			<div class="chat-input-area" style:background-color={colorScheme.tertiary}>
-				<input
-					type="text"
-					bind:this={inputElement}
-					bind:value={userInput}
-					onkeydown={handleKeydown}
-					placeholder="Ask about flavours, allergens, price..."
-					disabled={isThinking}
-					aria-label="Your question"
-					style:background-color="rgba(255, 255, 255, 0.1)"
-					style:color="#ffffff"
-				/>
-				<button
-					class="send-btn"
-					onclick={() => handleSend()}
-					disabled={!userInput.trim() || isThinking}
-					aria-label="Send message"
-					style:background-color={colorScheme.primary}
-					style:color={colorScheme.tertiary}
-				>
-					➤
-				</button>
-			</div>
 		</div>
 	{/if}
 
-	<!-- Launcher Button -->
-	<button
-		class="chat-launcher {isOpen ? 'open' : ''}"
-		onclick={toggleChat}
-		aria-label={isOpen ? 'Close support chat' : 'Open customer support chat'}
-		style:background-color={isOpen ? colorScheme.tertiary : colorScheme.primary}
-		style:color={isOpen ? colorScheme.primary : colorScheme.tertiary}
+	<!-- BOTTOM DOCKED CHAT BAR (TERTIARY BG, MATCHES FLOATING HEADER) -->
+	<div
+		class="bottom-chat-bar"
+		class:expanded={isOpen}
+		style:background-color={colorScheme.tertiary}
+		style:color={colorScheme.primary}
 	>
-		{#if isOpen}
-			<span class="launcher-icon">✕</span>
-		{:else}
-			<span class="launcher-icon">💬</span>
-			<span class="launcher-text">Ask Stamp</span>
+		<!-- Left Icon / Indicator -->
+		<button
+			type="button"
+			class="bar-icon-wrap"
+			onclick={expandBar}
+			aria-label="Focus Stamp assistant input"
+			style:color={colorScheme.primary}
+		>
+			<svg class="chat-speech-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+				<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+			</svg>
+		</button>
+
+		<!-- Input field -->
+		<input
+			type="text"
+			class="bar-input"
+			bind:this={inputElement}
+			bind:value={userInput}
+			onfocus={expandBar}
+			onkeydown={handleKeydown}
+			placeholder={isOpen ? "Type your question about Stamp..." : "Ask Stamp anything..."}
+			disabled={isThinking}
+			aria-label="Ask Stamp anything"
+			style:color="#ffffff"
+		/>
+
+		<!-- Send Action or Status -->
+		{#if userInput.trim().length > 0}
+			<button
+				type="button"
+				class="bar-send-btn"
+				onclick={() => handleSend()}
+				disabled={isThinking}
+				aria-label="Send query"
+				style:background-color={colorScheme.primary}
+				style:color={colorScheme.tertiary}
+			>
+				<svg class="send-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+					<line x1="22" y1="2" x2="11" y2="13"></line>
+					<polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+				</svg>
+			</button>
+		{:else if isOpen}
+			<button
+				type="button"
+				class="bar-close-btn"
+				onclick={collapseBar}
+				aria-label="Minimize chat bar"
+				style:color={colorScheme.primary}
+			>
+				✕
+			</button>
 		{/if}
-	</button>
+	</div>
 </div>
 
 <style>
-	.chat-widget-root {
+	/* BOTTOM CHAT BAR WRAPPER */
+	.bottom-chat-wrapper {
 		position: fixed;
-		bottom: 24px;
-		right: 24px;
+		bottom: 20px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: calc(100% - 32px);
+		max-width: 720px;
 		z-index: 9999;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 		font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 	}
 
-	.chat-launcher {
+	/* BOTTOM CHAT BAR */
+	.bottom-chat-bar {
+		width: 320px;
+		height: 52px;
+		border-radius: 9999px;
 		display: flex;
 		align-items: center;
-		gap: 8px;
-		background: #e24bff;
-		color: #240340;
+		padding: 0.35rem 0.6rem 0.35rem 1rem;
+		gap: 0.75rem;
+		cursor: text;
 		border: none;
-		padding: 12px 20px;
-		border-radius: 9999px;
-		cursor: pointer;
-		transition: all 0.2s ease;
-		font-weight: 900;
-		font-size: 0.95rem;
-		min-height: 48px;
+		box-shadow: 0 10px 32px rgba(0, 0, 0, 0.32);
+		transition:
+			width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+			height 0.35s ease,
+			background-color 0.45s ease,
+			color 0.45s ease;
 	}
 
-	.chat-launcher:hover {
-		transform: scale(1.04);
-		background: #f4c7ff;
+	.bottom-chat-bar:hover {
+		width: 360px;
 	}
 
-	.chat-launcher.open {
-		padding: 12px 16px;
-		border-radius: 50%;
-		background: #3b0764;
-		color: #e24bff;
-		min-width: 48px;
+	.bottom-chat-bar.expanded {
+		width: 100%;
+		max-width: 720px;
+		height: 56px;
 	}
 
-	.launcher-icon {
-		font-size: 1.15rem;
+	.bar-icon-wrap {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		padding: 0;
+		flex-shrink: 0;
 	}
 
-	.chat-window {
-		position: absolute;
-		bottom: 64px;
-		right: 0;
-		width: 390px;
-		max-width: calc(100vw - 32px);
-		height: 560px;
-		max-height: calc(100vh - 100px);
-		background: #240340;
-		border-radius: 18px;
+	.chat-speech-svg {
+		width: 22px;
+		height: 22px;
+	}
+
+	.bar-input {
+		flex: 1;
+		background: transparent;
 		border: none;
+		outline: none;
+		font-family: inherit;
+		font-size: 0.95rem;
+		font-weight: 700;
+		min-width: 0;
+	}
+
+	.bar-input::placeholder {
+		color: rgba(255, 255, 255, 0.6);
+		font-weight: 600;
+	}
+
+	.bar-send-btn {
+		width: 38px;
+		height: 38px;
+		border-radius: 50%;
+		border: none;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		flex-shrink: 0;
+		transition: transform 0.15s ease;
+	}
+
+	.bar-send-btn:hover {
+		transform: scale(1.08);
+	}
+
+	.send-arrow-svg {
+		width: 17px;
+		height: 17px;
+		transform: translate(-1px, 1px);
+	}
+
+	.bar-close-btn {
+		background: transparent;
+		border: none;
+		font-size: 1.1rem;
+		cursor: pointer;
+		padding: 0.4rem;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		opacity: 0.75;
+		transition: opacity 0.15s ease;
+	}
+
+	.bar-close-btn:hover {
+		opacity: 1;
+	}
+
+	/* RESPONSES FLYOUT ABOVE THE BAR */
+	.responses-flyout {
+		width: 100%;
+		max-height: 480px;
+		border-radius: 24px;
+		margin-bottom: 12px;
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
-		animation: slideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+		box-shadow: 0 16px 48px rgba(0, 0, 0, 0.42);
+		animation: flyoutSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+		transition: background-color 0.45s ease;
 	}
 
-	@keyframes slideUp {
+	@keyframes flyoutSlideUp {
 		from {
 			opacity: 0;
-			transform: translateY(16px) scale(0.96);
+			transform: translateY(20px) scale(0.97);
 		}
 		to {
 			opacity: 1;
@@ -358,150 +476,120 @@
 		}
 	}
 
-	.chat-header {
-		background: #3b0764;
-		color: #f4c7ff;
-		padding: 14px 16px;
+	.flyout-header {
+		padding: 1rem 1.4rem;
 		display: flex;
-		justify-content: space-between;
 		align-items: center;
-		border-bottom: none;
+		justify-content: space-between;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 		flex-shrink: 0;
 	}
 
-	.header-left {
+	.flyout-title-wrap {
 		display: flex;
 		align-items: center;
-		gap: 10px;
+		gap: 0.75rem;
 	}
 
-	.avatar {
-		width: 32px;
-		height: 32px;
+	.bot-badge-small {
+		width: 28px;
+		height: 28px;
 		border-radius: 50%;
-		background: #e24bff;
-		color: #3b0764;
-		font-weight: 800;
+		font-weight: 900;
+		font-size: 0.85rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+
+	.flyout-title {
+		display: flex;
+		align-items: baseline;
+		gap: 0.6rem;
 		font-size: 0.95rem;
 	}
 
-	.header-title {
-		font-weight: 800;
-		font-size: 0.98rem;
-		line-height: 1.2;
-		color: #ffffff;
-	}
-
-	.header-sub {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		font-size: 0.74rem;
-		color: #e24bff;
-		margin-top: 1px;
-	}
-
-	.status-dot {
-		width: 7px;
-		height: 7px;
-		border-radius: 50%;
-		display: inline-block;
-	}
-
-	.status-dot.green {
-		background: #00ffaa;
-	}
-
-	.close-btn {
-		background: transparent;
-		border: none;
-		color: #e24bff;
-		font-size: 1.2rem;
-		cursor: pointer;
-		padding: 6px 10px;
-		border-radius: 8px;
-		min-width: 36px;
-		min-height: 36px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.close-btn:hover {
-		background: rgba(226, 75, 255, 0.2);
-	}
-
-	.quick-chips {
-		display: flex;
-		gap: 6px;
-		padding: 8px 12px;
-		background: #1e0235;
-		overflow-x: auto;
-		white-space: nowrap;
-		border-bottom: none;
-		scrollbar-width: thin;
-		flex-shrink: 0;
-		-webkit-overflow-scrolling: touch;
-	}
-
-	.chip {
-		background: #3b0764;
-		border: none;
-		color: #ffd640;
-		padding: 6px 12px;
-		border-radius: 9999px;
-		font-size: 0.75rem;
-		font-weight: 800;
-		cursor: pointer;
-		transition: all 0.15s;
-		flex-shrink: 0;
-		min-height: 32px;
+	.online-pill {
+		font-size: 0.72rem;
+		font-weight: 700;
 		display: inline-flex;
 		align-items: center;
+		gap: 4px;
+		opacity: 0.85;
 	}
 
-	.chip:hover:not(:disabled) {
-		background: #e24bff;
-		color: #3b0764;
+	.online-dot {
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
 	}
 
-	.chat-messages {
+	.close-flyout-btn {
+		background: transparent;
+		border: none;
+		font-size: 1.15rem;
+		cursor: pointer;
+		padding: 0.2rem 0.5rem;
+		opacity: 0.75;
+		transition: opacity 0.15s;
+	}
+
+	.close-flyout-btn:hover {
+		opacity: 1;
+	}
+
+	.flyout-chips {
+		display: flex;
+		gap: 6px;
+		padding: 0.6rem 1.2rem;
+		overflow-x: auto;
+		white-space: nowrap;
+		flex-shrink: 0;
+		scrollbar-width: thin;
+	}
+
+	.chip-pill {
+		padding: 0.35rem 0.8rem;
+		border-radius: 9999px;
+		font-size: 0.75rem;
+		font-weight: 700;
+		border: none;
+		cursor: pointer;
+		flex-shrink: 0;
+		transition: transform 0.15s ease, background-color 0.15s ease;
+	}
+
+	.chip-pill:hover {
+		transform: scale(1.04);
+		background-color: rgba(255, 255, 255, 0.16) !important;
+	}
+
+	.flyout-messages {
 		flex: 1;
-		padding: 14px;
+		padding: 1.2rem 1.4rem;
 		overflow-y: auto;
 		display: flex;
 		flex-direction: column;
-		gap: 12px;
-		background: #240340;
-		-webkit-overflow-scrolling: touch;
+		gap: 0.9rem;
+		max-height: 340px;
 	}
 
 	.msg-row {
 		display: flex;
-		gap: 8px;
-		max-width: 88%;
+		gap: 0.6rem;
+		align-items: flex-start;
 	}
 
 	.msg-row.user {
-		align-self: flex-end;
-		flex-direction: row-reverse;
+		justify-content: flex-end;
 	}
 
-	.msg-row.bot {
-		align-self: flex-start;
-	}
-
-	.bot-badge {
-		width: 24px;
-		height: 24px;
+	.bot-icon {
+		width: 26px;
+		height: 26px;
 		border-radius: 50%;
-		background: #e24bff;
-		color: #3b0764;
-		font-size: 0.7rem;
-		font-weight: 800;
+		font-weight: 900;
+		font-size: 0.75rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -510,30 +598,25 @@
 	}
 
 	.msg-bubble {
-		padding: 10px 14px;
-		border-radius: 14px;
-		font-size: 0.88rem;
+		max-width: 82%;
+		padding: 0.75rem 1rem;
+		border-radius: 16px;
+		font-size: 0.9rem;
 		line-height: 1.5;
 		word-break: break-word;
 	}
 
 	.msg-bubble.user {
-		background: #e24bff;
-		color: #240340;
-		border-bottom-right-radius: 2px;
-		font-weight: 600;
+		border-bottom-right-radius: 4px;
+		font-weight: 700;
 	}
 
 	.msg-bubble.bot {
-		background: #3b0764;
-		color: #f4c7ff;
-		border-bottom-left-radius: 2px;
-		border: none;
+		border-bottom-left-radius: 4px;
 	}
 
-	/* Markdown prose styling */
 	.msg-text.prose :global(p) {
-		margin: 0 0 0.5rem 0;
+		margin: 0 0 0.4rem 0;
 	}
 
 	.msg-text.prose :global(p:last-child) {
@@ -542,59 +625,49 @@
 
 	.msg-text.prose :global(ul),
 	.msg-text.prose :global(ol) {
-		margin: 0.35rem 0 0.5rem 1.25rem;
+		margin: 0.3rem 0 0.4rem 1.1rem;
 		padding: 0;
 	}
 
 	.msg-text.prose :global(li) {
-		margin-bottom: 0.3rem;
+		margin-bottom: 0.2rem;
 	}
 
 	.msg-text.prose :global(strong) {
-		font-weight: 800;
+		font-weight: 900;
 		color: inherit;
 	}
 
-	.msg-text.prose :global(code) {
-		background: rgba(226, 75, 255, 0.2);
-		padding: 1px 4px;
-		border-radius: 4px;
-		font-size: 0.88em;
-		font-family: monospace;
-		color: #ffbbfd;
-	}
-
-	.msg-meta {
+	.msg-time {
 		display: flex;
 		justify-content: flex-end;
-		align-items: center;
 		margin-top: 4px;
 		font-size: 0.68rem;
-		opacity: 0.75;
+		font-weight: 700;
+		opacity: 0.8;
 	}
 
 	.msg-bubble.thinking {
 		display: flex;
-		gap: 4px;
-		padding: 12px 16px;
+		gap: 5px;
+		padding: 0.85rem 1.1rem;
 	}
 
-	.dot {
+	.thinking-dot {
 		width: 6px;
 		height: 6px;
-		background: #e24bff;
 		border-radius: 50%;
-		animation: pulse 1s infinite alternate;
+		animation: pulseDot 1s infinite alternate;
 	}
 
-	.dot:nth-child(2) {
+	.thinking-dot:nth-child(2) {
 		animation-delay: 0.2s;
 	}
-	.dot:nth-child(3) {
+	.thinking-dot:nth-child(3) {
 		animation-delay: 0.4s;
 	}
 
-	@keyframes pulse {
+	@keyframes pulseDot {
 		from {
 			opacity: 0.3;
 			transform: scale(0.8);
@@ -605,103 +678,16 @@
 		}
 	}
 
-	.chat-input-area {
-		display: flex;
-		padding: 12px 14px;
-		border-top: none;
-		background: #1a0230;
-		gap: 8px;
-		flex-shrink: 0;
-	}
-
-	.chat-input-area input {
-		flex: 1;
-		background: #2e054f;
-		border: none;
-		color: #f4c7ff;
-		padding: 10px 14px;
-		border-radius: 10px;
-		font-size: 0.9rem;
-		outline: none;
-		font-family: inherit;
-		min-height: 44px;
-	}
-
-	.chat-input-area input::placeholder {
-		color: #be7de0;
-	}
-
-	.chat-input-area input:focus {
-		background: #3b0764;
-	}
-
-	.send-btn {
-		background: #e24bff;
-		color: #240340;
-		border: none;
-		width: 44px;
-		height: 44px;
-		border-radius: 10px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		cursor: pointer;
-		transition: all 0.15s;
-		font-size: 1.1rem;
-		font-weight: 800;
-		flex-shrink: 0;
-	}
-
-	.send-btn:hover:not(:disabled) {
-		background: #ff85ff;
-		transform: scale(1.04);
-	}
-
-	.send-btn:disabled {
-		opacity: 0.4;
-		cursor: not-allowed;
-	}
-
-	/* Mobile full-screen / bottom-sheet responsiveness */
 	@media (max-width: 640px) {
-		.chat-widget-root {
-			bottom: 16px;
-			right: 16px;
+		.bottom-chat-wrapper {
+			bottom: 12px;
+			width: calc(100% - 20px);
 		}
-
-		.chat-launcher {
-			padding: 10px 16px;
-			font-size: 0.9rem;
+		.bottom-chat-bar {
+			width: 270px;
 		}
-
-		.chat-window {
-			position: fixed;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			width: 100vw;
-			max-width: 100vw;
-			height: 100dvh;
-			max-height: 100dvh;
-			border-radius: 0;
-			border: none;
-			box-shadow: none;
-			z-index: 10000;
-		}
-
-		.chat-header {
-			padding: 16px;
-			padding-top: max(16px, env(safe-area-inset-top, 16px));
-		}
-
-		.chat-input-area {
-			padding: 10px 12px;
-			padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
-		}
-
-		.msg-row {
-			max-width: 92%;
+		.responses-flyout {
+			max-height: 400px;
 		}
 	}
 </style>
