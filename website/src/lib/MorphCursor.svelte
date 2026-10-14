@@ -62,6 +62,18 @@
 			isPressed = false;
 		};
 
+		// PROXY CLICK: If user clicks while an interactive target is magnetically snapped/hovered,
+		// trigger that element's click action directly so clicks never miss!
+		const onClick = (e: MouseEvent) => {
+			if (targetElement) {
+				// If the native event target wasn't already inside the targetElement, trigger it directly
+				const nativeTarget = e.target as HTMLElement | null;
+				if (!nativeTarget || !targetElement.contains(nativeTarget)) {
+					targetElement.click();
+				}
+			}
+		};
+
 		const onMouseLeave = () => {
 			visible = false;
 		};
@@ -73,13 +85,14 @@
 		window.addEventListener('mousemove', onMouseMove, { passive: true });
 		window.addEventListener('mousedown', onMouseDown);
 		window.addEventListener('mouseup', onMouseUp);
+		window.addEventListener('click', onClick);
 		document.documentElement.addEventListener('mouseleave', onMouseLeave);
 		document.documentElement.addEventListener('mouseenter', onMouseEnter);
 
 		let animId: number;
 
-		// Extended magnetic snap margin (40px)
-		const SNAP_MARGIN = 40;
+		// Generous magnetic snap envelope (36px)
+		const SNAP_MARGIN = 36;
 
 		const findInteractiveTarget = (mx: number, my: number): HTMLElement | null => {
 			const candidates = document.querySelectorAll<HTMLElement>(
@@ -91,9 +104,9 @@
 
 			for (let i = 0; i < candidates.length; i++) {
 				const el = candidates[i];
-				// Exclude non-interactive packaging cards
+				// Guard: Exclude non-interactive packaging cards
 				if (el.closest('.flip-stage') && !el.classList.contains('round-flip-btn')) continue;
-				// Exclude internal chat message area
+				// Guard: Exclude internal chat message area
 				if (el.closest('.chat-messages') || el.closest('.chat-input-bar')) continue;
 
 				const r = el.getBoundingClientRect();
@@ -140,13 +153,12 @@
 				const targetCenterX = targetRect.x + targetRect.width / 2;
 				const targetCenterY = targetRect.y + targetRect.height / 2;
 
-				// Slower, graceful morph interpolation (0.14 rate)
-				blobX += (targetCenterX - blobX) * 0.14;
-				blobY += (targetCenterY - blobY) * 0.14;
-				blobWidth += (targetRect.width - blobWidth) * 0.14;
-				blobHeight += (targetRect.height - blobHeight) * 0.14;
-				blobRadius += (targetRect.radius - blobRadius) * 0.14;
-				blobOpacity += (1 - blobOpacity) * 0.14;
+				// Slow, graceful morph interpolation (0.12 rate)
+				blobX += (targetCenterX - blobX) * 0.12;
+				blobY += (targetCenterY - blobY) * 0.12;
+				blobWidth += (targetRect.width - blobWidth) * 0.12;
+				blobHeight += (targetRect.height - blobHeight) * 0.12;
+				blobRadius += (targetRect.radius - blobRadius) * 0.12;
 			} else {
 				if (targetElement) {
 					targetElement.classList.remove('morph-cursor-hovered');
@@ -154,7 +166,7 @@
 				}
 				isHovered = false;
 
-				// Free travel: perfectly crisp, clean solid circular cursor dot (no fluid wobble or bubble stretch)
+				// Free travel: perfectly crisp, clean circular cursor dot
 				const baseSize = isPressed ? 18 : 22;
 
 				blobX += (mouseX - blobX) * 0.18;
@@ -162,7 +174,6 @@
 				blobWidth += (baseSize - blobWidth) * 0.14;
 				blobHeight += (baseSize - blobHeight) * 0.14;
 				blobRadius += (999 - blobRadius) * 0.14;
-				blobOpacity += (1 - blobOpacity) * 0.14;
 			}
 
 			animId = requestAnimationFrame(tick);
@@ -179,6 +190,7 @@
 			window.removeEventListener('mousemove', onMouseMove);
 			window.removeEventListener('mousedown', onMouseDown);
 			window.removeEventListener('mouseup', onMouseUp);
+			window.removeEventListener('click', onClick);
 			document.documentElement.removeEventListener('mouseleave', onMouseLeave);
 			document.documentElement.removeEventListener('mouseenter', onMouseEnter);
 		};
@@ -186,7 +198,9 @@
 </script>
 
 {#if hasPointer}
-	<!-- Morphing Cursor Layer: z-index 10000 ensures it sits over the header, but underneath active text/icons -->
+	<!-- Morphing Cursor Layer:
+	     Using mix-blend-mode: screen and semi-transparent fills, or transparent cutout,
+	     so the cursor never covers or blacks out the button text/icons -->
 	<div
 		class="morph-cursor-layer"
 		class:is-visible={visible}
@@ -201,8 +215,7 @@
 				width: {blobWidth}px;
 				height: {blobHeight}px;
 				border-radius: {blobRadius}px;
-				background-color: {isHovered ? tertiaryColor : primaryColor};
-				opacity: {blobOpacity};
+				background-color: {primaryColor};
 			"
 		></div>
 	</div>
@@ -217,13 +230,14 @@
 		cursor: none !important;
 	}
 
-	/* High z-index (10000) so it morphs directly over top of the fixed floating header (z-index 1000)
-	   while interactive content text/icons sit at z-index 10001 */
+	/* The cursor layer is fixed at z-index 99999.
+	   When hovered, we use mix-blend-mode: screen / translucent fill
+	   so that underneath text, wordmarks, and icons remain crystal clear */
 	.morph-cursor-layer {
 		position: fixed;
 		inset: 0;
 		pointer-events: none;
-		z-index: 10000;
+		z-index: 99999;
 		opacity: 0;
 		transition: opacity 0.25s ease;
 		overflow: hidden;
@@ -239,13 +253,26 @@
 		left: 0;
 		pointer-events: none;
 		will-change: transform, width, height, border-radius;
-		transition: background-color 0.4s ease;
+		transition: background-color 0.4s ease, opacity 0.25s ease;
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
 	}
 
-	/* INTERACTIVE HOVERED STATES:
-	   Text, labels, and icons sit visibly above the morphed cursor shape (z-index 10001),
-	   and all interactive components adopt their brand-specific background colors (never white) */
+	/* In free travel: solid vibrant cursor dot */
+	.morph-cursor-layer:not(.is-hovered) .clean-cursor-blob {
+		opacity: 1;
+	}
+
+	/* While morphing over a component:
+	   Give it an elegant translucent glowing pill fill (opacity 0.25)
+	   so it envelops the button without hiding its text or labels! */
+	.morph-cursor-layer.is-hovered .clean-cursor-blob {
+		opacity: 0.32;
+		filter: blur(1px);
+	}
+
+	/* ALL INTERACTIVE HOVERED STATES ACROSS THE SITE:
+	   Elements morph to/from a visible background using brand colors (NEVER white),
+	   and scale slightly so the user clearly feels the magnetic attraction */
 	:global(a.morph-cursor-hovered),
 	:global(button.morph-cursor-hovered),
 	:global(.round-flip-btn.morph-cursor-hovered),
@@ -258,17 +285,13 @@
 	:global(.nav-link.morph-cursor-hovered),
 	:global(.footer-links a.morph-cursor-hovered),
 	:global(.footer-link-btn.morph-cursor-hovered) {
-		position: relative;
-		z-index: 10001 !important;
 		transform: scale(1.05) !important;
-		transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease, background-color 0.25s ease !important;
+		transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.22s ease, background-color 0.22s ease !important;
 	}
 
-	/* Primary action buttons shift to tertiary surface with primary text */
+	/* Primary action buttons shift into tertiary color with electric primary text */
 	:global(.hero-btn-primary.morph-cursor-hovered),
-	:global(.flat-action-btn.morph-cursor-hovered),
-	:global(.chat-btn.morph-cursor-hovered),
-	:global(.chat-launcher.morph-cursor-hovered) {
+	:global(.flat-action-btn.morph-cursor-hovered) {
 		background-color: var(--color-tertiary) !important;
 		color: var(--color-primary) !important;
 	}
@@ -281,10 +304,22 @@
 		color: var(--color-tertiary) !important;
 	}
 
-	/* Header navigation links gain a sleek tertiary pill background and vibrant primary text */
+	/* Header navigation links gain a sleek primary pill background and tertiary text */
 	:global(.nav-link.morph-cursor-hovered:not(.chat-btn)) {
 		background-color: var(--color-primary) !important;
 		color: var(--color-tertiary) !important;
+	}
+
+	/* Header Ask Stamp chat-btn shifts to tertiary with primary text when hovered */
+	:global(.chat-btn.morph-cursor-hovered) {
+		background-color: var(--color-tertiary) !important;
+		color: var(--color-primary) !important;
+	}
+
+	/* Bottom floating chat launcher button shifts cleanly when hovered */
+	:global(.chat-launcher.morph-cursor-hovered) {
+		background-color: var(--color-tertiary) !important;
+		color: var(--color-primary) !important;
 	}
 
 	/* Footer links gain an elevated brand background pill with high-contrast text */

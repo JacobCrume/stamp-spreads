@@ -16,13 +16,6 @@
 	/>
 </svelte:head>
 
-<!-- FLUID GOOEY MORPHING CURSOR -->
-<MorphCursor
-	primaryColor={colorScheme.primary}
-	secondaryColor={colorScheme.secondary}
-	tertiaryColor={colorScheme.tertiary}
-/>
-
 <!-- FIXED STATIONARY BACKGROUND: SECONDARY COLOR (MORPHS SMOOTHLY) -->
 <div
 	class="stationary-viewport-bg"
@@ -47,14 +40,12 @@
 				</div>
 			</a>
 			<nav class="site-nav">
-				<a href="/#steps" class="nav-link" style:color={colorScheme.primary}>How It Works</a>
-				<a href="/#flavours" class="nav-link" style:color={colorScheme.primary}>Flavours</a>
-				<a href="/flavours" class="nav-link" style:color={colorScheme.primary}>Specs</a>
+				<a href="/#steps" class="nav-link">How It Works</a>
+				<a href="/#flavours" class="nav-link">Flavours</a>
+				<a href="/flavours" class="nav-link">Specs</a>
 				<button
 					type="button"
 					class="nav-link chat-btn"
-					style:background-color={colorScheme.primary}
-					style:color={colorScheme.tertiary}
 					onclick={() => {
 						if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('stamp:open-chat'));
 					}}>Ask Stamp</button
@@ -109,6 +100,13 @@
 		</div>
 	</footer>
 </div>
+
+<!-- FLUID MORPHING CURSOR -->
+<MorphCursor
+	primaryColor={colorScheme.primary}
+	secondaryColor={colorScheme.secondary}
+	tertiaryColor={colorScheme.tertiary}
+/>
 
 <style>
 	@font-face {
@@ -223,6 +221,7 @@
 		border-radius: 9999px;
 		transition: all 0.2s ease;
 		background: transparent;
+		color: var(--color-primary);
 		border: none;
 		cursor: pointer;
 		font-family: inherit;
@@ -233,6 +232,8 @@
 	}
 
 	.chat-btn {
+		background: var(--color-primary);
+		color: var(--color-tertiary);
 		padding: 0.5rem 1.3rem;
 		border-radius: 9999px;
 		font-weight: 900;
@@ -240,7 +241,7 @@
 		letter-spacing: 0.03em;
 		border: none;
 		cursor: pointer;
-		transition: transform 0.15s ease;
+		transition: transform 0.15s ease, background-color 0.2s ease, color 0.2s ease;
 	}
 
 	.chat-btn:hover {
