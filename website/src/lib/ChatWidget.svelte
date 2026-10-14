@@ -113,6 +113,11 @@
 		isOpen = true;
 		scrollToBottom();
 
+		// Keep focus on the input field
+		tick().then(() => {
+			inputElement?.focus();
+		});
+
 		const history = messages
 			.filter((m) => m.id !== userMsg.id)
 			.slice(-6)
@@ -151,6 +156,9 @@
 		} finally {
 			isThinking = false;
 			scrollToBottom();
+			tick().then(() => {
+				inputElement?.focus();
+			});
 		}
 	}
 
@@ -233,8 +241,7 @@
 			bind:value={userInput}
 			onfocus={expandBar}
 			onkeydown={handleKeydown}
-			placeholder="Ask about Stamp..."
-			disabled={isThinking}
+			placeholder={isThinking ? "Stamp is thinking..." : "Ask about Stamp..."}
 			aria-label="Ask about Stamp"
 			style:color="#ffffff"
 		/>
