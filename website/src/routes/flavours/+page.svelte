@@ -271,16 +271,20 @@
 
 <style>
 	.specs-page {
-		min-height: 100vh;
+		min-height: calc(100vh - 120px);
 		background: transparent;
 		color: #ffffff;
-		padding-top: 8.5rem;
-		padding-bottom: 5rem;
+		padding-top: 7rem;
+		padding-bottom: 4rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
 		font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 	}
 
 	.specs-container {
 		max-width: 1060px;
+		width: 100%;
 		margin: 0 auto;
 		padding: 0 1.5rem;
 	}
@@ -291,8 +295,8 @@
 		flex-direction: column;
 		align-items: center;
 		text-align: center;
-		margin-bottom: 3.5rem;
-		gap: 1.5rem;
+		margin-bottom: 2.75rem;
+		gap: 1.25rem;
 	}
 
 	.title {
@@ -351,7 +355,7 @@
 		display: grid;
 		grid-template-columns: 360px 1fr;
 		gap: 3.5rem;
-		align-items: start;
+		align-items: center;
 	}
 
 	/* PACK PANEL */
