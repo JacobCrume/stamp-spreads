@@ -1,30 +1,27 @@
 #!/usr/bin/env python3
 """Generate presentation/Stamp-pitch.pptx for INFO123 Video Presentation.
 
-Strict brand fidelity:
+Strict brand fidelity and design pacing:
 1. Cover Slide:
    - Deep Night Ink (#240340) full-bleed canvas.
    - Centered STAMP wordmark.
    - Centered tagline "PEEL. PRESS. TOAST." in Electric Lavender (#E24BFF).
    - Bottom center text "Commercial Business Pitch" in pure white (#FFFFFF).
    - Zero other elements on the cover.
-2. Bottom Center Wordmark on Every Content Slide:
+2. Solution Section Product Showcase:
+   - All 4 flavours' packaging shown side-by-side up front with very little text.
+3. Natural Pacing (Zero Hero Moment Overload):
+   - Measured metric callouts (54pt instead of screaming 80pt).
+   - Dynamic rhythm: problem setup -> 4-pack product reveal -> physical gesture ->
+     category data -> single clear tier chart -> whitespace & margin -> operations ->
+     thoughtful AI reflections.
+4. Bottom Center Wordmark on Every Content Slide:
    - Recolored to that slide's primary accent color.
-   - Anchored subtly in the bottom center.
-3. Pure Flat Canvas (Zero Containers on text slides):
-   - Confident typography floating boldly on rich secondary backgrounds.
-4. 1–3 Lines Maximum per Slide:
-   - Rapid-fire, bite-sized slides (23 slides total for a 2.5-minute pitch).
-5. Distinct Color Schemes across Sections:
-   - Cover & Ethics: Yeast (#240340 secondary, #E24BFF primary, #FFFFFF neutral)
-   - Problem & AI Steering: Raspberry (#460820 secondary, #FF467A primary, #FFFFFF neutral)
-   - Solution & Operations: Butter (#4A3000 secondary, #FFD640 primary, #FFFFFF neutral)
-   - Market & Economics: Peanut (#4E2408 secondary, #FF8C30 primary, #FFFFFF neutral)
-6. Palette-Matched Graphs & Figures:
-   - Spreads tier growth chart rendered directly on #4E2408.
-   - Price distribution chart rendered directly on #4E2408.
-   - Co-manufacturing process pipeline rendered directly on #4A3000.
-   - Product pack rendered cleanly on Butter canvas.
+5. Strict 3 Colors Plus Neutral Rule:
+   - Cover & Ethics: Yeast (#240340 / #E24BFF / #FFFFFF)
+   - Problem & Steering: Raspberry (#460820 / #FF467A / #FFFFFF)
+   - Solution & Operations: Butter (#4A3000 / #FFD640 / #FFFFFF)
+   - Market Opportunity & Economics: Peanut (#4E2408 / #FF8C30 / #FFFFFF)
 """
 
 from __future__ import annotations
@@ -109,11 +106,30 @@ def prepare_wordmarks(work_dir: Path) -> dict[str, Path]:
 
 
 def generate_figures(work_dir: Path) -> dict[str, Path]:
-    """Generate palette-matched figures for Peanut and Butter sections."""
+    """Generate composite of 4 flavour packs and palette-matched charts."""
+    # 1. Composite of all 4 flavours' packaging in a row
+    flavour_dir = ROOT / "brand" / "explorations" / "flavours"
+    packs = [
+        PILImage.open(flavour_dir / "butter.png"),
+        PILImage.open(flavour_dir / "raspberry.png"),
+        PILImage.open(flavour_dir / "yeast.png"),
+        PILImage.open(flavour_dir / "peanut.png"),
+    ]
+    target_h = 750
+    target_w = int(target_h * (1200 / 1600))  # 562
+    gap = 64
+    total_w = 4 * target_w + 3 * gap
+    composite = PILImage.new("RGBA", (total_w, target_h), (0, 0, 0, 0))
+    for i, p in enumerate(packs):
+        resized = p.resize((target_w, target_h), PILImage.Resampling.LANCZOS)
+        x = i * (target_w + gap)
+        composite.paste(resized, (x, 0), resized)
+    four_packs_path = work_dir / "four_packs_row.png"
+    composite.save(four_packs_path, "PNG")
+
+    # 2. Spreads Category Tier Growth Chart on Peanut (#4E2408)
     sales_csv = ROOT / "data" / "sales-clean.csv"
     frame = pd.read_csv(sales_csv)
-
-    # 1. Tier Comparison Chart on Peanut (#4E2408)
     spreads = frame[frame["Category"] == "Spreads"].copy()
     spreads["year"] = spreads["Date"].str.slice(0, 4)
     part = spreads[spreads["year"].isin(["2022", "2025"])]
@@ -123,14 +139,14 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
     )
     totals = totals.reindex(["Value", "Standard", "Premium"])
 
-    bg_hex = "#4E2408"
-    primary_hex = "#FF8C30"
+    bg_peanut = "#4E2408"
+    primary_peanut = "#FF8C30"
     white_hex = "#FFFFFF"
     dim_hex = "#D4A373"
 
     fig, ax = plt.subplots(figsize=(6.8, 3.8), dpi=200)
-    fig.patch.set_facecolor(bg_hex)
-    ax.set_facecolor(bg_hex)
+    fig.patch.set_facecolor(bg_peanut)
+    ax.set_facecolor(bg_peanut)
 
     positions = np.arange(3)
     width = 0.35
@@ -141,7 +157,7 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
         width=width,
         label="2022 Revenue",
         color="#2E1505",
-        edgecolor=primary_hex,
+        edgecolor=primary_peanut,
         linewidth=1.4,
         zorder=3,
     )
@@ -150,7 +166,7 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
         totals["2025"],
         width=width,
         label="2025 Revenue",
-        color=primary_hex,
+        color=primary_peanut,
         edgecolor="none",
         zorder=3,
     )
@@ -210,61 +226,7 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
 
     fig.tight_layout()
     tier_path = work_dir / "chart_tier_peanut.png"
-    fig.savefig(tier_path, dpi=200, facecolor=bg_hex)
-    plt.close(fig)
-
-    # 2. Price Distribution Chart on Peanut (#4E2408)
-    spreads_price = frame[
-        (frame["Category"] == "Spreads")
-        & (frame["Market Segment"] == "Branded")
-        & frame["price_usable"]
-        & frame["price_per_100g"].notna()
-    ].copy()
-    sku = spreads_price.groupby(["Product Name", "Brand", "Weight"], as_index=False)[
-        "price_per_100g"
-    ].median()
-
-    fig, ax = plt.subplots(figsize=(6.8, 3.8), dpi=200)
-    fig.patch.set_facecolor(bg_hex)
-    ax.set_facecolor(bg_hex)
-
-    n, bins, patches_list = ax.hist(
-        sku["price_per_100g"],
-        bins=24,
-        color="#2E1505",
-        edgecolor=primary_hex,
-        linewidth=1.2,
-        zorder=3,
-    )
-
-    ax.axvline(6.25, color=primary_hex, linestyle="-", linewidth=2.5, zorder=5)
-    ax.annotate(
-        "Stamp Target\n$6.25 / 100g",
-        xy=(6.25, max(n) * 0.85),
-        xytext=(7.1, max(n) * 0.85),
-        arrowprops=dict(arrowstyle="->", color=white_hex, lw=1.5),
-        fontproperties=F_BOLD,
-        fontsize=10,
-        color=white_hex,
-        ha="left",
-        va="center",
-    )
-
-    ax.set_xlabel("Price per 100g (NZD)", fontproperties=F_SEMI, fontsize=9.5, color=dim_hex, labelpad=8)
-    ax.set_ylabel("Number of SKUs", fontproperties=F_SEMI, fontsize=9.5, color=dim_hex, labelpad=8)
-    ax.grid(axis="y", linestyle="--", alpha=0.25, color=dim_hex, zorder=0)
-    for spine in ax.spines.values():
-        spine.set_visible(False)
-
-    ax.tick_params(axis="x", colors=dim_hex)
-    ax.tick_params(axis="y", colors=dim_hex)
-    for label in ax.get_xticklabels() + ax.get_yticklabels():
-        label.set_fontproperties(F_MED)
-        label.set_fontsize(9)
-
-    fig.tight_layout()
-    price_path = work_dir / "chart_price_peanut.png"
-    fig.savefig(price_path, dpi=200, facecolor=bg_hex)
+    fig.savefig(tier_path, dpi=200, facecolor=bg_peanut)
     plt.close(fig)
 
     # 3. Process Flow Diagram on Butter (#4A3000)
@@ -340,8 +302,8 @@ def generate_figures(work_dir: Path) -> dict[str, Path]:
     plt.close(fig)
 
     return {
+        "four_packs": four_packs_path,
         "tier": tier_path,
-        "price": price_path,
         "process": process_path,
     }
 
@@ -376,11 +338,11 @@ def add_statement_slide(
     line2_color: str = "white",
     line3_color: str = "primary",
     line1_size: int = 22,
-    line2_size: int = 46,
+    line2_size: int = 44,
     line3_size: int = 22,
     notes: str = "",
 ):
-    """Minimal, container-free slide with 1-3 lines of bold text."""
+    """Minimal, container-free slide with 1-3 lines of confident text."""
     s = SCHEMES[scheme_key]
     slide = create_slide_canvas(prs, s["secondary"])
 
@@ -435,14 +397,14 @@ def add_metric_slide(
     detail: str,
     notes: str = "",
 ):
-    """Container-free metric slide with 3 lines total."""
+    """Well-proportioned metric slide avoiding hero overload (54pt metric)."""
     s = SCHEMES[scheme_key]
     slide = create_slide_canvas(prs, s["secondary"])
 
     left = Inches(1.3)
-    top = Inches(1.8)
+    top = Inches(2.1)
     width = Inches(10.7)
-    height = Inches(4.2)
+    height = Inches(4.0)
 
     tb = slide.shapes.add_textbox(left, top, width, height)
     tf = tb.text_frame
@@ -452,15 +414,15 @@ def add_metric_slide(
     p1 = tf.paragraphs[0]
     p1.text = metric_number
     p1.font.name = "Manrope"
-    p1.font.size = Pt(80)
+    p1.font.size = Pt(54)
     p1.font.bold = True
     p1.font.color.rgb = s["primary"]
-    p1.space_after = Pt(10)
+    p1.space_after = Pt(8)
 
     p2 = tf.add_paragraph()
     p2.text = headline
     p2.font.name = "Manrope"
-    p2.font.size = Pt(40)
+    p2.font.size = Pt(36)
     p2.font.bold = True
     p2.font.color.rgb = s["white"]
     p2.space_after = Pt(12)
@@ -468,7 +430,7 @@ def add_metric_slide(
     p3 = tf.add_paragraph()
     p3.text = detail
     p3.font.name = "Manrope"
-    p3.font.size = Pt(22)
+    p3.font.size = Pt(20)
     p3.font.bold = False
     p3.font.color.rgb = s["primary"]
 
@@ -491,7 +453,7 @@ def add_figure_slide(
     img_top: float = 2.4,
     notes: str = "",
 ):
-    """Container-free slide pairing 2 lines of text with a centered figure."""
+    """Slide pairing 2 lines of text with a centered figure."""
     s = SCHEMES[scheme_key]
     slide = create_slide_canvas(prs, s["secondary"])
 
@@ -509,7 +471,7 @@ def add_figure_slide(
     p1 = tf.paragraphs[0]
     p1.text = headline
     p1.font.name = "Manrope"
-    p1.font.size = Pt(36)
+    p1.font.size = Pt(34)
     p1.font.bold = True
     p1.font.color.rgb = s["white"]
     p1.space_after = Pt(6)
@@ -525,67 +487,6 @@ def add_figure_slide(
     fig_w = Inches(img_width)
     fig_x = (prs.slide_width - fig_w) / 2
     slide.shapes.add_picture(str(img_path), fig_x, Inches(img_top), width=fig_w)
-
-    add_bottom_wordmark(slide, mark_paths[scheme_key])
-
-    if notes:
-        slide.notes_slide.notes_text_frame.text = notes
-
-    return slide
-
-
-def add_split_figure_slide(
-    prs: pptx.Presentation,
-    scheme_key: str,
-    mark_paths: dict[str, Path],
-    line1: str,
-    line2: str,
-    line3: str,
-    img_path: Path,
-    notes: str = "",
-):
-    """Side-by-side slide pairing 3 lines of text on left with a tall image on right."""
-    s = SCHEMES[scheme_key]
-    slide = create_slide_canvas(prs, s["secondary"])
-
-    # Left text column
-    left = Inches(1.3)
-    top = Inches(2.0)
-    width = Inches(7.0)
-    height = Inches(4.2)
-
-    tb = slide.shapes.add_textbox(left, top, width, height)
-    tf = tb.text_frame
-    tf.word_wrap = True
-    tf.margin_left = tf.margin_top = tf.margin_right = tf.margin_bottom = 0
-
-    p1 = tf.paragraphs[0]
-    p1.text = line1
-    p1.font.name = "Manrope"
-    p1.font.size = Pt(44)
-    p1.font.bold = True
-    p1.font.color.rgb = s["white"]
-    p1.space_after = Pt(14)
-
-    p2 = tf.add_paragraph()
-    p2.text = line2
-    p2.font.name = "Manrope"
-    p2.font.size = Pt(24)
-    p2.font.bold = True
-    p2.font.color.rgb = s["primary"]
-    p2.space_after = Pt(14)
-
-    p3 = tf.add_paragraph()
-    p3.text = line3
-    p3.font.name = "Manrope"
-    p3.font.size = Pt(20)
-    p3.font.bold = False
-    p3.font.color.rgb = s["white"]
-
-    # Right image
-    img_w = Inches(3.4)
-    img_h = Inches(4.53)
-    slide.shapes.add_picture(str(img_path), Inches(8.5), Inches(1.4), width=img_w, height=img_h)
 
     add_bottom_wordmark(slide, mark_paths[scheme_key])
 
@@ -661,9 +562,9 @@ def build_presentation(work_dir: Path):
         line2="Jars Require Infrastructure.",
         line3="Table knives, kitchen benches, and hot running water.",
         line1_size=22,
-        line2_size=48,
+        line2_size=46,
         line3_size=22,
-        notes="PROBLEM (0:07–0:13)\nEating toast away from a full residential kitchen is fundamentally broken.",
+        notes="PROBLEM (0:07–0:14)\nEating toast away from a full residential kitchen is fundamentally broken.",
     )
 
     # Slide 3: Who Fails
@@ -677,27 +578,13 @@ def build_presentation(work_dir: Path):
         line1_color="white",
         line2_color="primary",
         line3_color="white",
-        line1_size=46,
+        line1_size=44,
         line2_size=26,
         line3_size=22,
-        notes="WHO FAILS (0:13–0:19)\nIn a university hall, shared flat, or office desk, nobody wants to lug a sticky jar and hunt for a knife.",
+        notes="WHO FAILS (0:14–0:21)\nIn an office or student flat, nobody wants to lug a sticky jar, hunt for a knife, and wash it in a shared sink.",
     )
 
-    # Slide 4: Office Friction
-    add_statement_slide(
-        prs,
-        scheme_key="raspberry",
-        mark_paths=mark_paths,
-        line1="The 3-Minute Office Friction.",
-        line2="Sticky handles, cross-contaminated butter, unwashed sinks.",
-        line1_color="white",
-        line2_color="primary",
-        line1_size=46,
-        line2_size=24,
-        notes="OFFICE FRICTION (0:19–0:25)\nShared communal spreads lead to cross-contamination, crumbs in the butter, and abandoned sink mess.",
-    )
-
-    # Slide 5: Unmet Need
+    # Slide 4: The Unmet Need
     add_statement_slide(
         prs,
         scheme_key="raspberry",
@@ -708,102 +595,92 @@ def build_presentation(work_dir: Path):
         line1_color="white",
         line2_color="primary",
         line3_color="white",
-        line1_size=46,
+        line1_size=44,
         line2_size=26,
         line3_size=22,
-        notes="UNMET NEED (0:25–0:31)\nBecause jars are tethered to kitchens, consumers compromise on dry bars or skip breakfast altogether.",
+        notes="UNMET NEED (0:21–0:28)\nBecause jars are tethered to kitchens, consumers compromise on dry bars or skip breakfast altogether.",
     )
 
     # -----------------------------------------------------------------------
-    # SECTION 2: Solution & Product (Scheme: Butter #4A3000 / #FFD640 / #FFFFFF)
+    # SECTION 2: Solution & Product Showcase (Scheme: Butter #4A3000 / #FFD640 / #FFFFFF)
     # -----------------------------------------------------------------------
 
-    # Slide 6: The Solution
-    add_statement_slide(
+    # Slide 5: The Solution — All 4 Flavours Up Front with Very Little Text
+    add_figure_slide(
         prs,
         scheme_key="butter",
         mark_paths=mark_paths,
-        line1="The Solution",
-        line2="10 g Spread Disc on Release Film.",
-        line3="Peel it off. Press onto hot toast.",
-        line1_size=22,
-        line2_size=48,
-        line3_size=24,
-        notes="SOLUTION (0:31–0:37)\nStamp reinvents the format with a calibrated 10-gram disc of real spread on release film.",
+        headline="The Solution.",
+        detail="10 g spread discs on release film.",
+        img_path=figs["four_packs"],
+        img_width=10.2,
+        img_top=2.45,
+        notes="SOLUTION SHOWCASE (0:28–0:36)\nStamp reinvents the format: calibrated 10-gram spread discs on release film across four launch flavours.",
     )
 
-    # Slide 7: Product Physics / Pack Figure
-    add_split_figure_slide(
+    # Slide 6: The Physical Gesture (Zero Cutlery / Thermal Melt)
+    add_statement_slide(
         prs,
         scheme_key="butter",
         mark_paths=mark_paths,
         line1="Zero Cutlery. Pure Physics.",
-        line2="Residual heat melts the disc in seconds.",
-        line3="10 g portion on food-grade release liner.",
-        img_path=ROOT / "brand" / "explorations" / "flavours" / "butter.png",
-        notes="PRODUCT PHYSICS (0:37–0:44)\nYou press the disc onto fresh toast, and residual thermal energy melts it evenly without a knife.",
-    )
-
-    # Slide 8: Flavour Range
-    add_statement_slide(
-        prs,
-        scheme_key="butter",
-        mark_paths=mark_paths,
-        line1="Four Signature NZ Flavours.",
-        line2="Salted Butter • Raspberry • Yeast • Peanut",
+        line2="Residual toast heat melts the disc in seconds.",
+        line3="Peel off the liner. Press onto hot toast. Zero utensils or mess.",
         line1_color="white",
         line2_color="primary",
-        line1_size=46,
+        line3_color="white",
+        line1_size=44,
         line2_size=26,
-        notes="FLAVOUR RANGE (0:44–0:50)\nFour iconic kiwi flavours in an 8-stamp card sheet, offering instant single-serve variety.",
+        line3_size=20,
+        notes="GESTURE (0:36–0:43)\nYou press the disc onto hot bread, and residual thermal energy melts it evenly across the crumb in seconds.",
     )
 
-    # Slide 9: Ambient Stability
+    # Slide 7: Form Factor & Shelf Stability
     add_statement_slide(
         prs,
         scheme_key="butter",
         mark_paths=mark_paths,
         line1="12-Month Ambient Life.",
-        line2="High-stability emulsification engineered for room temperature.",
-        line3="Zero refrigeration required.",
+        line2="High-stability emulsification for room temperature.",
+        line3="Hermetically sealed 8-stamp card sheets for pantry and bag.",
         line1_color="white",
         line2_color="primary",
         line3_color="white",
-        line1_size=46,
+        line1_size=44,
         line2_size=24,
-        line3_size=22,
-        notes="AMBIENT STABILITY (0:50–0:56)\nFormulated for room-temperature pantry and bag storage with full 12-month shelf stability.",
+        line3_size=20,
+        notes="STABILITY & FORMAT (0:43–0:50)\nEngineered for room-temperature pantry and bag storage with full 12-month ambient stability.",
     )
 
     # -----------------------------------------------------------------------
     # SECTION 3: Market Opportunity & Unit Economics (Scheme: Peanut #4E2408 / #FF8C30 / #FFFFFF)
     # -----------------------------------------------------------------------
 
-    # Slide 10: Market Scale Metric
+    # Slide 8: Market Scale Metric (Measured, 54pt)
     add_metric_slide(
         prs,
         scheme_key="peanut",
         mark_paths=mark_paths,
-        metric_number="$341M",
-        headline="New Zealand Spreads Category.",
+        metric_number="$341M Category",
+        headline="New Zealand Spreads Market.",
         detail="+24% category revenue growth across 2022–2025.",
-        notes="MARKET SCALE (0:56–1:03)\nCleaned supermarket scan data reveals New Zealand spreads expanded 24% to a 341 million dollar category.",
+        notes="MARKET SCALE (0:50–0:57)\nCleaned supermarket scan data shows the New Zealand spreads category expanded 24% to 341 million dollars.",
     )
 
-    # Slide 11: Premium Tier Figure
+    # Slide 9: Premium Shift Visual (Tier Growth Chart)
     add_figure_slide(
         prs,
         scheme_key="peanut",
         mark_paths=mark_paths,
         headline="Premium Spreads Surging +29%.",
-        detail="Expanding from $88M to $113M NZD as consumers trade up into quality.",
+        detail="Consumers trading up from commodity tiers into quality formats.",
         img_path=figs["tier"],
         img_width=6.6,
         img_top=2.35,
-        notes="PREMIUM SURGE (1:03–1:11)\nPremium branded spreads surged 29% to 113 million dollars, massively outpacing commodity tiers.",
+        notes="PREMIUM SURGE (0:57–1:05)\nPremium branded spreads surged 29% to 113 million dollars, massively outperforming commodity tiers.",
     )
 
-    # Slide 12: Competitive Void Metric
+    # Slide 10: Competitive Void
     add_metric_slide(
         prs,
         scheme_key="peanut",
@@ -811,38 +688,25 @@ def build_presentation(work_dir: Path):
         metric_number="0 Rivals",
         headline="Across 154 Supermarket Spreads.",
         detail="Zero single-serve or utensil-free formats in NZ retail.",
-        notes="COMPETITIVE VOID (1:11–1:18)\nAcross 154 supermarket spreads, every single product is a jar. Not one offers a utensil-free portion format.",
+        notes="COMPETITIVE VOID (1:05–1:12)\nAcross 154 supermarket spreads, every single product is a jar. Not one offers a utensil-free portion format.",
     )
 
-    # Slide 13: Price Distribution Figure
-    add_figure_slide(
-        prs,
-        scheme_key="peanut",
-        mark_paths=mark_paths,
-        headline="Capturing the Premium Void.",
-        detail="Targeted at $5.00 per 8-pack ($6.25/100g) against premium jars.",
-        img_path=figs["price"],
-        img_width=6.6,
-        img_top=2.35,
-        notes="PRICE POSITIONING (1:18–1:26)\nAt $5.00 for an 8-pack, Stamp commands $6.25 per 100g—positioning neatly into the premium whitespace.",
-    )
-
-    # Slide 14: Unit Economics Metric
+    # Slide 11: Unit Economics
     add_metric_slide(
         prs,
         scheme_key="peanut",
         mark_paths=mark_paths,
-        metric_number="35% Margin",
-        headline="$5.00 Retail • $1.75 Gross Margin.",
-        detail="63¢ per serving on an assumed $1.50 co-packing cost.",
-        notes="UNIT ECONOMICS (1:26–1:33)\nAt 63 cents per serving, we maintain a robust $1.75 gross margin to fund rapid marketing and retail scaling.",
+        metric_number="35% Gross Margin",
+        headline="$5.00 Retail • $1.75 Margin per Pack.",
+        detail="63¢ per serving on an assumed $1.50 contract packaging cost.",
+        notes="UNIT ECONOMICS (1:12–1:19)\nAt 63 cents a serving, we retain a strong $1.75 gross margin to fund distribution and marketing.",
     )
 
     # -----------------------------------------------------------------------
     # SECTION 4: Operations & Lean Scaling (Scheme: Butter #4A3000 / #FFD640 / #FFFFFF)
     # -----------------------------------------------------------------------
 
-    # Slide 15: Co-Manufacturing Process Figure
+    # Slide 12: Co-Manufacturing Process Figure
     add_figure_slide(
         prs,
         scheme_key="butter",
@@ -852,10 +716,10 @@ def build_presentation(work_dir: Path):
         img_path=figs["process"],
         img_width=8.0,
         img_top=2.5,
-        notes="MANUFACTURING (1:33–1:41)\nProduction leverages existing contract rotary-die deposition lines, eliminating custom factory tooling.",
+        notes="MANUFACTURING (1:19–1:27)\nProduction leverages existing contract rotary-die deposition lines, eliminating custom factory tooling.",
     )
 
-    # Slide 16: Lean Capex Pilot
+    # Slide 13: Lean Capex Pilot
     add_statement_slide(
         prs,
         scheme_key="butter",
@@ -866,17 +730,17 @@ def build_presentation(work_dir: Path):
         line1_color="white",
         line2_color="primary",
         line3_color="white",
-        line1_size=46,
+        line1_size=44,
         line2_size=24,
-        line3_size=22,
-        notes="LEAN PILOT (1:41–1:47)\nBy partnering with established contract packers in Auckland, we validate consumer demand with minimal capex.",
+        line3_size=20,
+        notes="LEAN PILOT (1:27–1:35)\nBy partnering with established contract packers in Auckland, we validate consumer demand with minimal capex.",
     )
 
     # -----------------------------------------------------------------------
     # SECTION 5: Reflection 1 — AI Steering & Verification (Scheme: Raspberry #460820 / #FF467A / #FFFFFF)
     # -----------------------------------------------------------------------
 
-    # Slide 17: Negative Constraints
+    # Slide 14: Negative Constraints
     add_statement_slide(
         prs,
         scheme_key="raspberry",
@@ -885,12 +749,12 @@ def build_presentation(work_dir: Path):
         line2="Banning AI Marketing Hype.",
         line3="Explicit negative prompts barred fake badges and health claims.",
         line1_size=22,
-        line2_size=48,
+        line2_size=46,
         line3_size=22,
-        notes="CONSTRAINTS (1:47–1:55)\nIn steering AI, I enforced strict negative prompt constraints against fake certification badges and medical health claims.",
+        notes="CONSTRAINTS (1:35–1:48)\nIn steering AI, I enforced strict negative prompt constraints against fake certification badges and medical health claims.",
     )
 
-    # Slide 18: Modular Session Architecture
+    # Slide 15: Modular Session Architecture
     add_statement_slide(
         prs,
         scheme_key="raspberry",
@@ -899,12 +763,12 @@ def build_presentation(work_dir: Path):
         line2="Separating data, branding, and copy eliminated context drift.",
         line1_color="white",
         line2_color="primary",
-        line1_size=48,
+        line1_size=46,
         line2_size=24,
-        notes="ARCHITECTURE (1:55–2:03)\nI partitioned distinct sessions for data cleaning, branding, and copy to prevent context rot and hallucinated metrics.",
+        notes="ARCHITECTURE (1:48–2:00)\nI partitioned distinct sessions for data cleaning, branding, and copy to prevent context rot and hallucinated metrics.",
     )
 
-    # Slide 19: The Turning Point: Catching Spoilage
+    # Slide 16: The Turning Point: Catching Spoilage
     add_statement_slide(
         prs,
         scheme_key="raspberry",
@@ -915,13 +779,13 @@ def build_presentation(work_dir: Path):
         line1_color="white",
         line2_color="primary",
         line3_color="white",
-        line1_size=46,
+        line1_size=44,
         line2_size=26,
         line3_size=22,
-        notes="TURNING POINT (2:03–2:11)\nMy pivotal turning point was catching an unrealistic AI claim that dairy butter could sit ambiently without spoilage.",
+        notes="TURNING POINT (2:00–2:12)\nMy pivotal turning point was catching an unrealistic AI claim that dairy butter could sit ambiently without spoilage.",
     )
 
-    # Slide 20: AI as Drafter, Not Director
+    # Slide 17: AI as Drafter, Not Director
     add_statement_slide(
         prs,
         scheme_key="raspberry",
@@ -930,16 +794,16 @@ def build_presentation(work_dir: Path):
         line2="Auditing raw scan outliers and verifying live supermarket shelves.",
         line1_color="white",
         line2_color="primary",
-        line1_size=46,
+        line1_size=44,
         line2_size=24,
-        notes="VERIFICATION (2:11–2:19)\nI audited raw scan data outliers and manually verified shelf prices on New World instead of trusting model summaries.",
+        notes="VERIFICATION (2:12–2:22)\nI audited raw scan data outliers and manually verified shelf prices on New World instead of trusting model summaries.",
     )
 
     # -----------------------------------------------------------------------
     # SECTION 6: Reflection 2 — Authenticity, AI Slop & Ethics (Scheme: Yeast #240340 / #E24BFF / #FFFFFF)
     # -----------------------------------------------------------------------
 
-    # Slide 21: Combating AI Slop
+    # Slide 18: Combating AI Slop
     add_statement_slide(
         prs,
         scheme_key="yeast",
@@ -950,13 +814,13 @@ def build_presentation(work_dir: Path):
         line1_color="white",
         line2_color="primary",
         line3_color="white",
-        line1_size=48,
+        line1_size=46,
         line2_size=26,
         line3_size=24,
-        notes="AUTHENTICITY (2:19–2:27)\nTo combat AI slop, I stripped corporate clichés and grounded packaging in real continuous deposit tooling.",
+        notes="AUTHENTICITY (2:22–2:30)\nTo combat AI slop, I stripped corporate clichés and grounded packaging in real continuous deposit tooling.",
     )
 
-    # Slide 22: Zero Hallucination Tolerance
+    # Slide 19: Zero Hallucination Tolerance
     add_statement_slide(
         prs,
         scheme_key="yeast",
@@ -965,12 +829,12 @@ def build_presentation(work_dir: Path):
         line2="Strict FSANZ food laws and mandatory allergen warnings.",
         line1_color="white",
         line2_color="primary",
-        line1_size=48,
+        line1_size=46,
         line2_size=24,
-        notes="REGULATION (2:27–2:35)\nIn food and beverage, AI hallucinations are a severe legal hazard. I enforced strict FSANZ compliance and allergen safety.",
+        notes="REGULATION (2:30–2:38)\nIn food and beverage, AI hallucinations are a severe legal hazard. I enforced strict FSANZ compliance and allergen safety.",
     )
 
-    # Slide 23: Human Accountability
+    # Slide 20: Human Accountability
     add_statement_slide(
         prs,
         scheme_key="yeast",
@@ -979,14 +843,14 @@ def build_presentation(work_dir: Path):
         line2="Moral, regulatory, and commercial ownership cannot be outsourced.",
         line1_color="white",
         line2_color="primary",
-        line1_size=48,
+        line1_size=46,
         line2_size=24,
-        notes="ETHICS & WRAP (2:35–2:45)\nGenerative AI accelerates velocity, but human skepticism, taste, discernment, and moral ownership remain essential.",
+        notes="ETHICS & WRAP (2:38–2:45)\nGenerative AI accelerates velocity, but human skepticism, taste, discernment, and moral ownership remain essential.",
     )
 
     OUT_PPTX.parent.mkdir(parents=True, exist_ok=True)
     prs.save(str(OUT_PPTX))
-    print(f"Successfully generated {OUT_PPTX} (23 bite-sized, visual slides)")
+    print(f"Successfully generated {OUT_PPTX} (20 well-paced, visual slides)")
 
 
 def main():
