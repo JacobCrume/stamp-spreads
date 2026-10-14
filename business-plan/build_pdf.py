@@ -349,6 +349,12 @@ def prepare_image(src: Path, dest: Path) -> tuple[int, int]:
         flat = PILImage.alpha_composite(base, image).convert("RGB")
     else:
         flat = image.convert("RGB")
+        # For diagrams with white background, blend seamlessly into container color #EEF2F6
+        arr = np.array(flat)
+        mask = (arr[:, :, 0] > 245) & (arr[:, :, 1] > 245) & (arr[:, :, 2] > 245)
+        if mask.any():
+            arr[mask] = [238, 242, 246]
+            flat = PILImage.fromarray(arr)
     flat.save(dest, "PNG")
     return flat.size
 
@@ -531,16 +537,11 @@ class CleanFigureBlock(Flowable):
         r = 12
 
         canv.saveState()
-        # 1. Bold elevated card surface (Slate 100 #EEF2F6)
+        # 1. Clean elevated card surface matching figure background (#EEF2F6)
         canv.setFillColor(HexColor("#EEF2F6"))
         canv.roundRect(cx, 0, W, H, r, stroke=0, fill=1)
 
-        # 2. Bold top accent bar in section primary color
-        bar_h = 5
-        canv.setFillColor(self.scheme["primary"])
-        canv.roundRect(cx, H - bar_h, W, bar_h, 2.5, stroke=0, fill=1)
-
-        # 3. Image centered with generous padding
+        # 2. Image centered with generous padding
         img_x = cx + (W - self.draw_w) / 2
         img_y = self.cap_h + 12
         canv.drawImage(
@@ -553,7 +554,7 @@ class CleanFigureBlock(Flowable):
             preserveAspectRatio=True,
         )
 
-        # 4. Caption
+        # 3. Caption
         self.paragraph.drawOn(canv, cx + 10, 8)
         canv.restoreState()
 
@@ -607,20 +608,15 @@ class CleanImageRow(Flowable):
     def draw(self):
         canv = self.canv
         x = 0
-        bar_h = 5
         r = 12
         for path, draw_w, draw_h, paragraph, cap_h, col_w, card_h in self.cols:
             cy = self.row_h - card_h
             canv.saveState()
-            # 1. Bold elevated card surface
+            # 1. Clean elevated card surface
             canv.setFillColor(HexColor("#EEF2F6"))
             canv.roundRect(x, cy, col_w, card_h, r, stroke=0, fill=1)
 
-            # 2. Bold top accent bar
-            canv.setFillColor(self.scheme["primary"])
-            canv.roundRect(x, cy + card_h - bar_h, col_w, bar_h, 2.5, stroke=0, fill=1)
-
-            # 3. Image
+            # 2. Image
             img_x = x + (col_w - draw_w) / 2
             img_y = cy + cap_h + 12
             canv.drawImage(

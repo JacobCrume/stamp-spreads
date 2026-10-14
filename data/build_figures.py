@@ -1,11 +1,14 @@
 """Market figures for the Stamp commercial business plan.
 
 Figures are branded strictly following Stamp's visual identity:
-- Manrope typography (Bold, Semi, Medium)
-- Stamp brand palette: Deep Night Ink (#240340), Deep Solid Purple (#3B0764),
-  Electric Lavender (#E24BFF), Wild Raspberry (#FF467A), Roasted Peanut (#FF8C30),
-  Electric Butter (#FFD640)
-- High-contrast, clean minimalist layout with subtle grids and bold data callouts
+- Exact Manrope typography matching the document:
+  - Manrope-Bold (700) for titles, data callouts, and key metrics
+  - Manrope-Semi (600) for axis labels and category names
+  - Manrope-Medium (500) for tick marks and legends
+- Figure backgrounds match the document container color (#EEF2F6) exactly.
+- High-contrast Stamp brand colors:
+  Deep Night Ink (#240340), Deep Solid Purple (#3B0764), Electric Lavender (#E24BFF),
+  Wild Raspberry (#FF467A), Roasted Peanut (#FF8C30), Electric Butter (#FFD640)
 """
 
 from __future__ import annotations
@@ -21,13 +24,14 @@ OUT = Path(__file__).resolve().parent / "figures"
 DATA = Path(__file__).resolve().parent / "sales-clean.csv"
 FONT_DIR = Path(__file__).resolve().parent.parent / "brand" / "fonts"
 
-# Register Manrope fonts with Matplotlib
-for weight in ["400", "500", "600", "700"]:
-    font_file = FONT_DIR / f"Manrope-{weight}.ttf"
-    if font_file.is_file():
-        fm.fontManager.addfont(str(font_file))
+# Exact font properties matching the document typography
+F_BOLD = fm.FontProperties(fname=str(FONT_DIR / "Manrope-700.ttf"))
+F_SEMI = fm.FontProperties(fname=str(FONT_DIR / "Manrope-600.ttf"))
+F_MED = fm.FontProperties(fname=str(FONT_DIR / "Manrope-500.ttf"))
+F_REG = fm.FontProperties(fname=str(FONT_DIR / "Manrope-400.ttf"))
 
-plt.rcParams["font.family"] = "Manrope"
+# Exact container background color matching PDF containers
+CONTAINER_BG = "#EEF2F6"
 
 CATEGORY_ORDER = [
     "Breakfast Cereals",
@@ -51,8 +55,8 @@ BRAND_COLOURS = {
 def quarterly_revenue(frame: pd.DataFrame) -> None:
     quarters = sorted(frame["Date"].unique())
     fig, ax = plt.subplots(figsize=(10.5, 5.2), dpi=200)
-    fig.patch.set_facecolor("white")
-    ax.set_facecolor("white")
+    fig.patch.set_facecolor(CONTAINER_BG)
+    ax.set_facecolor(CONTAINER_BG)
 
     for category in CATEGORY_ORDER:
         part = frame[frame["Category"] == category]
@@ -73,35 +77,43 @@ def quarterly_revenue(frame: pd.DataFrame) -> None:
 
     ax.set_title(
         "Quarterly Breakfast Category Revenue in New Zealand (2022–2025)",
+        fontproperties=F_BOLD,
         fontsize=13.5,
-        fontweight="bold",
         color="#240340",
         pad=16,
     )
-    ax.set_ylabel("Revenue (Million NZD)", fontsize=10.5, fontweight="bold", color="#475569", labelpad=10)
-    ax.set_xlabel("Quarter", fontsize=10.5, fontweight="bold", color="#475569", labelpad=10)
+    ax.set_ylabel("Revenue (Million NZD)", fontproperties=F_SEMI, fontsize=10.5, color="#475569", labelpad=10)
+    ax.set_xlabel("Quarter", fontproperties=F_SEMI, fontsize=10.5, color="#475569", labelpad=10)
 
     legend = ax.legend(
         frameon=True,
-        facecolor="#F8FAFC",
-        edgecolor="#E2E8F0",
-        fontsize=9.5,
+        facecolor=CONTAINER_BG,
+        edgecolor="#CBD5E1",
         loc="upper left",
     )
     for text in legend.get_texts():
+        text.set_fontproperties(F_SEMI)
+        text.set_fontsize(9.5)
         text.set_color("#1A1024")
-        text.set_fontweight("bold")
 
-    ax.tick_params(axis="x", labelrotation=45, colors="#475569", labelsize=9)
-    ax.tick_params(axis="y", colors="#64748B", labelsize=9.5)
-    ax.grid(axis="y", linestyle="--", alpha=0.4, color="#CBD5E1", zorder=0)
+    ax.tick_params(axis="x", labelrotation=45, colors="#475569")
+    for label in ax.get_xticklabels():
+        label.set_fontproperties(F_MED)
+        label.set_fontsize(9.0)
+
+    ax.tick_params(axis="y", colors="#64748B")
+    for label in ax.get_yticklabels():
+        label.set_fontproperties(F_MED)
+        label.set_fontsize(9.5)
+
+    ax.grid(axis="y", linestyle="--", alpha=0.5, color="#CBD5E1", zorder=0)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.spines["left"].set_color("#E2E8F0")
+    ax.spines["left"].set_color("#CBD5E1")
     ax.spines["bottom"].set_color("#CBD5E1")
 
     fig.tight_layout()
-    fig.savefig(OUT / "01-quarterly-revenue-by-category.png", dpi=200)
+    fig.savefig(OUT / "01-quarterly-revenue-by-category.png", dpi=200, facecolor=CONTAINER_BG)
     plt.close(fig)
 
 
@@ -116,8 +128,8 @@ def tier_comparison(frame: pd.DataFrame) -> None:
     totals = totals.reindex(TIER_ORDER)
 
     fig, ax = plt.subplots(figsize=(8.5, 4.8), dpi=200)
-    fig.patch.set_facecolor("white")
-    ax.set_facecolor("white")
+    fig.patch.set_facecolor(CONTAINER_BG)
+    ax.set_facecolor(CONTAINER_BG)
 
     positions = np.arange(len(TIER_ORDER))
     width = 0.35
@@ -141,7 +153,7 @@ def tier_comparison(frame: pd.DataFrame) -> None:
         zorder=3,
     )
 
-    # Direct value annotations above each bar
+    # Direct value annotations above each bar using Manrope-Bold
     for rect in rects1:
         h = rect.get_height()
         ax.annotate(
@@ -151,8 +163,8 @@ def tier_comparison(frame: pd.DataFrame) -> None:
             textcoords="offset points",
             ha="center",
             va="bottom",
+            fontproperties=F_BOLD,
             fontsize=9.5,
-            fontweight="bold",
             color="#3B0764",
         )
 
@@ -165,44 +177,54 @@ def tier_comparison(frame: pd.DataFrame) -> None:
             textcoords="offset points",
             ha="center",
             va="bottom",
+            fontproperties=F_BOLD,
             fontsize=9.5,
-            fontweight="bold",
             color="#A21CAF",
         )
 
     ax.set_xticks(positions)
-    ax.set_xticklabels(TIER_ORDER, fontsize=11, fontweight="bold", color="#1A1024")
-    ax.set_ylabel("Revenue (Million NZD)", fontsize=10.5, fontweight="bold", color="#475569", labelpad=10)
+    ax.set_xticklabels(TIER_ORDER)
+    for label in ax.get_xticklabels():
+        label.set_fontproperties(F_BOLD)
+        label.set_fontsize(11.0)
+        label.set_color("#1A1024")
+
+    ax.set_ylabel("Revenue (Million NZD)", fontproperties=F_SEMI, fontsize=10.5, color="#475569", labelpad=10)
     ax.set_title(
         "New Zealand Spreads Category Revenue by Price Tier (2022 vs 2025)",
-        fontsize=13,
-        fontweight="bold",
+        fontproperties=F_BOLD,
+        fontsize=13.0,
         color="#240340",
         pad=16,
     )
 
-    ax.grid(axis="y", linestyle="--", alpha=0.4, color="#CBD5E1", zorder=0)
+    ax.grid(axis="y", linestyle="--", alpha=0.5, color="#CBD5E1", zorder=0)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.spines["left"].set_color("#E2E8F0")
+    ax.spines["left"].set_color("#CBD5E1")
     ax.spines["bottom"].set_color("#CBD5E1")
-    ax.tick_params(axis="y", colors="#64748B", labelsize=9.5)
+
+    ax.tick_params(axis="y", colors="#64748B")
+    for label in ax.get_yticklabels():
+        label.set_fontproperties(F_MED)
+        label.set_fontsize(9.5)
+
     ax.tick_params(axis="x", colors="#1A1024", length=0)
     ax.set_ylim(0, max(totals.max()) * 1.18)
 
     legend = ax.legend(
         frameon=True,
-        facecolor="#F8FAFC",
-        edgecolor="#E2E8F0",
-        fontsize=9.5,
+        facecolor=CONTAINER_BG,
+        edgecolor="#CBD5E1",
         loc="upper left",
     )
     for text in legend.get_texts():
+        text.set_fontproperties(F_SEMI)
+        text.set_fontsize(9.5)
         text.set_color("#1A1024")
-        text.set_fontweight("bold")
 
     fig.tight_layout()
-    fig.savefig(OUT / "02-spreads-revenue-by-tier-2022-vs-2025.png", dpi=200)
+    fig.savefig(OUT / "02-spreads-revenue-by-tier-2022-vs-2025.png", dpi=200, facecolor=CONTAINER_BG)
     plt.close(fig)
 
 
@@ -219,15 +241,15 @@ def price_distribution(frame: pd.DataFrame) -> None:
     ].median()
 
     fig, ax = plt.subplots(figsize=(8.5, 4.8), dpi=200)
-    fig.patch.set_facecolor("white")
-    ax.set_facecolor("white")
+    fig.patch.set_facecolor(CONTAINER_BG)
+    ax.set_facecolor(CONTAINER_BG)
 
     # Histogram with Stamp brand colors
     n, bins, patches = ax.hist(
         sku["price_per_100g"],
         bins=26,
         color="#240340",
-        edgecolor="white",
+        edgecolor=CONTAINER_BG,
         linewidth=1.2,
         zorder=3,
     )
@@ -244,14 +266,14 @@ def price_distribution(frame: pd.DataFrame) -> None:
     p90 = sku["price_per_100g"].quantile(0.9)
     ax.axvline(p90, color="#FF8C30", linestyle="--", linewidth=1.8, zorder=4)
 
-    # Annotations
+    # Annotations in Manrope
     ylim = ax.get_ylim()[1]
     ax.text(
         stamp_price + 0.15,
         ylim * 0.88,
         "STAMP: $6.25 / 100 g\nFormat Innovation Premium",
+        fontproperties=F_BOLD,
         fontsize=9.5,
-        fontweight="bold",
         color="#A21CAF",
         va="top",
     )
@@ -260,33 +282,41 @@ def price_distribution(frame: pd.DataFrame) -> None:
         p90 - 0.15,
         ylim * 0.72,
         f"90th Percentile: ${p90:.2f} / 100 g",
+        fontproperties=F_SEMI,
         fontsize=8.5,
-        fontweight="bold",
         color="#C2410C",
         ha="right",
         va="top",
     )
 
-    ax.set_xlabel("Shelf Price per 100 g (NZD)", fontsize=10.5, fontweight="bold", color="#475569", labelpad=8)
-    ax.set_ylabel("Number of Branded Spread SKUs", fontsize=10.5, fontweight="bold", color="#475569", labelpad=8)
+    ax.set_xlabel("Shelf Price per 100 g (NZD)", fontproperties=F_SEMI, fontsize=10.5, color="#475569", labelpad=8)
+    ax.set_ylabel("Number of Branded Spread SKUs", fontproperties=F_SEMI, fontsize=10.5, color="#475569", labelpad=8)
     ax.set_title(
         "Shelf Price Distribution Across 154 Branded New Zealand Spread SKUs",
-        fontsize=13,
-        fontweight="bold",
+        fontproperties=F_BOLD,
+        fontsize=13.0,
         color="#240340",
         pad=16,
     )
 
-    ax.grid(axis="y", linestyle="--", alpha=0.4, color="#CBD5E1", zorder=0)
+    ax.grid(axis="y", linestyle="--", alpha=0.5, color="#CBD5E1", zorder=0)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.spines["left"].set_color("#E2E8F0")
+    ax.spines["left"].set_color("#CBD5E1")
     ax.spines["bottom"].set_color("#CBD5E1")
-    ax.tick_params(axis="y", colors="#64748B", labelsize=9.5)
-    ax.tick_params(axis="x", colors="#1A1024", labelsize=9.5)
+
+    ax.tick_params(axis="y", colors="#64748B")
+    for label in ax.get_yticklabels():
+        label.set_fontproperties(F_MED)
+        label.set_fontsize(9.5)
+
+    ax.tick_params(axis="x", colors="#1A1024")
+    for label in ax.get_xticklabels():
+        label.set_fontproperties(F_MED)
+        label.set_fontsize(9.5)
 
     fig.tight_layout()
-    fig.savefig(OUT / "03-branded-spreads-price-per-100g.png", dpi=200)
+    fig.savefig(OUT / "03-branded-spreads-price-per-100g.png", dpi=200, facecolor=CONTAINER_BG)
     plt.close(fig)
 
     quantiles = sku["price_per_100g"].quantile([0.1, 0.25, 0.5, 0.75, 0.9])
@@ -301,7 +331,7 @@ def main() -> None:
     quarterly_revenue(frame)
     tier_comparison(frame)
     price_distribution(frame)
-    print("Successfully regenerated branded figures in data/figures/")
+    print("Successfully regenerated branded figures with matching container background and Manrope typography")
 
 
 if __name__ == "__main__":
