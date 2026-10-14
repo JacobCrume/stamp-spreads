@@ -2,7 +2,6 @@
 	import type { Snippet } from 'svelte';
 	import ChatWidget from '../lib/ChatWidget.svelte';
 	import Wordmark from '../lib/Wordmark.svelte';
-	import MorphCursor from '../lib/MorphCursor.svelte';
 	import { colorScheme } from '../lib/theme.svelte';
 
 	let { children }: { children: Snippet } = $props();
@@ -100,13 +99,6 @@
 		</div>
 	</footer>
 </div>
-
-<!-- FLUID MORPHING CURSOR -->
-<MorphCursor
-	primaryColor={colorScheme.primary}
-	secondaryColor={colorScheme.secondary}
-	tertiaryColor={colorScheme.tertiary}
-/>
 
 <style>
 	@font-face {
@@ -231,6 +223,10 @@
 		justify-content: center;
 	}
 
+	.nav-link:hover {
+		background: rgba(255, 255, 255, 0.12);
+	}
+
 	.chat-btn {
 		background: var(--color-primary);
 		color: var(--color-tertiary);
@@ -241,11 +237,12 @@
 		letter-spacing: 0.03em;
 		border: none;
 		cursor: pointer;
-		transition: transform 0.15s ease, background-color 0.2s ease, color 0.2s ease;
+		transition: transform 0.15s ease, opacity 0.15s ease;
 	}
 
 	.chat-btn:hover {
 		transform: scale(1.04);
+		opacity: 0.92;
 	}
 
 	.site-main {
