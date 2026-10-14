@@ -96,14 +96,6 @@
 			Single-serve 10 g spread discs on release film. Pressed onto hot toast, it softens into an even layer in seconds — no knife, no messy jar, no wash-up.
 		</p>
 
-		<!-- Packshot Showcase (Flat Solid, Zero Outlines) -->
-		<div class="hero-pack-showcase">
-			<div class="hero-pack-wrap">
-				<img src="/pack.png" alt="STAMP 8-Stamp Sheet" class="hero-pack-img" />
-				<div class="hero-pack-pill">8 DISCS · 80 g</div>
-			</div>
-		</div>
-
 		<div class="hero-badges-row">
 			<span class="hero-badge">$5.00 NZD / Sheet</span>
 			<span class="hero-badge">12-Month Pantry Stable</span>
@@ -590,39 +582,6 @@
 		margin: 0 auto;
 		font-weight: 600;
 		opacity: 0.95;
-	}
-
-	.hero-pack-showcase {
-		margin: 0.4rem 0 0.2rem;
-		display: flex;
-		justify-content: center;
-	}
-
-	.hero-pack-wrap {
-		position: relative;
-		max-width: 290px;
-		width: 100%;
-	}
-
-	.hero-pack-img {
-		width: 100%;
-		max-height: 230px;
-		object-fit: contain;
-		border-radius: 16px;
-	}
-
-	.hero-pack-pill {
-		position: absolute;
-		top: -8px;
-		right: -8px;
-		background: var(--color-primary);
-		color: var(--color-tertiary);
-		font-weight: 900;
-		font-size: 0.75rem;
-		letter-spacing: 0.08em;
-		padding: 0.35rem 0.8rem;
-		border-radius: 9999px;
-		transform: rotate(5deg);
 	}
 
 	.hero-badges-row {
