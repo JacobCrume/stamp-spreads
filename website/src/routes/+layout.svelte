@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import ChatWidget from '../lib/ChatWidget.svelte';
 	let { children }: { children: Snippet } = $props();
 </script>
 
@@ -28,6 +29,8 @@
 	<main class="site-main">
 		{@render children()}
 	</main>
+
+	<ChatWidget />
 
 	<footer class="site-footer">
 		<div class="footer-inner">
