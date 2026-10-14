@@ -9,9 +9,6 @@
 	let innerHeight = $state(800);
 	let innerWidth = $state(1200);
 
-	// Explosion on threshold
-	let isExploded = $state(false);
-
 	// Interactive 3D lift & flip state for each flavour card
 	let flipped: Record<string, boolean> = $state({
 		butter: false,
@@ -60,18 +57,6 @@
 		}
 	});
 
-	// Trigger explosion on threshold
-	$effect(() => {
-		const stepsEl = document.getElementById('steps-section');
-		if (stepsEl) {
-			const rect = stepsEl.getBoundingClientRect();
-			if (rect.top < innerHeight * 0.55 && !isExploded) {
-				isExploded = true;
-			} else if (rect.top > innerHeight * 0.85 && isExploded) {
-				isExploded = false;
-			}
-		}
-	});
 </script>
 
 <svelte:window bind:scrollY bind:innerHeight bind:innerWidth />
@@ -120,23 +105,9 @@
 			Forget sticky jars, table knives, and office sinks. Breakfast happens in three rapid moves.
 		</p>
 
-		<!-- Threshold Explosion Status & Interactive Toggle -->
-		<div class="threshold-control-bar">
-			<button
-				type="button"
-				class="threshold-btn"
-				onclick={() => (isExploded = !isExploded)}
-			>
-				{isExploded ? '↺ Reset 3 Steps' : '💥 Trigger Explosion'}
-			</button>
-			<span class="threshold-status">
-				{isExploded ? 'Steps exploded past threshold' : 'Scroll past threshold or click to trigger'}
-			</span>
-		</div>
-
-		<div class="steps-grid {isExploded ? 'exploded' : ''}">
-			<!-- Step 1: Explodes Top-Left on threshold -->
-			<div class="step-card step-card-1 {isExploded ? 'blast-tl' : ''}">
+		<div class="steps-grid">
+			<!-- Step 1 -->
+			<div class="step-card">
 				<div class="step-badge">01</div>
 				<h3 class="step-label">PEEL</h3>
 				<p class="step-text">
@@ -145,8 +116,8 @@
 				<div class="flat-rule"></div>
 			</div>
 
-			<!-- Step 2: Blasts Downwards on threshold -->
-			<div class="step-card step-card-2 {isExploded ? 'blast-down' : ''}">
+			<!-- Step 2 -->
+			<div class="step-card">
 				<div class="step-badge">02</div>
 				<h3 class="step-label">PRESS</h3>
 				<p class="step-text">
@@ -155,8 +126,8 @@
 				<div class="flat-rule"></div>
 			</div>
 
-			<!-- Step 3: Explodes Top-Right on threshold -->
-			<div class="step-card step-card-3 {isExploded ? 'blast-tr' : ''}">
+			<!-- Step 3 -->
+			<div class="step-card">
 				<div class="step-badge">03</div>
 				<h3 class="step-label">SPREAD</h3>
 				<p class="step-text">
@@ -165,15 +136,6 @@
 				<div class="flat-rule"></div>
 			</div>
 		</div>
-
-		{#if isExploded}
-			<div class="exploded-banner">
-				<div class="alert-box">
-					<span class="alert-icon">⚡</span>
-					<span>STEPS DISPERSED · PROCEED TO 4 LAUNCH FLAVOURS BELOW</span>
-				</div>
-			</div>
-		{/if}
 	</div>
 </section>
 
@@ -195,28 +157,21 @@
 					</div>
 				</div>
 
-				<!-- Animated Lift & Flip Button (Flat Solid Pill, No Outlines) -->
+				<!-- Simple Round Icon Flip Button -->
 				<button
 					type="button"
-					class="flat-flip-trigger"
+					class="round-flip-btn"
 					class:is-flipped={flipped.butter}
 					onclick={() => toggleFlip('butter')}
-					aria-label="Lift and flip Salted Butter card"
+					aria-label={flipped.butter ? 'Flip to front of Salted Butter pack' : 'Flip to back of Salted Butter pack (nutrition & ingredients)'}
+					title={flipped.butter ? 'Flip to front' : 'Flip to back ingredients'}
 				>
-					<span class="flip-icon-wrap" class:is-rotated={flipped.butter}>
-						<svg class="flip-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-							<path d="M21 2v6h-6"></path>
-							<path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
-							<path d="M3 22v-6h6"></path>
-							<path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
-						</svg>
-					</span>
-					<span class="flip-btn-text">
-						{flipped.butter ? 'Flip To Front Pack' : 'Lift & Flip: View Back Ingredients'}
-					</span>
-					<span class="flip-badge-pill">
-						{flipped.butter ? 'BACK PANEL' : '3D LIFT'}
-					</span>
+					<svg class="flip-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M21 2v6h-6"></path>
+						<path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+						<path d="M3 22v-6h6"></path>
+						<path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+					</svg>
 				</button>
 			</div>
 
@@ -269,28 +224,21 @@
 					</div>
 				</div>
 
-				<!-- Animated Lift & Flip Button (Flat Solid Pill, No Outlines) -->
+				<!-- Simple Round Icon Flip Button -->
 				<button
 					type="button"
-					class="flat-flip-trigger"
+					class="round-flip-btn"
 					class:is-flipped={flipped.raspberry}
 					onclick={() => toggleFlip('raspberry')}
-					aria-label="Lift and flip Raspberry card"
+					aria-label={flipped.raspberry ? 'Flip to front of Raspberry pack' : 'Flip to back of Raspberry pack (nutrition & ingredients)'}
+					title={flipped.raspberry ? 'Flip to front' : 'Flip to back ingredients'}
 				>
-					<span class="flip-icon-wrap" class:is-rotated={flipped.raspberry}>
-						<svg class="flip-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-							<path d="M21 2v6h-6"></path>
-							<path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
-							<path d="M3 22v-6h6"></path>
-							<path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
-						</svg>
-					</span>
-					<span class="flip-btn-text">
-						{flipped.raspberry ? 'Flip To Front Pack' : 'Lift & Flip: View Back Ingredients'}
-					</span>
-					<span class="flip-badge-pill">
-						{flipped.raspberry ? 'BACK PANEL' : '3D LIFT'}
-					</span>
+					<svg class="flip-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M21 2v6h-6"></path>
+						<path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+						<path d="M3 22v-6h6"></path>
+						<path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+					</svg>
 				</button>
 			</div>
 
@@ -343,28 +291,21 @@
 					</div>
 				</div>
 
-				<!-- Animated Lift & Flip Button (Flat Solid Pill, No Outlines) -->
+				<!-- Simple Round Icon Flip Button -->
 				<button
 					type="button"
-					class="flat-flip-trigger"
+					class="round-flip-btn"
 					class:is-flipped={flipped.yeast}
 					onclick={() => toggleFlip('yeast')}
-					aria-label="Lift and flip Yeast Extract card"
+					aria-label={flipped.yeast ? 'Flip to front of Yeast Extract pack' : 'Flip to back of Yeast Extract pack (nutrition & ingredients)'}
+					title={flipped.yeast ? 'Flip to front' : 'Flip to back ingredients'}
 				>
-					<span class="flip-icon-wrap" class:is-rotated={flipped.yeast}>
-						<svg class="flip-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-							<path d="M21 2v6h-6"></path>
-							<path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
-							<path d="M3 22v-6h6"></path>
-							<path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
-						</svg>
-					</span>
-					<span class="flip-btn-text">
-						{flipped.yeast ? 'Flip To Front Pack' : 'Lift & Flip: View Back Ingredients'}
-					</span>
-					<span class="flip-badge-pill">
-						{flipped.yeast ? 'BACK PANEL' : '3D LIFT'}
-					</span>
+					<svg class="flip-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M21 2v6h-6"></path>
+						<path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+						<path d="M3 22v-6h6"></path>
+ 						<path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+					</svg>
 				</button>
 			</div>
 
@@ -417,28 +358,21 @@
 					</div>
 				</div>
 
-				<!-- Animated Lift & Flip Button (Flat Solid Pill, No Outlines) -->
+				<!-- Simple Round Icon Flip Button -->
 				<button
 					type="button"
-					class="flat-flip-trigger"
+					class="round-flip-btn"
 					class:is-flipped={flipped.peanut}
 					onclick={() => toggleFlip('peanut')}
-					aria-label="Lift and flip Roasted Peanut card"
+					aria-label={flipped.peanut ? 'Flip to front of Roasted Peanut pack' : 'Flip to back of Roasted Peanut pack (nutrition & ingredients)'}
+					title={flipped.peanut ? 'Flip to front' : 'Flip to back ingredients'}
 				>
-					<span class="flip-icon-wrap" class:is-rotated={flipped.peanut}>
-						<svg class="flip-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-							<path d="M21 2v6h-6"></path>
-							<path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
-							<path d="M3 22v-6h6"></path>
-							<path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
-						</svg>
-					</span>
-					<span class="flip-btn-text">
-						{flipped.peanut ? 'Flip To Front Pack' : 'Lift & Flip: View Back Ingredients'}
-					</span>
-					<span class="flip-badge-pill">
-						{flipped.peanut ? 'BACK PANEL' : '3D LIFT'}
-					</span>
+					<svg class="flip-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M21 2v6h-6"></path>
+						<path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+						<path d="M3 22v-6h6"></path>
+						<path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+					</svg>
 				</button>
 			</div>
 
@@ -529,10 +463,8 @@
 	.hero-btn-primary,
 	.hero-btn-secondary,
 	.step-card,
-	.threshold-btn,
-	.alert-box,
 	.flip-face,
-	.flat-flip-trigger,
+	.round-flip-btn,
 	.flat-spec-item,
 	.flat-callout,
 	.flat-price-card,
@@ -694,40 +626,6 @@
 		line-height: 1.5;
 	}
 
-	.threshold-control-bar {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 1rem;
-		margin-bottom: 3.5rem;
-		flex-wrap: wrap;
-	}
-
-	.threshold-btn {
-		font-family: inherit;
-		font-weight: 900;
-		font-size: 0.95rem;
-		padding: 0.7rem 1.6rem;
-		border-radius: 9999px;
-		cursor: pointer;
-		border: none;
-		background: var(--color-primary);
-		color: var(--color-secondary);
-		letter-spacing: 0.04em;
-		transition: all 0.15s ease;
-	}
-
-	.threshold-btn:hover {
-		transform: scale(1.05);
-	}
-
-	.threshold-status {
-		font-size: 0.88rem;
-		color: var(--color-primary);
-		font-weight: 700;
-		letter-spacing: 0.03em;
-	}
-
 	.steps-grid {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
@@ -747,23 +645,8 @@
 		background: var(--color-tertiary);
 		color: #ffffff;
 		transition:
-			transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-			opacity 0.65s ease,
 			background-color 0.45s ease,
 			color 0.45s ease;
-	}
-
-	/* Explosive Dispersal Transforms on Threshold */
-	.step-card-1.blast-tl {
-		transform: translate(-45px, -40px) rotate(-6deg);
-	}
-
-	.step-card-2.blast-down {
-		transform: translate(0, 50px) scale(1.04);
-	}
-
-	.step-card-3.blast-tr {
-		transform: translate(45px, -40px) rotate(6deg);
 	}
 
 	.step-badge {
@@ -796,26 +679,6 @@
 		border-radius: 999px;
 		margin-top: 1.5rem;
 		background: var(--color-primary);
-	}
-
-	.exploded-banner {
-		margin-top: 3.5rem;
-		display: flex;
-		justify-content: center;
-	}
-
-	.alert-box {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.75rem;
-		background: var(--color-primary);
-		color: var(--color-secondary);
-		padding: 0.7rem 1.6rem;
-		border-radius: 9999px;
-		font-weight: 900;
-		font-size: 0.85rem;
-		letter-spacing: 0.08em;
-		border: none;
 	}
 
 	/* SECTIONS 3-6: IMMERSIVE FLAVOUR SCREENS (FLAT, ZERO OUTLINES) */
@@ -884,75 +747,40 @@
 		transform: rotateY(180deg);
 	}
 
-	/* ANIMATED LIFT & FLIP BUTTON (FLAT SOLID PILL, ZERO OUTLINES) */
-	.flat-flip-trigger {
+	/* SIMPLE ROUND ICON FLIP BUTTON */
+	.round-flip-btn {
+		width: 56px;
+		height: 56px;
+		border-radius: 50%;
+		border: none;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		gap: 0.65rem;
-		font-family: inherit;
-		font-weight: 900;
-		font-size: 0.9rem;
-		padding: 0.8rem 1.7rem;
-		border-radius: 9999px;
 		cursor: pointer;
-		border: none;
 		background: var(--color-tertiary);
 		color: var(--color-primary);
-		letter-spacing: 0.03em;
-		transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.45s, color 0.45s;
-		animation: flipButtonPulse 3s ease-in-out infinite;
+		transition:
+			transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+			background-color 0.45s ease,
+			color 0.45s ease;
 	}
 
-	@keyframes flipButtonPulse {
-		0%, 100% {
-			transform: translateY(0);
-		}
-		50% {
-			transform: translateY(-3px);
-		}
+	.round-flip-btn:hover {
+		transform: scale(1.12);
 	}
 
-	.flat-flip-trigger:hover {
-		animation: none;
-		transform: translateY(-4px) scale(1.03);
+	.round-flip-btn:active {
+		transform: scale(0.92);
 	}
 
-	.flat-flip-trigger:active {
-		transform: translateY(2px) scale(0.97);
-	}
-
-	.flip-icon-wrap {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
+	.round-flip-btn .flip-svg {
+		width: 26px;
+		height: 26px;
 		transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 	}
 
-	.flip-icon-wrap.is-rotated {
+	.round-flip-btn.is-flipped .flip-svg {
 		transform: rotate(180deg);
-	}
-
-	.flat-flip-trigger:hover .flip-icon-wrap {
-		transform: rotate(180deg);
-	}
-	.flat-flip-trigger.is-flipped:hover .flip-icon-wrap {
-		transform: rotate(360deg);
-	}
-
-	.flip-svg {
-		width: 18px;
-		height: 18px;
-	}
-
-	.flip-badge-pill {
-		font-size: 0.68rem;
-		font-weight: 900;
-		padding: 0.2rem 0.55rem;
-		border-radius: 999px;
-		background: currentColor;
-		opacity: 0.22;
-		letter-spacing: 0.05em;
 	}
 
 	.flavour-copy-side {
@@ -1174,11 +1002,6 @@
 		.steps-grid {
 			grid-template-columns: 1fr;
 			gap: 1.5rem;
-		}
-		.step-card-1.blast-tl,
-		.step-card-2.blast-down,
-		.step-card-3.blast-tr {
-			transform: none;
 		}
 		.flavour-content-grid {
 			grid-template-columns: 1fr;
