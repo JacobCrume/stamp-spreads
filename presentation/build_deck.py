@@ -556,7 +556,7 @@ def build_presentation(work_dir: Path):
     p_bot.alignment = PP_ALIGN.CENTER
 
     slide1.notes_slide.notes_text_frame.text = (
-        "TITLE (0:00–0:07)\n"
+        "[0:00–0:06 | 6s]\n"
         "Kia ora. I'm Jacob, and this is Stamp: a New Zealand breakfast spread innovation engineered for hot toast."
     )
 
@@ -575,7 +575,10 @@ def build_presentation(work_dir: Path):
         line1_size=22,
         line2_size=46,
         line3_size=22,
-        notes="PROBLEM (0:07–0:14)\nEating toast away from a full residential kitchen is fundamentally broken.",
+        notes=(
+            "[0:06–0:11 | 5s]\n"
+            "Eating toast away from a full residential kitchen is fundamentally broken. Jars require infrastructure."
+        ),
     )
 
     # Slide 3: Who Fails
@@ -592,7 +595,10 @@ def build_presentation(work_dir: Path):
         line1_size=44,
         line2_size=26,
         line3_size=22,
-        notes="WHO FAILS (0:14–0:21)\nIn an office or student flat, nobody wants to lug a sticky jar, hunt for a knife, and wash it in a shared sink.",
+        notes=(
+            "[0:11–0:17 | 6s]\n"
+            "Desk workers, students in dorms, and commuters can't lug sticky 500-gram glass jars or hunt for knives in shared office kitchens."
+        ),
     )
 
     # Slide 4: The Unmet Need
@@ -609,7 +615,10 @@ def build_presentation(work_dir: Path):
         line1_size=44,
         line2_size=26,
         line3_size=22,
-        notes="UNMET NEED (0:21–0:28)\nBecause jars are tethered to kitchens, consumers compromise on dry bars or skip breakfast altogether.",
+        notes=(
+            "[0:17–0:23 | 6s]\n"
+            "Tethered to kitchen counters, millions abandon toast for dry cereal bars. Portability has never existed for real breakfast spreads."
+        ),
     )
 
     # -----------------------------------------------------------------------
@@ -626,7 +635,10 @@ def build_presentation(work_dir: Path):
         img_path=figs["four_packs"],
         img_width=10.2,
         img_top=2.45,
-        notes="SOLUTION SHOWCASE (0:28–0:36)\nStamp reinvents the format: calibrated 10-gram spread discs on release film across four launch flavours.",
+        notes=(
+            "[0:23–0:31 | 8s]\n"
+            "Stamp reinvents the category with calibrated 10-gram spread discs on release film across four iconic flavours: Salted Butter, Raspberry, Yeast, and Peanut."
+        ),
     )
 
     # Slide 6: The Physical Gesture (Zero Cutlery / Thermal Melt)
@@ -643,7 +655,10 @@ def build_presentation(work_dir: Path):
         line1_size=44,
         line2_size=26,
         line3_size=20,
-        notes="GESTURE (0:36–0:43)\nYou press the disc onto hot bread, and residual thermal energy melts it evenly across the crumb in seconds.",
+        notes=(
+            "[0:31–0:38 | 7s]\n"
+            "You peel off the release liner and press the disc directly onto hot bread. Residual toast heat melts it in seconds—zero cutlery required."
+        ),
     )
 
     # Slide 7: Form Factor & Shelf Stability
@@ -660,7 +675,10 @@ def build_presentation(work_dir: Path):
         line1_size=44,
         line2_size=24,
         line3_size=20,
-        notes="STABILITY & FORMAT (0:43–0:50)\nEngineered for room-temperature pantry and bag storage with full 12-month ambient stability.",
+        notes=(
+            "[0:38–0:44 | 6s]\n"
+            "High-stability emulsions deliver 12 months of ambient pantry life in slim, pocket-sized 8-stamp card sheets with zero refrigeration."
+        ),
     )
 
     # -----------------------------------------------------------------------
@@ -675,7 +693,10 @@ def build_presentation(work_dir: Path):
         metric_number="$341M Category",
         headline="New Zealand Spreads Market.",
         detail="+24% category revenue growth across 2022–2025.",
-        notes="MARKET SCALE (0:50–0:57)\nCleaned supermarket scan data shows the New Zealand spreads category expanded 24% to 341 million dollars.",
+        notes=(
+            "[0:44–0:50 | 6s]\n"
+            "Cleaned retail supermarket scan data shows the New Zealand spreads market expanded 24% to a 341 million dollar category."
+        ),
     )
 
     # Slide 9: Premium Shift Visual (Tier Growth Chart)
@@ -688,7 +709,10 @@ def build_presentation(work_dir: Path):
         img_path=figs["tier"],
         img_width=6.6,
         img_top=2.35,
-        notes="PREMIUM SURGE (0:57–1:05)\nPremium branded spreads surged 29% to 113 million dollars, massively outperforming commodity tiers.",
+        notes=(
+            "[0:50–0:58 | 8s]\n"
+            "Premium spreads surged 29% from 88 million to 113 million dollars, proving kiwi consumers actively trade up for quality and portion convenience."
+        ),
     )
 
     # Slide 10: Competitive Void
@@ -699,7 +723,10 @@ def build_presentation(work_dir: Path):
         metric_number="0 Rivals",
         headline="Across 154 Supermarket Spreads.",
         detail="Zero single-serve or utensil-free formats in NZ retail.",
-        notes="COMPETITIVE VOID (1:05–1:12)\nAcross 154 supermarket spreads, every single product is a jar. Not one offers a utensil-free portion format.",
+        notes=(
+            "[0:58–1:04 | 6s]\n"
+            "Across 154 supermarket spreads, every rival is a bulk glass jar. Zero single-serve or utensil-free formats exist in retail."
+        ),
     )
 
     # Slide 11: Unit Economics
@@ -710,7 +737,10 @@ def build_presentation(work_dir: Path):
         metric_number="35% Gross Margin",
         headline="$5.00 Retail • $1.75 Margin per Pack.",
         detail="63¢ per serving on an assumed $1.50 contract packaging cost.",
-        notes="UNIT ECONOMICS (1:12–1:19)\nAt 63 cents a serving, we retain a strong $1.75 gross margin to fund distribution and marketing.",
+        notes=(
+            "[1:04–1:11 | 7s]\n"
+            "At five dollars retail—just 63 cents a serving—we capture a 35% gross margin, netting one-seventy-five per pack to fund expansion."
+        ),
     )
 
     # -----------------------------------------------------------------------
@@ -727,7 +757,10 @@ def build_presentation(work_dir: Path):
         img_path=figs["process"],
         img_width=8.0,
         img_top=2.5,
-        notes="MANUFACTURING (1:19–1:27)\nProduction leverages existing contract rotary-die deposition lines, eliminating custom factory tooling.",
+        notes=(
+            "[1:11–1:18 | 7s]\n"
+            "Production uses standard contract rotary-die continuous deposit lines onto food-grade release liner with zero custom tooling outlay."
+        ),
     )
 
     # Slide 13: Lean Capex Pilot
@@ -744,7 +777,10 @@ def build_presentation(work_dir: Path):
         line1_size=44,
         line2_size=24,
         line3_size=20,
-        notes="LEAN PILOT (1:27–1:35)\nBy partnering with established contract packers in Auckland, we validate consumer demand with minimal capex.",
+        notes=(
+            "[1:18–1:25 | 7s]\n"
+            "Partnering with established Auckland contract packagers lets us validate supermarket demand with minimal initial capital expenditure."
+        ),
     )
 
     # -----------------------------------------------------------------------
@@ -762,7 +798,10 @@ def build_presentation(work_dir: Path):
         line1_size=22,
         line2_size=46,
         line3_size=22,
-        notes="CONSTRAINTS (1:35–1:48)\nIn steering AI, I enforced strict negative prompt constraints against fake certification badges and medical health claims.",
+        notes=(
+            "[1:25–1:36 | 11s]\n"
+            "In steering the models, my most effective tool was negative prompt constraints—explicitly barring fake organic certifications, miracle health claims, and hyperbolic advertising jargon."
+        ),
     )
 
     # Slide 15: Modular Session Architecture
@@ -776,7 +815,10 @@ def build_presentation(work_dir: Path):
         line2_color="primary",
         line1_size=46,
         line2_size=24,
-        notes="ARCHITECTURE (1:48–2:00)\nI partitioned distinct sessions for data cleaning, branding, and copy to prevent context rot and hallucinated metrics.",
+        notes=(
+            "[1:36–1:47 | 11s]\n"
+            "To prevent context drift, I partitioned distinct modular sessions for data cleaning, branding, packaging copy, and financial modeling, passing clean intermediate summaries between them."
+        ),
     )
 
     # Slide 16: The Turning Point: Catching Spoilage
@@ -793,7 +835,10 @@ def build_presentation(work_dir: Path):
         line1_size=44,
         line2_size=26,
         line3_size=22,
-        notes="TURNING POINT (2:00–2:12)\nMy pivotal turning point was catching an unrealistic AI claim that dairy butter could sit ambiently without spoilage.",
+        notes=(
+            "[1:47–2:00 | 13s]\n"
+            "My pivotal moment occurred when the AI claimed standard churned butter could sit ambiently for 12 months. Catching this spoilage hallucination forced reformulation to a low-water-activity cultured dairy spread."
+        ),
     )
 
     # Slide 17: AI as Drafter, Not Director
@@ -807,7 +852,10 @@ def build_presentation(work_dir: Path):
         line2_color="primary",
         line1_size=44,
         line2_size=24,
-        notes="VERIFICATION (2:12–2:22)\nI audited raw scan data outliers and manually verified shelf prices on New World instead of trusting model summaries.",
+        notes=(
+            "[2:00–2:11 | 11s]\n"
+            "I treated AI strictly as a junior drafter. I audited raw supermarket scan outliers and manually verified retail shelf prices rather than accepting model summaries."
+        ),
     )
 
     # -----------------------------------------------------------------------
@@ -828,7 +876,10 @@ def build_presentation(work_dir: Path):
         line1_size=46,
         line2_size=26,
         line3_size=24,
-        notes="AUTHENTICITY (2:22–2:30)\nTo combat AI slop, I stripped corporate clichés and grounded packaging in real continuous deposit tooling.",
+        notes=(
+            "[2:11–2:21 | 10s]\n"
+            "To combat AI slop, I stripped corporate clichés in favour of grounded physical facts: Peel. Press. Toast., anchored in real contract manufacturing capabilities."
+        ),
     )
 
     # Slide 19: Zero Hallucination Tolerance
@@ -842,7 +893,10 @@ def build_presentation(work_dir: Path):
         line2_color="primary",
         line1_size=46,
         line2_size=24,
-        notes="REGULATION (2:30–2:38)\nIn food and beverage, AI hallucinations are a severe legal hazard. I enforced strict FSANZ compliance and allergen safety.",
+        notes=(
+            "[2:21–2:32 | 11s]\n"
+            "In food and beverage, AI hallucinations are a lethal liability. I enforced strict FSANZ compliance and made allergen callouts prominent—errors here risk anaphylaxis."
+        ),
     )
 
     # Slide 20: Human Accountability
@@ -856,7 +910,10 @@ def build_presentation(work_dir: Path):
         line2_color="primary",
         line1_size=46,
         line2_size=24,
-        notes="ETHICS & WRAP (2:38–2:45)\nGenerative AI accelerates velocity, but human skepticism, taste, discernment, and moral ownership remain essential.",
+        notes=(
+            "[2:32–2:45 | 13s]\n"
+            "Ultimately, moral and legal accountability can never be outsourced to an algorithm. Generative AI accelerates drafting velocity, but human skepticism, discernment, and ethical ownership remain indispensable."
+        ),
     )
 
     OUT_PPTX.parent.mkdir(parents=True, exist_ok=True)
