@@ -160,7 +160,7 @@
 
 		<!-- CRISP 2-COLUMN GRID ALIGNED TO STRICT BASELINE -->
 		<div class="specs-main-grid">
-			<!-- LEFT COLUMN: PACK VIEWER WITH FLIP BUTTON -->
+			<!-- LEFT COLUMN: PACK VIEWER WITH ROUND ICON FLIP BUTTON -->
 			<div class="pack-panel">
 				<div class="pack-stage">
 					<div class="pack-card" class:flipped={isFlipped}>
@@ -173,19 +173,21 @@
 					</div>
 				</div>
 
+				<!-- Simple Round Icon Flip Button (Matches Main Page) -->
 				<button
 					type="button"
-					class="flip-btn"
+					class="round-flip-btn"
+					class:is-flipped={isFlipped}
 					onclick={toggleFlip}
-					aria-label={isFlipped ? 'View pack front' : 'View pack back and nutrition panel'}
+					aria-label={isFlipped ? 'Flip to pack front' : 'Flip to pack back (nutrition & ingredients)'}
+					title={isFlipped ? 'Flip to front' : 'Flip to back ingredients'}
 				>
-					<svg class="flip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+					<svg class="flip-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
 						<path d="M21 2v6h-6"></path>
 						<path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
 						<path d="M3 22v-6h6"></path>
 						<path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
 					</svg>
-					<span>{isFlipped ? 'View Front Panel' : 'View Nutrition & Back'}</span>
 				</button>
 			</div>
 
@@ -262,14 +264,6 @@
 						</div>
 					</div>
 				</div>
-
-				<!-- SUBTLE MIXED PACK ACCORD -->
-				<div class="mixed-note-row">
-					<span class="note-pill">Mixed Sheet</span>
-					<p class="note-text">
-						Available with 2× Butter, 2× Raspberry, 2× Yeast, 2× Peanut for $5.00 NZD (contains milk, gluten, peanuts).
-					</p>
-				</div>
 			</div>
 		</div>
 	</div>
@@ -280,8 +274,8 @@
 		min-height: 100vh;
 		background: transparent;
 		color: #ffffff;
-		padding-top: 6rem;
-		padding-bottom: 4rem;
+		padding-top: 8.5rem;
+		padding-bottom: 5rem;
 		font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 	}
 
@@ -403,30 +397,41 @@
 		transform: rotateY(180deg);
 	}
 
-	.flip-btn {
-		background: var(--color-tertiary);
-		color: var(--color-primary);
+	/* SIMPLE ROUND ICON FLIP BUTTON */
+	.round-flip-btn {
+		width: 54px;
+		height: 54px;
+		border-radius: 50%;
 		border: none;
-		border-radius: 9999px;
-		padding: 0.6rem 1.4rem;
-		cursor: pointer;
 		display: inline-flex;
 		align-items: center;
-		gap: 0.6rem;
-		font-family: inherit;
-		font-size: 0.85rem;
-		font-weight: 800;
-		box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
-		transition: transform 0.15s, background-color 0.45s ease, color 0.45s ease;
+		justify-content: center;
+		cursor: pointer;
+		background: var(--color-tertiary);
+		color: var(--color-primary);
+		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+		transition:
+			transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+			background-color 0.45s ease,
+			color 0.45s ease;
 	}
 
-	.flip-btn:hover {
-		transform: scale(1.05);
+	.round-flip-btn:hover {
+		transform: scale(1.12);
 	}
 
-	.flip-icon {
-		width: 17px;
-		height: 17px;
+	.round-flip-btn:active {
+		transform: scale(0.92);
+	}
+
+	.round-flip-btn .flip-svg {
+		width: 25px;
+		height: 25px;
+		transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+
+	.round-flip-btn.is-flipped .flip-svg {
+		transform: rotate(180deg);
 	}
 
 	/* DATA PANEL */
@@ -576,34 +581,6 @@
 		text-transform: uppercase;
 		color: var(--color-primary);
 		letter-spacing: 0.03em;
-	}
-
-	/* NOTE ROW */
-	.mixed-note-row {
-		display: flex;
-		align-items: center;
-		gap: 0.85rem;
-		padding: 0.3rem 0;
-	}
-
-	.note-pill {
-		font-size: 0.72rem;
-		font-weight: 900;
-		background: var(--color-primary);
-		color: var(--color-tertiary);
-		padding: 0.3rem 0.7rem;
-		border-radius: 9999px;
-		flex-shrink: 0;
-		letter-spacing: 0.04em;
-		transition: background-color 0.45s ease, color 0.45s ease;
-	}
-
-	.note-text {
-		font-size: 0.82rem;
-		color: #ffffff;
-		opacity: 0.8;
-		margin: 0;
-		line-height: 1.4;
 	}
 
 	/* RESPONSIVE LAYOUT */

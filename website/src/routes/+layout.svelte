@@ -227,8 +227,9 @@
 	/* FLAT FOOTER - ZERO OUTLINES */
 	.site-footer {
 		background: transparent;
-		color: #f4c7ff;
+		color: #ffffff;
 		padding: 5rem 1.5rem 7.5rem;
+		transition: color 0.45s ease;
 	}
 
 	.footer-inner {
@@ -248,23 +249,26 @@
 		font-weight: 900;
 		font-size: 1.05rem;
 		margin-bottom: 0.75rem;
-		color: #f4c7ff;
+		color: var(--color-primary);
 		letter-spacing: 0.06em;
+		transition: color 0.45s ease;
 	}
 
 	.footer-desc {
 		font-size: 0.92rem;
-		color: #d896ff;
+		color: #ffffff;
+		opacity: 0.85;
 		line-height: 1.5;
 	}
 
 	.footer-heading {
 		font-size: 1.05rem;
 		font-weight: 800;
-		color: #e24bff;
+		color: var(--color-primary);
 		margin-bottom: 1rem;
 		letter-spacing: 0.03em;
 		text-transform: uppercase;
+		transition: color 0.45s ease;
 	}
 
 	.footer-links {
@@ -276,7 +280,8 @@
 
 	.footer-links a,
 	.footer-link-btn {
-		color: #f4c7ff;
+		color: #ffffff;
+		opacity: 0.9;
 		text-decoration: none;
 		font-size: 0.92rem;
 		transition: all 0.2s ease;
@@ -295,12 +300,15 @@
 	.footer-links a:hover,
 	.footer-link-btn:hover {
 		color: var(--color-primary);
+		opacity: 1;
+		background: rgba(255, 255, 255, 0.08);
 		transform: translateX(3px);
 	}
 
 	.footer-note {
 		font-size: 0.88rem;
-		color: #d896ff;
+		color: #ffffff;
+		opacity: 0.85;
 		line-height: 1.5;
 	}
 
@@ -310,7 +318,9 @@
 		padding-top: 1.5rem;
 		text-align: center;
 		font-size: 0.85rem;
-		color: #b56be8;
+		color: var(--color-primary);
+		opacity: 0.85;
+		transition: color 0.45s ease;
 	}
 
 	@media (max-width: 640px) {
