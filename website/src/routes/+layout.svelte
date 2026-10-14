@@ -1,29 +1,98 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import ChatWidget from '../lib/ChatWidget.svelte';
+	import Wordmark from '../lib/Wordmark.svelte';
+	import { themeState } from '../lib/theme.svelte';
+
 	let { children }: { children: Snippet } = $props();
+
+	// Color definitions for the floating dynamic header
+	const themeColors = {
+		hero: {
+			bg: '#240340',
+			border: '#e24bff',
+			text: '#e24bff',
+			btnBg: '#e24bff',
+			btnText: '#240340'
+		},
+		steps: {
+			bg: '#3b0764',
+			border: '#e24bff',
+			text: '#e24bff',
+			btnBg: '#e24bff',
+			btnText: '#3b0764'
+		},
+		butter: {
+			bg: '#4a3000',
+			border: '#ffd640',
+			text: '#ffd640',
+			btnBg: '#ffd640',
+			btnText: '#4a3000'
+		},
+		raspberry: {
+			bg: '#460820',
+			border: '#ff467a',
+			text: '#ff467a',
+			btnBg: '#ff467a',
+			btnText: '#460820'
+		},
+		yeast: {
+			bg: '#240340',
+			border: '#e24bff',
+			text: '#e24bff',
+			btnBg: '#e24bff',
+			btnText: '#240340'
+		},
+		peanut: {
+			bg: '#4e2408',
+			border: '#ff8c30',
+			text: '#ff8c30',
+			btnBg: '#ff8c30',
+			btnText: '#4e2408'
+		},
+		mixed: {
+			bg: '#240340',
+			border: '#e24bff',
+			text: '#e24bff',
+			btnBg: '#e24bff',
+			btnText: '#240340'
+		}
+	};
+
+	let currentTheme = $derived(themeColors[themeState.active] || themeColors.hero);
 </script>
 
 <svelte:head>
 	<title>STAMP — Peel. Press. Toast.</title>
 	<meta
 		name="description"
-		content="Stamp: Single-serve peel-and-press spread discs for toast. No knife, no open jar."
+		content="Stamp: Single-serve peel-and-press spread discs for toast. Bold flat breakfast innovation with no knife and no open jar."
 	/>
 </svelte:head>
 
 <div class="site-container">
-	<header class="site-header">
+	<!-- FLOATING DYNAMIC HEADER - MATCHES BACKGROUND SECTION COLOR -->
+	<header
+		class="site-header floating-header"
+		style:background-color={currentTheme.bg}
+		style:border-color={currentTheme.border}
+		style:color={currentTheme.text}
+	>
 		<div class="header-inner">
-			<a href="/" class="brand-link">
-				<img src="/logo.png" alt="STAMP" class="brand-logo" />
+			<a href="/" class="brand-link" style:color={currentTheme.text}>
+				<div class="header-wordmark-wrap">
+					<Wordmark color={currentTheme.text} />
+				</div>
 			</a>
 			<nav class="site-nav">
-				<a href="/#flavours" class="nav-link">Flavours</a>
-				<a href="/flavours" class="nav-link">Specs & Nutrition</a>
+				<a href="/#steps" class="nav-link" style:color={currentTheme.text}>Gesture</a>
+				<a href="/#flavours" class="nav-link" style:color={currentTheme.text}>Flavours</a>
+				<a href="/flavours" class="nav-link" style:color={currentTheme.text}>Specs</a>
 				<button
 					type="button"
 					class="nav-link chat-btn"
+					style:background-color={currentTheme.btnBg}
+					style:color={currentTheme.btnText}
 					onclick={() => {
 						if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('stamp:open-chat'));
 					}}>Ask Stamp</button
@@ -41,8 +110,10 @@
 	<footer class="site-footer">
 		<div class="footer-inner">
 			<div class="footer-col">
-				<div class="footer-brand">STAMP</div>
-				<p class="footer-tagline">Peel. Press. Toast.</p>
+				<div class="footer-brand-wrap">
+					<Wordmark color="#e24bff" />
+				</div>
+				<p class="footer-tagline">PEEL. PRESS. TOAST.</p>
 				<p class="footer-desc">
 					10 g single-serve spread portions on food-safe release film. 12 months ambient pantry stability.
 				</p>
@@ -130,19 +201,25 @@
 		background-color: #3b0764;
 	}
 
-	.site-header {
-		position: sticky;
-		top: 0;
-		z-index: 100;
-		background-color: #240340;
-		border-bottom: 2px solid #e24bff;
-		box-shadow: 0 4px 20px rgba(226, 75, 255, 0.15);
+	/* FLOATING DYNAMIC HEADER - FLAT WITH NO SHADOW OR GLOW */
+	.floating-header {
+		position: fixed;
+		top: 16px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: calc(100% - 32px);
+		max-width: 1080px;
+		border-radius: 9999px;
+		z-index: 1000;
+		border: 2px solid;
+		transition:
+			background-color 0.28s ease,
+			border-color 0.28s ease,
+			color 0.28s ease;
 	}
 
 	.header-inner {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 0.85rem 1.5rem;
+		padding: 0.7rem 1.4rem;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -154,88 +231,79 @@
 		text-decoration: none;
 	}
 
-	.brand-logo {
-		height: 44px;
-		width: auto;
+	.header-wordmark-wrap {
+		width: 110px;
 		display: block;
-		filter: drop-shadow(0 2px 8px rgba(226, 75, 255, 0.4));
 	}
 
 	.site-nav {
 		display: flex;
 		align-items: center;
-		gap: 1.25rem;
+		gap: 1.15rem;
 	}
 
 	.nav-link {
-		color: #e24bff;
 		text-decoration: none;
-		font-weight: 700;
-		font-size: 0.95rem;
+		font-weight: 800;
+		font-size: 0.92rem;
 		transition: all 0.15s ease;
 		background: transparent;
 		border: none;
 		cursor: pointer;
 		font-family: inherit;
+		letter-spacing: 0.02em;
 	}
 
 	.nav-link:hover {
-		color: #ff9eff;
-		transform: translateY(-1px);
+		opacity: 0.8;
 	}
 
 	.chat-btn {
-		background: #e24bff;
-		color: #3b0764;
-		padding: 0.5rem 1.15rem;
+		padding: 0.45rem 1.15rem;
 		border-radius: 9999px;
-		font-weight: 800;
-		font-size: 0.9rem;
-		letter-spacing: 0.02em;
-		box-shadow: 0 2px 12px rgba(226, 75, 255, 0.4);
+		font-weight: 900;
+		font-size: 0.88rem;
+		letter-spacing: 0.03em;
+		border: none;
+		cursor: pointer;
+		transition: all 0.15s ease;
 	}
 
 	.chat-btn:hover {
-		background: #ff85ff;
-		color: #240340;
-		box-shadow: 0 4px 18px rgba(226, 75, 255, 0.6);
-		transform: translateY(-2px);
+		transform: scale(1.04);
 	}
 
 	.site-main {
 		flex: 1;
 	}
 
+	/* FLAT FOOTER */
 	.site-footer {
 		background-color: #1a0230;
 		border-top: 3px solid #e24bff;
 		color: #f4c7ff;
-		padding: 4rem 1.5rem 2.5rem;
+		padding: 4.5rem 1.5rem 2.5rem;
 	}
 
 	.footer-inner {
-		max-width: 1200px;
+		max-width: 1140px;
 		margin: 0 auto;
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 		gap: 2.5rem;
 	}
 
-	.footer-brand {
-		font-size: 2.2rem;
-		font-weight: 800;
-		letter-spacing: -0.02em;
-		color: #e24bff;
-		margin-bottom: 0.25rem;
+	.footer-brand-wrap {
+		width: 140px;
+		margin-bottom: 0.75rem;
 	}
 
 	.footer-tagline {
-		font-weight: 800;
-		font-size: 1.1rem;
+		font-weight: 900;
+		font-size: 1.05rem;
 		margin-bottom: 0.75rem;
 		color: #f4c7ff;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
+		letter-spacing: 0.06em;
 	}
 
 	.footer-desc {
@@ -245,11 +313,12 @@
 	}
 
 	.footer-heading {
-		font-size: 1.1rem;
+		font-size: 1.05rem;
 		font-weight: 800;
 		color: #e24bff;
 		margin-bottom: 1rem;
-		letter-spacing: 0.02em;
+		letter-spacing: 0.03em;
+		text-transform: uppercase;
 	}
 
 	.footer-links {
@@ -287,7 +356,7 @@
 	}
 
 	.footer-bottom {
-		max-width: 1200px;
+		max-width: 1140px;
 		margin: 3rem auto 0;
 		padding-top: 1.5rem;
 		border-top: 1px solid rgba(226, 75, 255, 0.25);
@@ -297,25 +366,28 @@
 	}
 
 	@media (max-width: 640px) {
-		.header-inner {
-			padding: 0.75rem 1rem;
+		.floating-header {
+			top: 10px;
+			width: calc(100% - 20px);
 		}
-		.brand-logo {
-			height: 36px;
+		.header-inner {
+			padding: 0.55rem 0.9rem;
+		}
+		.header-wordmark-wrap {
+			width: 88px;
 		}
 		.site-nav {
-			gap: 0.6rem;
+			gap: 0.5rem;
 		}
 		.nav-link {
-			font-size: 0.82rem;
-			padding: 0.3rem 0.4rem;
+			font-size: 0.8rem;
 		}
 		.chat-btn {
 			padding: 0.35rem 0.75rem;
-			font-size: 0.82rem;
+			font-size: 0.8rem;
 		}
 		.site-footer {
-			padding: 2.5rem 1rem 1.5rem;
+			padding: 3rem 1rem 1.5rem;
 		}
 		.footer-inner {
 			grid-template-columns: 1fr;

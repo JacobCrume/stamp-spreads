@@ -208,13 +208,12 @@
 	}
 
 	.mixed-pack-banner {
-		background: linear-gradient(135deg, #3b0764 0%, #5d0f9c 100%);
+		background: #3b0764;
 		color: #ffffff;
 		border-radius: 12px;
 		padding: 2.5rem;
 		margin-bottom: 3.5rem;
 		border: 2px solid #e24bff;
-		box-shadow: 0 8px 24px rgba(59, 7, 100, 0.15);
 	}
 
 	.banner-inner {
@@ -282,12 +281,11 @@
 
 	.flavour-detail-card {
 		background: #ffffff;
-		border: 1px solid #ebd4ff;
+		border: 2px solid #ebd4ff;
 		border-radius: 12px;
 		overflow: hidden;
 		display: grid;
 		grid-template-columns: 320px 1fr;
-		box-shadow: 0 4px 16px rgba(59, 7, 100, 0.05);
 	}
 
 	.flavour-media {

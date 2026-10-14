@@ -272,20 +272,18 @@
 		gap: 8px;
 		background: linear-gradient(135deg, #3b0764 0%, #1f0436 100%);
 		color: #ffffff;
-		border: 1.5px solid #e24bff;
+		border: 2px solid #e24bff;
 		padding: 12px 20px;
 		border-radius: 9999px;
 		cursor: pointer;
-		box-shadow: 0 8px 24px rgba(59, 7, 100, 0.45);
-		transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-		font-weight: 700;
+		transition: all 0.2s ease;
+		font-weight: 800;
 		font-size: 0.95rem;
 		min-height: 48px;
 	}
 
 	.chat-launcher:hover {
-		transform: translateY(-2px) scale(1.03);
-		box-shadow: 0 12px 32px rgba(226, 75, 255, 0.5);
+		transform: scale(1.04);
 		background: #4c0d80;
 	}
 
@@ -313,8 +311,7 @@
 		max-height: calc(100vh - 100px);
 		background: #240340;
 		border-radius: 18px;
-		box-shadow: 0 16px 48px rgba(26, 2, 44, 0.7);
-		border: 2px solid #e24bff;
+		border: 2.5px solid #e24bff;
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
@@ -387,7 +384,6 @@
 
 	.status-dot.green {
 		background: #00ffaa;
-		box-shadow: 0 0 6px #00ffaa;
 	}
 
 	.close-btn {

@@ -1,28 +1,80 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
+	import Wordmark from '../lib/Wordmark.svelte';
+	import { setSectionTheme, type SectionTheme } from '../lib/theme.svelte';
 
 	let scrollY = $state(0);
 	let innerHeight = $state(800);
 
-	// Peel effect progress (0 to 1 during the first viewport of scrolling)
-	let peelProgress = $derived(Math.min(1, Math.max(0, scrollY / (innerHeight * 0.8))));
+	// Page-flip animation for Hero: like turning a page in an e-reader (spined on left)
+	// Rotates from 0deg up to -88deg over the first 500px of scroll
+	let flipDegrees = $derived(Math.min(88, Math.max(0, (scrollY / 450) * 88)));
 
-	// Explosion effect progress (0 to 1 as user scrolls through the 3-step section)
-	let explodeProgress = $derived(
-		Math.min(1, Math.max(0, (scrollY - innerHeight * 0.8) / (innerHeight * 0.7)))
-	);
+	// Explosion on threshold
+	let isExploded = $state(false);
 
-	// Active pack side view toggles
-	let activeSide: Record<string, 'front' | 'back'> = $state({
-		butter: 'front',
-		raspberry: 'front',
-		yeast: 'front',
-		peanut: 'front'
+	// Interactive 3D lift & flip state for each flavour card
+	let flipped: Record<string, boolean> = $state({
+		butter: false,
+		raspberry: false,
+		yeast: false,
+		peanut: false
 	});
 
-	function toggleSide(id: string) {
-		activeSide[id] = activeSide[id] === 'front' ? 'back' : 'front';
+	function toggleFlip(id: string) {
+		flipped[id] = !flipped[id];
 	}
+
+	let observer: IntersectionObserver | null = null;
+
+	onMount(() => {
+		// IntersectionObserver to dynamically switch header color theme based on the section below it
+		const sections = [
+			{ id: 'hero-section', theme: 'hero' as SectionTheme },
+			{ id: 'steps-section', theme: 'steps' as SectionTheme },
+			{ id: 'flavour-butter', theme: 'butter' as SectionTheme },
+			{ id: 'flavour-raspberry', theme: 'raspberry' as SectionTheme },
+			{ id: 'flavour-yeast', theme: 'yeast' as SectionTheme },
+			{ id: 'flavour-peanut', theme: 'peanut' as SectionTheme },
+			{ id: 'mixed-section', theme: 'mixed' as SectionTheme }
+		];
+
+		observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting) {
+						const match = sections.find((s) => s.id === entry.target.id);
+						if (match) {
+							setSectionTheme(match.theme);
+						}
+					}
+				}
+			},
+			{
+				rootMargin: '-80px 0px -60% 0px',
+				threshold: 0.1
+			}
+		);
+
+		for (const sec of sections) {
+			const el = document.getElementById(sec.id);
+			if (el) observer.observe(el);
+		}
+	});
+
+	onDestroy(() => {
+		if (observer) observer.disconnect();
+	});
+
+	// Trigger explosion on threshold (when scrollY crosses the middle of the steps section)
+	$effect(() => {
+		// Threshold: approx 1.1x viewport height
+		if (scrollY > innerHeight * 0.95 && !isExploded) {
+			isExploded = true;
+		} else if (scrollY < innerHeight * 0.5 && isExploded) {
+			isExploded = false;
+		}
+	});
 </script>
 
 <svelte:window bind:scrollY bind:innerHeight />
@@ -31,172 +83,183 @@
 	<title>STAMP — Peel. Press. Toast.</title>
 	<meta
 		name="description"
-		content="Stamp: Single-serve peel-and-press spread discs for toast. Bold breakfast innovation with no knife and no open jar."
+		content="Stamp: Single-serve peel-and-press spread discs for toast. Bold flat breakfast innovation with no knife and no open jar."
 	/>
 </svelte:head>
 
-<!-- SECTION 1: FULL-SCREEN HERO WITH INTERACTIVE SCROLL-PEEL -->
-<section class="hero-wrapper">
-	<div
-		class="peel-surface"
-		style:transform="perspective(1400px) rotateX({peelProgress * -28}deg) rotateY({peelProgress * 18}deg) translate3d({peelProgress * 40}px, -{peelProgress * 90}px, -{peelProgress * 120}px)"
-		style:opacity={1 - peelProgress * 0.45}
-	>
-		<div class="hero-content">
-			<div class="hero-kicker">NEW ZEALAND BREAKFAST INNOVATION</div>
-			<h1 class="hero-brand">STAMP</h1>
-			<p class="hero-tagline">PEEL. PRESS. TOAST.</p>
-
-			<div class="hero-pack-stage">
-				<div
-					class="pack-floating"
-					style:transform="translateY({peelProgress * -30}px) scale({1 - peelProgress * 0.1})"
-				>
-					<img src="/pack.png" alt="STAMP 8-Stamp Sheet" class="hero-pack-img" />
-					<div class="peel-corner-hint">
-						<span class="hint-text">PEEL HERE</span>
-						<span class="hint-curl"></span>
-					</div>
-				</div>
-			</div>
-
-			<div class="hero-meta">
-				<span class="meta-pill">$5.00 NZD / SHEET</span>
-				<span class="meta-dot">·</span>
-				<span class="meta-pill">8 × 10 g STAMPS</span>
-				<span class="meta-dot">·</span>
-				<span class="meta-pill">NO KNIFE · NO OPEN JAR</span>
-			</div>
-
-			<div class="scroll-indicator" style:opacity={1 - peelProgress * 2}>
-				<span class="scroll-arrow">↓</span>
-				<span class="scroll-label">SCROLL DOWN TO PEEL</span>
-			</div>
+<!-- SECTION 1: FULL-SCREEN HERO WITH E-READER PAGE FLIP ANIMATION -->
+<section id="hero-section" class="hero-stage">
+	<!-- Underlying reveal surface visible as page flips -->
+	<div class="hero-under-book">
+		<div class="under-spine"></div>
+		<div class="under-content">
+			<div class="under-eyebrow">NEXT SECTION READY</div>
+			<div class="under-headline">THE 3-SECOND GESTURE</div>
+			<p class="under-note">
+				Peel one 10 g disc. Press onto steaming toast. No knife, no open jar.
+			</p>
+			<a href="#steps-section" class="flat-btn-ghost">View The 3 Steps ↓</a>
 		</div>
-
-		<!-- Under-sheet peel release shimmer line -->
-		<div
-			class="peel-fold-line"
-			style:opacity={peelProgress > 0.05 ? Math.min(1, peelProgress * 1.5) : 0}
-			style:transform="scaleX({0.5 + peelProgress * 0.5})"
-		></div>
 	</div>
 
-	<!-- Background reveal layer visible as the hero curls away -->
-	<div class="hero-underlayer">
-		<div class="underlayer-pattern">
-			<span>STAMP</span><span>RELEASE FILM</span><span>10 g PORTIONS</span><span>HOT TOAST READY</span>
+	<!-- Page sheet that flips open from right to left like an e-reader page -->
+	<div
+		class="ereader-page"
+		style:transform="perspective(2400px) rotateY(-{flipDegrees}deg)"
+		style:opacity={flipDegrees > 82 ? Math.max(0, (88 - flipDegrees) / 6) : 1}
+	>
+		<div class="ereader-page-inner">
+			<div class="hero-top-kicker">NEW ZEALAND BREAKFAST INNOVATION</div>
+
+			<!-- Actual Drawn STAMP Vector Wordmark (Toundra construction) -->
+			<div class="hero-wordmark-container">
+				<Wordmark color="#e24bff" />
+			</div>
+
+			<p class="hero-tagline">PEEL. PRESS. TOAST.</p>
+
+			<div class="hero-pack-box">
+				<img src="/pack.png" alt="STAMP 8-Stamp Sheet" class="hero-flat-pack" />
+				<div class="flat-peel-tag">PEEL ME</div>
+			</div>
+
+			<div class="hero-meta-row">
+				<span class="meta-tag">$5.00 NZD / SHEET</span>
+				<span class="meta-tag">8 × 10 g DISCS</span>
+				<span class="meta-tag">PANTRY STABLE 12 MO.</span>
+			</div>
+
+			<div class="page-flip-indicator" style:opacity={1 - flipDegrees / 50}>
+				<span class="flip-icon">📖</span>
+				<span class="flip-text">SCROLL TO TURN PAGE</span>
+			</div>
 		</div>
+
+		<!-- Page edge binding shadow-free border -->
+		<div class="page-edge-binding"></div>
 	</div>
 </section>
 
-<!-- SECTION 2: THE 3 STEPS WITH DYNAMIC EXPLOSION TRANSITION -->
-<section id="steps" class="steps-wrapper">
-	<div class="steps-container">
+<!-- SECTION 2: THE 3 STEPS WITH THRESHOLD EXPLOSION -->
+<section id="steps-section" class="steps-stage">
+	<div class="steps-inner">
 		<div class="section-kicker">THE 3-SECOND GESTURE</div>
-		<h2 class="section-heading">HOW STAMP WORKS</h2>
+		<h2 class="section-title">HOW STAMP WORKS</h2>
 		<p class="section-sub">
-			Forget messy jars, butter knives, and morning sinks. Breakfast happens in three rapid steps.
+			Forget sticky jars, table knives, and office sinks. Breakfast happens in three rapid moves.
 		</p>
 
-		<div class="steps-grid">
-			<!-- Step 1 Card: Explodes top-left -->
-			<div
-				class="step-card step-1"
-				style:transform="translate3d(-{explodeProgress * 280}px, -{explodeProgress * 160}px, 0) rotate(-{explodeProgress * 16}deg) scale({1 + explodeProgress * 0.15})"
-				style:opacity={1 - explodeProgress * 0.85}
+		<!-- Threshold Explosion Status & Interactive Toggle -->
+		<div class="threshold-control-bar">
+			<button
+				type="button"
+				class="threshold-btn {isExploded ? 'active' : ''}"
+				onclick={() => (isExploded = !isExploded)}
 			>
-				<div class="step-num-badge">01</div>
-				<h3 class="step-title">PEEL</h3>
-				<p class="step-desc">
-					Peel one 10 g disc off the food-grade release film. Sits dry and ready in your fingers.
+				{isExploded ? '↺ Reset 3 Steps' : '💥 Trigger Explosion'}
+			</button>
+			<span class="threshold-status">
+				{isExploded ? 'Steps exploded past threshold' : 'Scroll past threshold or click to trigger'}
+			</span>
+		</div>
+
+		<div class="steps-grid {isExploded ? 'exploded' : ''}">
+			<!-- Step 1: Explodes Top-Left on threshold -->
+			<div class="step-card step-card-1 {isExploded ? 'blast-tl' : ''}">
+				<div class="step-badge">01</div>
+				<h3 class="step-label">PEEL</h3>
+				<p class="step-text">
+					Peel one 10 g disc off the food-grade release film. Sits clean and dry in your fingers.
 				</p>
-				<div class="step-accent-bar"></div>
+				<div class="flat-rule"></div>
 			</div>
 
-			<!-- Step 2 Card: Blasts down/center -->
-			<div
-				class="step-card step-2"
-				style:transform="translate3d(0, {explodeProgress * 220}px, 0) scale({1 + explodeProgress * 0.2})"
-				style:opacity={1 - explodeProgress * 0.85}
-			>
-				<div class="step-num-badge">02</div>
-				<h3 class="step-title">PRESS</h3>
-				<p class="step-desc">
-					Press the portion directly onto freshly toasted, steaming hot bread. Done in a second.
+			<!-- Step 2: Blasts Downwards on threshold -->
+			<div class="step-card step-card-2 {isExploded ? 'blast-down' : ''}">
+				<div class="step-badge">02</div>
+				<h3 class="step-label">PRESS</h3>
+				<p class="step-text">
+					Press the portion directly onto hot, steaming bread. The disc adheres immediately.
 				</p>
-				<div class="step-accent-bar"></div>
+				<div class="flat-rule"></div>
 			</div>
 
-			<!-- Step 3 Card: Explodes top-right -->
-			<div
-				class="step-card step-3"
-				style:transform="translate3d({explodeProgress * 280}px, -{explodeProgress * 160}px, 0) rotate({explodeProgress * 16}deg) scale({1 + explodeProgress * 0.15})"
-				style:opacity={1 - explodeProgress * 0.85}
-			>
-				<div class="step-num-badge">03</div>
-				<h3 class="step-title">TOAST</h3>
-				<p class="step-desc">
-					Residual toast heat softens the disc into an even, glossy layer with zero crumb tearing.
+			<!-- Step 3: Explodes Top-Right on threshold -->
+			<div class="step-card step-card-3 {isExploded ? 'blast-tr' : ''}">
+				<div class="step-badge">03</div>
+				<h3 class="step-label">TOAST</h3>
+				<p class="step-text">
+					Residual toast heat softens it into an even spread in seconds without tearing bread crumb.
 				</p>
-				<div class="step-accent-bar"></div>
+				<div class="flat-rule"></div>
 			</div>
 		</div>
 
-		<!-- Explosion shockwave lines triggered on scroll -->
-		<div
-			class="explosion-rays"
-			style:opacity={explodeProgress > 0.1 ? Math.min(0.9, explodeProgress * 1.4) : 0}
-			style:transform="scale({0.8 + explodeProgress * 0.8})"
-		></div>
+		{#if isExploded}
+			<div class="explosion-alert">
+				<div class="alert-box">
+					<span class="alert-icon">⚡</span>
+					<span>STEPS DISPERSED · PROCEED TO 4 LAUNCH FLAVOURS BELOW</span>
+				</div>
+			</div>
+		{/if}
 	</div>
 </section>
 
 <!-- SECTIONS 3-6: DEDICATED FULL-SCREEN IMMERSIVE FLAVOUR WORLDS -->
-<div id="flavours" class="flavour-worlds-container">
-	<!-- FLAVOUR 1: SALTED BUTTER (ELECTRIC GOLD & BURNT CARAMEL) -->
-	<section class="flavour-world flavour-butter">
-		<div class="flavour-inner">
-			<div class="flavour-visual">
-				<div class="pack-flipper">
-					{#if activeSide.butter === 'front'}
-						<img src="/flavours/butter.png" alt="Salted Butter Stamp" class="flavour-pack" />
-					{:else}
-						<img src="/flavours/butter-back.png" alt="Salted Butter Back" class="flavour-pack back" />
-					{/if}
+<div id="flavours" class="flavour-worlds-list">
+	<!-- FLAVOUR 1: SALTED BUTTER (ELECTRIC GOLD & ROASTED CARAMEL) -->
+	<section id="flavour-butter" class="flavour-screen butter-screen">
+		<div class="flavour-content-grid">
+			<div class="flavour-media-side">
+				<!-- 3D Lift & Flip Card -->
+				<div class="flip-stage">
+					<div class="flip-card {flipped.butter ? 'flipped' : ''}">
+						<div class="flip-face flip-front butter-face">
+							<img src="/flavours/butter.png" alt="Salted Butter Stamp Pack" class="flavour-pack-img" />
+						</div>
+						<div class="flip-face flip-back butter-face">
+							<img src="/flavours/butter-back.png" alt="Salted Butter Nutritional Panel" class="flavour-pack-img" />
+						</div>
+					</div>
 				</div>
-				<button class="flip-btn" onclick={() => toggleSide('butter')}>
-					⇄ View {activeSide.butter === 'front' ? 'Back Ingredients' : 'Front Pack'}
+
+				<button
+					type="button"
+					class="flat-flip-trigger butter-btn"
+					onclick={() => toggleFlip('butter')}
+				>
+					⇄ {flipped.butter ? 'Show Front Pack' : 'Lift & Flip: View Back Ingredients'}
 				</button>
 			</div>
 
-			<div class="flavour-info">
-				<div class="flavour-eyebrow">01 / LAUNCH RANGE</div>
-				<h2 class="flavour-name">SALTED BUTTER</h2>
-				<p class="flavour-hero-desc">
-					Rich, clean cultured butterfat with a measured 2.5% salt balance. Melts instantly across hot toast without tearing fragile bread.
+			<div class="flavour-copy-side">
+				<div class="flavour-index">01 / FOUR LAUNCH FLAVOURS</div>
+				<h2 class="flavour-headline">SALTED BUTTER</h2>
+				<p class="flavour-lead">
+					Cultured butterfat and salt (78 g fat to 2 g salt). Formulated with low moisture so it is ambient pantry-stable for 12 months, yet melts instantly across hot toast without tearing the crumb.
 				</p>
 
-				<div class="specs-pillbox">
-					<div class="spec-pill">
-						<span class="pill-label">FORMULA</span>
-						<span class="pill-val">78 g butterfat · 2 g salt</span>
+				<div class="flat-specs-grid">
+					<div class="flat-spec-item butter-spec">
+						<span class="spec-kicker">FORMULA</span>
+						<span class="spec-data">78 g butterfat · 2 g salt</span>
 					</div>
-					<div class="spec-pill">
-						<span class="pill-label">ALLERGEN</span>
-						<span class="pill-val">CONTAINS MILK</span>
+					<div class="flat-spec-item butter-spec">
+						<span class="spec-kicker">ALLERGEN</span>
+						<span class="spec-data">CONTAINS MILK</span>
 					</div>
-					<div class="spec-pill">
-						<span class="pill-label">STABILITY</span>
-						<span class="pill-val">12 Months Ambient</span>
+					<div class="flat-spec-item butter-spec">
+						<span class="spec-kicker">STABILITY</span>
+						<span class="spec-data">12 Months Ambient</span>
 					</div>
-					<div class="spec-pill">
-						<span class="pill-label">PRICE</span>
-						<span class="pill-val">$5.00 / 8-Stamp Sheet</span>
+					<div class="flat-spec-item butter-spec">
+						<span class="spec-kicker">PORTION</span>
+						<span class="spec-data">10 g Discs · 8 per Sheet</span>
 					</div>
 				</div>
 
-				<div class="flavour-callout">
+				<div class="flat-callout butter-callout">
 					Sold as a shelf-stable butter spread, not a pat of fridge butter. Zero added vegetable oils or artificial preservatives.
 				</div>
 			</div>
@@ -204,97 +267,115 @@
 	</section>
 
 	<!-- FLAVOUR 2: RASPBERRY (VIBRANT NEON RASPBERRY & DARK WILD BERRY) -->
-	<section class="flavour-world flavour-raspberry">
-		<div class="flavour-inner">
-			<div class="flavour-visual">
-				<div class="pack-flipper">
-					{#if activeSide.raspberry === 'front'}
-						<img src="/flavours/raspberry.png" alt="Raspberry Stamp" class="flavour-pack" />
-					{:else}
-						<img src="/flavours/raspberry-back.png" alt="Raspberry Back" class="flavour-pack back" />
-					{/if}
+	<section id="flavour-raspberry" class="flavour-screen raspberry-screen">
+		<div class="flavour-content-grid">
+			<div class="flavour-media-side">
+				<!-- 3D Lift & Flip Card -->
+				<div class="flip-stage">
+					<div class="flip-card {flipped.raspberry ? 'flipped' : ''}">
+						<div class="flip-face flip-front raspberry-face">
+							<img src="/flavours/raspberry.png" alt="Raspberry Stamp Pack" class="flavour-pack-img" />
+						</div>
+						<div class="flip-face flip-back raspberry-face">
+							<img src="/flavours/raspberry-back.png" alt="Raspberry Nutritional Panel" class="flavour-pack-img" />
+						</div>
+					</div>
 				</div>
-				<button class="flip-btn" onclick={() => toggleSide('raspberry')}>
-					⇄ View {activeSide.raspberry === 'front' ? 'Back Ingredients' : 'Front Pack'}
+
+				<button
+					type="button"
+					class="flat-flip-trigger raspberry-btn"
+					onclick={() => toggleFlip('raspberry')}
+				>
+					⇄ {flipped.raspberry ? 'Show Front Pack' : 'Lift & Flip: View Back Ingredients'}
 				</button>
 			</div>
 
-			<div class="flavour-info">
-				<div class="flavour-eyebrow">02 / LAUNCH RANGE</div>
-				<h2 class="flavour-name">SLOW-COOKED RASPBERRY</h2>
-				<p class="flavour-hero-desc">
-					150 g of real whole raspberries cooked down into every 100 g of thick, jewel-red spread. Brightened with fresh lemon juice.
+			<div class="flavour-copy-side">
+				<div class="flavour-index">02 / FOUR LAUNCH FLAVOURS</div>
+				<h2 class="flavour-headline">SLOW-COOKED RASPBERRY</h2>
+				<p class="flavour-lead">
+					150 g of whole raspberries reduced down into every 100 g of thick, jewel-red spread. Brightened with fresh lemon juice and caster sugar.
 				</p>
 
-				<div class="specs-pillbox">
-					<div class="spec-pill">
-						<span class="pill-label">FRUIT RATIO</span>
-						<span class="pill-val">150 g Fruit / 100 g Paste</span>
+				<div class="flat-specs-grid">
+					<div class="flat-spec-item raspberry-spec">
+						<span class="spec-kicker">FRUIT PROPORTION</span>
+						<span class="spec-data">150 g fruit / 100 g spread</span>
 					</div>
-					<div class="spec-pill">
-						<span class="pill-label">ALLERGENS</span>
-						<span class="pill-val">No Major Recipe Allergens</span>
+					<div class="flat-spec-item raspberry-spec">
+						<span class="spec-kicker">ALLERGENS</span>
+						<span class="spec-data">No Major Recipe Allergens</span>
 					</div>
-					<div class="spec-pill">
-						<span class="pill-label">PRESERVATION</span>
-						<span class="pill-val">Natural Fruit Solids</span>
+					<div class="flat-spec-item raspberry-spec">
+						<span class="spec-kicker">PRESERVATION</span>
+						<span class="spec-data">Natural Fruit Solids</span>
 					</div>
-					<div class="spec-pill">
-						<span class="pill-label">SHEET WEIGHT</span>
-						<span class="pill-val">80 g Net (8 Stamps)</span>
+					<div class="flat-spec-item raspberry-spec">
+						<span class="spec-kicker">PORTION</span>
+						<span class="spec-data">10 g Discs · 8 per Sheet</span>
 					</div>
 				</div>
 
-				<div class="flavour-callout">
-					Real raspberries, caster sugar, and lemon juice. No artificial gelling agents and no unsupported organic claims.
+				<div class="flat-callout raspberry-callout">
+					Whole raspberries, caster sugar, and lemon juice. No artificial gelling agents and no unsupported organic claims.
 				</div>
 			</div>
 		</div>
 	</section>
 
 	<!-- FLAVOUR 3: YEAST EXTRACT (ELECTRIC VIOLET & DEEP INK PURPLE) -->
-	<section class="flavour-world flavour-yeast">
-		<div class="flavour-inner">
-			<div class="flavour-visual">
-				<div class="pack-flipper">
-					{#if activeSide.yeast === 'front'}
-						<img src="/flavours/yeast.png" alt="Yeast Extract Stamp" class="flavour-pack" />
-					{:else}
-						<img src="/flavours/yeast-back.png" alt="Yeast Extract Back" class="flavour-pack back" />
-					{/if}
+	<section id="flavour-yeast" class="flavour-screen yeast-screen">
+		<div class="flavour-content-grid">
+			<div class="flavour-media-side">
+				<!-- 3D Lift & Flip Card -->
+				<div class="flip-stage">
+					<div class="flip-card {flipped.yeast ? 'flipped' : ''}">
+						<div class="flip-face flip-front yeast-face">
+							<img src="/flavours/yeast.png" alt="Yeast Extract Stamp Pack" class="flavour-pack-img" />
+						</div>
+						<div class="flip-face flip-back yeast-face">
+							<img src="/flavours/yeast-back.png" alt="Yeast Extract Nutritional Panel" class="flavour-pack-img" />
+						</div>
+					</div>
 				</div>
-				<button class="flip-btn" onclick={() => toggleSide('yeast')}>
-					⇄ View {activeSide.yeast === 'front' ? 'Back Ingredients' : 'Front Pack'}
+
+				<button
+					type="button"
+					class="flat-flip-trigger yeast-btn"
+					onclick={() => toggleFlip('yeast')}
+				>
+					⇄ {flipped.yeast ? 'Show Front Pack' : 'Lift & Flip: View Back Ingredients'}
 				</button>
 			</div>
 
-			<div class="flavour-info">
-				<div class="flavour-eyebrow">03 / LAUNCH RANGE</div>
-				<h2 class="flavour-name">YEAST EXTRACT</h2>
-				<p class="flavour-hero-desc">
-					Deep, roasted umami paste crafted for toast loyalists. Thick, glossy, and formulated with 80% concentrated yeast extract.
+			<div class="flavour-copy-side">
+				<div class="flavour-index">03 / FOUR LAUNCH FLAVOURS</div>
+				<h2 class="flavour-headline">YEAST EXTRACT</h2>
+				<p class="flavour-lead">
+					Deep, roasted umami paste crafted for toast loyalists. Formulated with 80% concentrated yeast extract and 15.5% barley malt extract for intense, sharp depth.
 				</p>
 
-				<div class="specs-pillbox">
-					<div class="spec-pill">
-						<span class="pill-label">YEAST EXTRACT</span>
-						<span class="pill-val">80% Concentrated</span>
+				<div class="flat-specs-grid">
+					<div class="flat-spec-item yeast-spec">
+						<span class="spec-kicker">YEAST EXTRACT</span>
+						<span class="spec-data">80% Concentrated</span>
 					</div>
-					<div class="spec-pill">
-						<span class="pill-label">MALT BLEND</span>
-						<span class="pill-val">15.5% Barley Malt</span>
+					<div class="flat-spec-item yeast-spec">
+						<span class="spec-kicker">MALT EXTRACT</span>
+						<span class="spec-data">15.5% Barley Malt</span>
 					</div>
-					<div class="spec-pill">
-						<span class="pill-label">ALLERGEN</span>
-						<span class="pill-val">CONTAINS GLUTEN (BARLEY)</span>
+					<div class="flat-spec-item yeast-spec">
+						<span class="spec-kicker">ALLERGEN</span>
+						<span class="spec-data">CONTAINS GLUTEN (BARLEY)</span>
 					</div>
-					<div class="spec-pill">
-						<span class="pill-label">INTEGRITY</span>
-						<span class="pill-val">Proprietary NZ Recipe</span>
+					<div class="flat-spec-item yeast-spec">
+						<span class="spec-kicker">PORTION</span>
+						<span class="spec-data">10 g Discs · 8 per Sheet</span>
 					</div>
 				</div>
 
-				<div class="flavour-callout">
+				<div class="flat-callout yeast-callout">
 					NOT gluten-free. Contains barley malt extract. No therapeutic or medical treatment claims.
 				</div>
 			</div>
@@ -302,49 +383,58 @@
 	</section>
 
 	<!-- FLAVOUR 4: ROASTED PEANUT (WARM OCHRE ORANGE & ROASTED UMBER) -->
-	<section class="flavour-world flavour-peanut">
-		<div class="flavour-inner">
-			<div class="flavour-visual">
-				<div class="pack-flipper">
-					{#if activeSide.peanut === 'front'}
-						<img src="/flavours/peanut.png" alt="Roasted Peanut Stamp" class="flavour-pack" />
-					{:else}
-						<img src="/flavours/peanut-back.png" alt="Roasted Peanut Back" class="flavour-pack back" />
-					{/if}
+	<section id="flavour-peanut" class="flavour-screen peanut-screen">
+		<div class="flavour-content-grid">
+			<div class="flavour-media-side">
+				<!-- 3D Lift & Flip Card -->
+				<div class="flip-stage">
+					<div class="flip-card {flipped.peanut ? 'flipped' : ''}">
+						<div class="flip-face flip-front peanut-face">
+							<img src="/flavours/peanut.png" alt="Roasted Peanut Stamp Pack" class="flavour-pack-img" />
+						</div>
+						<div class="flip-face flip-back peanut-face">
+							<img src="/flavours/peanut-back.png" alt="Roasted Peanut Nutritional Panel" class="flavour-pack-img" />
+						</div>
+					</div>
 				</div>
-				<button class="flip-btn" onclick={() => toggleSide('peanut')}>
-					⇄ View {activeSide.peanut === 'front' ? 'Back Ingredients' : 'Front Pack'}
+
+				<button
+					type="button"
+					class="flat-flip-trigger peanut-btn"
+					onclick={() => toggleFlip('peanut')}
+				>
+					⇄ {flipped.peanut ? 'Show Front Pack' : 'Lift & Flip: View Back Ingredients'}
 				</button>
 			</div>
 
-			<div class="flavour-info">
-				<div class="flavour-eyebrow">04 / LAUNCH RANGE</div>
-				<h2 class="flavour-name">ROASTED PEANUT</h2>
-				<p class="flavour-hero-desc">
-					96% real roasted peanuts with a silky melt. Engineered with a stabilizing vegetable fat fraction so oil never separates in your bag.
+			<div class="flavour-copy-side">
+				<div class="flavour-index">04 / FOUR LAUNCH FLAVOURS</div>
+				<h2 class="flavour-headline">ROASTED PEANUT</h2>
+				<p class="flavour-lead">
+					96% real roasted peanuts with a silky melt. Engineered with a 2.3% vegetable fat fraction so oil never pools or separates in your bag over 12 months.
 				</p>
 
-				<div class="specs-pillbox">
-					<div class="spec-pill">
-						<span class="pill-label">PEANUT CONTENT</span>
-						<span class="pill-val">96% Roasted Peanuts</span>
+				<div class="flat-specs-grid">
+					<div class="flat-spec-item peanut-spec">
+						<span class="spec-kicker">PEANUT CONTENT</span>
+						<span class="spec-data">96% Roasted Peanuts</span>
 					</div>
-					<div class="spec-pill">
-						<span class="pill-label">STABILIZER</span>
-						<span class="pill-val">2.3% Anti-Oil Fraction</span>
+					<div class="flat-spec-item peanut-spec">
+						<span class="spec-kicker">STABILIZER</span>
+						<span class="spec-data">2.3% Anti-Oil Fraction</span>
 					</div>
-					<div class="spec-pill">
-						<span class="pill-label">ALLERGEN</span>
-						<span class="pill-val">CONTAINS PEANUTS</span>
+					<div class="flat-spec-item peanut-spec">
+						<span class="spec-kicker">ALLERGEN</span>
+						<span class="spec-data">CONTAINS PEANUTS</span>
 					</div>
-					<div class="spec-pill">
-						<span class="pill-label">POCKETABLE</span>
-						<span class="pill-val">Zero Separation</span>
+					<div class="flat-spec-item peanut-spec">
+						<span class="spec-kicker">PORTION</span>
+						<span class="spec-data">10 g Discs · 8 per Sheet</span>
 					</div>
 				</div>
 
-				<div class="flavour-callout">
-					Pure roasted peanuts and sea salt. Zero separated oil pooling on top; dissolves into hot toast immediately.
+				<div class="flat-callout peanut-callout">
+					96% peanuts, vegetable fat, and sea salt. Zero separated oil pooling; melts across toast instantly.
 				</div>
 			</div>
 		</div>
@@ -352,32 +442,32 @@
 </div>
 
 <!-- SECTION 7: THE MIXED SHEET & CATEGORY DISRUPTION -->
-<section class="mixed-disruption-section">
-	<div class="disruption-inner">
-		<div class="disruption-media">
-			<img src="/flavour-packs.png" alt="All 4 Stamp Flavour Packs" class="four-packs-hero" />
+<section id="mixed-section" class="mixed-pack-stage">
+	<div class="mixed-content-container">
+		<div class="mixed-media-col">
+			<img src="/flavour-packs.png" alt="All 4 Stamp Flavour Packs" class="mixed-four-packs" />
 		</div>
 
-		<div class="disruption-copy">
-			<div class="disruption-kicker">THE HERO COMBINATION</div>
-			<h2 class="disruption-title">THE MIXED SHEET</h2>
-			<p class="disruption-lead">
+		<div class="mixed-copy-col">
+			<div class="mixed-kicker">THE HERO COMBINATION</div>
+			<h2 class="mixed-heading">THE MIXED SHEET</h2>
+			<p class="mixed-lead">
 				Two stamps of each flavour on one 8-stamp card sheet: Salted Butter, Raspberry, Yeast extract, and Roasted Peanut.
 			</p>
 
-			<div class="disruption-price-card">
-				<div class="big-price">$5.00 NZD</div>
-				<div class="price-context">
-					<strong>$6.25 per 100 g</strong> · 80 g total net weight<br />
-					Priced for portable portion convenience, avoiding messy jars and communal sink knives.
+			<div class="flat-price-card">
+				<div class="price-giant">$5.00 NZD</div>
+				<div class="price-explainer">
+					<strong>$6.25 per 100 g</strong> · 80 g net weight<br />
+					Pantry-stable portion convenience, avoiding messy jars and communal knives.
 				</div>
 			</div>
 
-			<div class="disruption-actions">
-				<a href="/flavours" class="bold-cta-btn">View All Nutrition & Allergen Panels →</a>
+			<div class="mixed-btn-row">
+				<a href="/flavours" class="flat-action-btn">View All Nutrition & Specs →</a>
 				<button
 					type="button"
-					class="bold-outline-btn"
+					class="flat-outline-btn"
 					onclick={() => {
 						if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('stamp:open-chat'));
 					}}
@@ -390,51 +480,95 @@
 </section>
 
 <style>
-	/* RESET & TYPOGRAPHY ENFORCEMENT - ZERO WHITE OR BLACK */
-	:global(:root) {
-		--stamp-purple-dark: #3b0764;
-		--stamp-purple-light: #e24bff;
-		--butter-dark: #4a3000;
-		--butter-light: #ffd640;
-		--raspberry-dark: #460820;
-		--raspberry-light: #ff467a;
-		--yeast-dark: #3b0764;
-		--yeast-light: #e24bff;
-		--peanut-dark: #4e2408;
-		--peanut-light: #ff8c30;
-	}
-
-	/* SECTION 1: PEEL HERO */
-	.hero-wrapper {
+	/* SECTION 1: E-READER HERO */
+	.hero-stage {
 		position: relative;
 		min-height: 100vh;
 		min-height: 100dvh;
-		background: #240340;
+		background: #19012c;
 		overflow: hidden;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 	}
 
-	.peel-surface {
+	.hero-under-book {
+		position: absolute;
+		inset: 0;
+		background: #240340;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 1;
+		padding: 4rem 2rem;
+		text-align: center;
+	}
+
+	.under-content {
+		max-width: 600px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1.25rem;
+	}
+
+	.under-eyebrow {
+		color: #e24bff;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		font-size: 0.9rem;
+	}
+
+	.under-headline {
+		color: #ffffff;
+		font-size: clamp(2.5rem, 5vw, 4rem);
+		font-weight: 900;
+		letter-spacing: -0.02em;
+	}
+
+	.under-note {
+		color: #f4c7ff;
+		font-size: 1.15rem;
+		line-height: 1.5;
+	}
+
+	.flat-btn-ghost {
+		background: #e24bff;
+		color: #240340;
+		padding: 0.8rem 1.8rem;
+		border-radius: 9999px;
+		text-decoration: none;
+		font-weight: 900;
+		font-size: 0.95rem;
+		border: 2px solid #e24bff;
+		transition: all 0.15s;
+	}
+
+	.flat-btn-ghost:hover {
+		background: transparent;
+		color: #e24bff;
+	}
+
+	/* E-READER PAGE THAT FLIPS ON SCROLL */
+	.ereader-page {
 		width: 100%;
 		min-height: 100vh;
 		min-height: 100dvh;
-		background: linear-gradient(135deg, #3b0764 0%, #200336 100%);
+		background: #3b0764;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 		position: relative;
 		z-index: 10;
-		transform-origin: top left;
+		transform-origin: left center;
 		transition: transform 0.08s ease-out;
-		padding: 3rem 1.5rem;
-		box-shadow: 0 20px 80px rgba(18, 1, 30, 0.9);
+		padding: 5rem 1.5rem 3rem;
+		border-right: 4px solid #e24bff;
 	}
 
-	.hero-content {
-		max-width: 900px;
+	.ereader-page-inner {
+		max-width: 860px;
 		width: 100%;
 		text-align: center;
 		display: flex;
@@ -443,56 +577,44 @@
 		gap: 1.25rem;
 	}
 
-	.hero-kicker {
-		font-size: 0.95rem;
+	.hero-top-kicker {
+		font-size: 0.92rem;
 		font-weight: 800;
 		letter-spacing: 0.18em;
 		color: #e24bff;
 		text-transform: uppercase;
 	}
 
-	.hero-brand {
-		font-size: clamp(5rem, 15vw, 11rem);
-		font-weight: 900;
-		line-height: 0.85;
-		color: #e24bff;
-		letter-spacing: -0.04em;
-		text-shadow: 0 8px 32px rgba(226, 75, 255, 0.5);
-		margin: 0;
+	.hero-wordmark-container {
+		width: clamp(280px, 60vw, 560px);
+		margin: 0.5rem 0;
 	}
 
 	.hero-tagline {
-		font-size: clamp(1.4rem, 4vw, 2.8rem);
+		font-size: clamp(1.4rem, 4vw, 2.6rem);
 		font-weight: 900;
-		color: #fce7ff;
+		color: #f4c7ff;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 	}
 
-	.hero-pack-stage {
+	.hero-pack-box {
 		position: relative;
-		margin: 1.5rem 0;
+		margin: 1.25rem 0;
 	}
 
-	.pack-floating {
-		position: relative;
-		display: inline-block;
-		filter: drop-shadow(0 24px 48px rgba(18, 1, 30, 0.8));
-		transition: transform 0.1s ease-out;
-	}
-
-	.hero-pack-img {
-		max-height: 380px;
+	.hero-flat-pack {
+		max-height: 340px;
 		width: auto;
-		max-width: 90vw;
-		border-radius: 12px;
+		max-width: 88vw;
+		border-radius: 14px;
 		border: 3px solid #e24bff;
 	}
 
-	.peel-corner-hint {
+	.flat-peel-tag {
 		position: absolute;
-		top: 12px;
-		right: 12px;
+		top: 10px;
+		right: 10px;
 		background: #e24bff;
 		color: #3b0764;
 		font-weight: 900;
@@ -500,44 +622,29 @@
 		padding: 4px 10px;
 		border-radius: 999px;
 		letter-spacing: 0.08em;
-		box-shadow: 0 4px 12px rgba(226, 75, 255, 0.6);
-		animation: pulseHint 1.8s infinite alternate ease-in-out;
+		border: 1.5px solid #3b0764;
 	}
 
-	@keyframes pulseHint {
-		from {
-			transform: scale(0.95);
-		}
-		to {
-			transform: scale(1.08);
-		}
-	}
-
-	.hero-meta {
+	.hero-meta-row {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		gap: 0.75rem;
+		gap: 0.6rem;
 		flex-wrap: wrap;
 	}
 
-	.meta-pill {
+	.meta-tag {
 		background: #240340;
-		border: 1.5px solid #e24bff;
+		border: 2px solid #e24bff;
 		color: #f4c7ff;
-		padding: 0.5rem 1.25rem;
+		padding: 0.45rem 1.15rem;
 		border-radius: 9999px;
-		font-size: 0.88rem;
+		font-size: 0.84rem;
 		font-weight: 800;
 		letter-spacing: 0.04em;
 	}
 
-	.meta-dot {
-		color: #e24bff;
-		font-weight: 900;
-	}
-
-	.scroll-indicator {
+	.page-flip-indicator {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -545,77 +652,31 @@
 		margin-top: 1.5rem;
 		color: #e24bff;
 		font-weight: 800;
-		font-size: 0.82rem;
+		font-size: 0.8rem;
 		letter-spacing: 0.1em;
-		animation: bounceArrow 1.5s infinite;
 	}
 
-	.scroll-arrow {
-		font-size: 1.6rem;
-		line-height: 1;
+	.flip-icon {
+		font-size: 1.5rem;
 	}
 
-	@keyframes bounceArrow {
-		0%,
-		100% {
-			transform: translateY(0);
-		}
-		50% {
-			transform: translateY(8px);
-		}
-	}
-
-	.peel-fold-line {
-		position: absolute;
-		bottom: 0;
-		right: 0;
-		width: 100%;
-		height: 8px;
-		background: linear-gradient(90deg, transparent, #e24bff, #ff85ff);
-		box-shadow: 0 0 24px #e24bff;
-	}
-
-	.hero-underlayer {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: #19012c;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		z-index: 1;
-	}
-
-	.underlayer-pattern {
-		display: flex;
-		gap: 2rem;
-		color: rgba(226, 75, 255, 0.15);
-		font-size: 3rem;
-		font-weight: 900;
-		white-space: nowrap;
-	}
-
-	/* SECTION 2: EXPLODING 3-STEP SECTION */
-	.steps-wrapper {
+	/* SECTION 2: 3 STEPS WITH THRESHOLD EXPLOSION */
+	.steps-stage {
 		min-height: 100vh;
 		min-height: 100dvh;
 		background: #3b0764;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 5rem 1.5rem;
+		padding: 6rem 1.5rem;
 		position: relative;
 		overflow: hidden;
 	}
 
-	.steps-container {
-		max-width: 1200px;
+	.steps-inner {
+		max-width: 1140px;
 		width: 100%;
 		text-align: center;
-		position: relative;
-		z-index: 5;
 	}
 
 	.section-kicker {
@@ -626,8 +687,8 @@
 		margin-bottom: 0.5rem;
 	}
 
-	.section-heading {
-		font-size: clamp(2.8rem, 6vw, 4.8rem);
+	.section-title {
+		font-size: clamp(2.6rem, 5.5vw, 4.4rem);
 		font-weight: 900;
 		color: #ffffff;
 		letter-spacing: -0.03em;
@@ -635,11 +696,45 @@
 	}
 
 	.section-sub {
-		max-width: 680px;
-		margin: 0 auto 4rem;
-		font-size: 1.15rem;
+		max-width: 660px;
+		margin: 0 auto 2.5rem;
+		font-size: 1.1rem;
 		color: #f4c7ff;
 		line-height: 1.5;
+	}
+
+	.threshold-control-bar {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+		margin-bottom: 3.5rem;
+		flex-wrap: wrap;
+	}
+
+	.threshold-btn {
+		background: #e24bff;
+		color: #3b0764;
+		border: 2px solid #e24bff;
+		padding: 0.6rem 1.4rem;
+		border-radius: 9999px;
+		font-weight: 900;
+		font-size: 0.92rem;
+		cursor: pointer;
+		transition: all 0.15s;
+		font-family: inherit;
+	}
+
+	.threshold-btn.active {
+		background: #240340;
+		color: #e24bff;
+		border-color: #e24bff;
+	}
+
+	.threshold-status {
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: #f4c7ff;
 	}
 
 	.steps-grid {
@@ -647,55 +742,75 @@
 		grid-template-columns: repeat(3, 1fr);
 		gap: 2rem;
 		position: relative;
+		perspective: 1200px;
 	}
 
 	.step-card {
-		padding: 3rem 2rem;
-		border-radius: 20px;
+		padding: 2.75rem 2rem;
+		border-radius: 18px;
 		text-align: left;
 		display: flex;
 		flex-direction: column;
 		position: relative;
-		box-shadow: 0 16px 48px rgba(18, 1, 30, 0.6);
-		transition: transform 0.08s ease-out;
+		transition:
+			transform 0.65s cubic-bezier(0.2, 0.9, 0.2, 1),
+			opacity 0.5s ease;
 	}
 
-	.step-1 {
+	.step-card-1 {
 		background: #240340;
 		border: 3px solid #e24bff;
 		color: #f4c7ff;
 	}
 
-	.step-2 {
+	.step-card-2 {
 		background: #4a3000;
 		border: 3px solid #ffd640;
 		color: #ffeeb3;
 	}
 
-	.step-3 {
+	.step-card-3 {
 		background: #460820;
 		border: 3px solid #ff467a;
 		color: #ffd6e3;
 	}
 
-	.step-num-badge {
+	.step-card-1.blast-tl {
+		transform: translate3d(-320px, -180px, 0) rotate(-20deg) scale(0.9);
+		opacity: 0.1;
+		pointer-events: none;
+	}
+
+	.step-card-2.blast-down {
+		transform: translate3d(0, 260px, 0) scale(1.15);
+		opacity: 0.1;
+		pointer-events: none;
+	}
+
+	.step-card-3.blast-tr {
+		transform: translate3d(320px, -180px, 0) rotate(20deg) scale(0.9);
+		opacity: 0.1;
+		pointer-events: none;
+	}
+
+	.step-badge {
 		font-size: 3rem;
 		font-weight: 900;
 		line-height: 1;
 		margin-bottom: 1.25rem;
 	}
 
-	.step-1 .step-num-badge {
+	.step-card-1 .step-badge {
 		color: #e24bff;
 	}
-	.step-2 .step-num-badge {
+	.step-card-2 .step-badge {
 		color: #ffd640;
 	}
-	.step-3 .step-num-badge {
+	.step-card-3 .step-badge {
 		color: #ff467a;
 	}
 
-	.step-title {
+	.step-label {
 		font-size: 2.2rem;
 		font-weight: 900;
 		letter-spacing: 0.02em;
@@ -703,155 +818,209 @@
 		color: #ffffff;
 	}
 
-	.step-desc {
+	.step-text {
 		font-size: 1.05rem;
 		line-height: 1.5;
 		flex: 1;
 	}
 
-	.step-accent-bar {
+	.flat-rule {
 		height: 6px;
-		width: 48px;
+		width: 44px;
 		border-radius: 999px;
 		margin-top: 1.5rem;
 	}
 
-	.step-1 .step-accent-bar {
+	.step-card-1 .flat-rule {
 		background: #e24bff;
 	}
-	.step-2 .step-accent-bar {
+	.step-card-2 .flat-rule {
 		background: #ffd640;
 	}
-	.step-3 .step-accent-bar {
+	.step-card-3 .flat-rule {
 		background: #ff467a;
 	}
 
-	.explosion-rays {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 800px;
-		height: 800px;
-		background: radial-gradient(circle, rgba(226, 75, 255, 0.3) 0%, transparent 70%);
-		pointer-events: none;
-		z-index: 1;
+	.explosion-alert {
+		margin-top: 3rem;
+		display: flex;
+		justify-content: center;
+		animation: fadeIn 0.3s ease;
 	}
 
-	/* SECTIONS 3-6: FLAVOUR WORLDS */
-	.flavour-worlds-container {
+	.alert-box {
+		background: #240340;
+		border: 2px solid #e24bff;
+		color: #e24bff;
+		padding: 0.85rem 1.8rem;
+		border-radius: 999px;
+		font-weight: 800;
+		font-size: 0.9rem;
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		letter-spacing: 0.04em;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: scale(0.95);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
+
+	/* SECTIONS 3-6: DEDICATED FLAVOUR WORLDS */
+	.flavour-worlds-list {
 		display: flex;
 		flex-direction: column;
 	}
 
-	.flavour-world {
+	.flavour-screen {
 		min-height: 100vh;
 		min-height: 100dvh;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 5rem 2rem;
+		padding: 6rem 2rem;
 		position: relative;
 	}
 
-	.flavour-inner {
-		max-width: 1200px;
+	.flavour-content-grid {
+		max-width: 1140px;
 		width: 100%;
 		display: grid;
-		grid-template-columns: 460px 1fr;
-		gap: 4rem;
+		grid-template-columns: 400px 1fr;
+		gap: 4.5rem;
 		align-items: center;
 	}
 
-	.flavour-visual {
+	.flavour-media-side {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		gap: 1.5rem;
 	}
 
-	.pack-flipper {
-		perspective: 1000px;
+	/* 3D LIFT & FLIP ANIMATION STAGE */
+	.flip-stage {
+		perspective: 1200px;
+		width: 290px;
+		height: 410px;
 	}
 
-	.flavour-pack {
-		max-height: 480px;
-		width: auto;
-		max-width: 100%;
+	.flip-card {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		transition: transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+		transform-style: preserve-3d;
+	}
+
+	.flip-card.flipped {
+		transform: translateY(-18px) scale(1.05) rotateY(180deg);
+	}
+
+	.flip-face {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		backface-visibility: hidden;
+		-webkit-backface-visibility: hidden;
 		border-radius: 16px;
-		transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+		border: 3px solid;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		padding: 1rem;
 	}
 
-	.flavour-pack:hover {
-		transform: scale(1.03) rotate(1deg);
+	.flip-back {
+		transform: rotateY(180deg);
 	}
 
-	.flip-btn {
+	.flavour-pack-img {
+		max-height: 100%;
+		max-width: 100%;
+		object-fit: contain;
+	}
+
+	.flat-flip-trigger {
 		font-family: inherit;
-		font-weight: 800;
+		font-weight: 900;
 		font-size: 0.88rem;
-		padding: 0.6rem 1.4rem;
+		padding: 0.65rem 1.4rem;
 		border-radius: 9999px;
 		cursor: pointer;
-		transition: all 0.15s ease;
-		letter-spacing: 0.04em;
+		border: 2px solid;
+		transition: transform 0.15s;
+		letter-spacing: 0.03em;
 	}
 
-	.flavour-info {
+	.flat-flip-trigger:hover {
+		transform: translateY(-2px);
+	}
+
+	.flavour-copy-side {
 		display: flex;
 		flex-direction: column;
 		gap: 1.5rem;
 	}
 
-	.flavour-eyebrow {
+	.flavour-index {
 		font-size: 0.95rem;
 		font-weight: 900;
 		letter-spacing: 0.16em;
 	}
 
-	.flavour-name {
-		font-size: clamp(3rem, 7vw, 5.5rem);
+	.flavour-headline {
+		font-size: clamp(2.8rem, 6vw, 5rem);
 		font-weight: 900;
 		line-height: 0.95;
 		letter-spacing: -0.03em;
 		margin: 0;
 	}
 
-	.flavour-hero-desc {
-		font-size: 1.25rem;
+	.flavour-lead {
+		font-size: 1.2rem;
 		line-height: 1.5;
 		font-weight: 600;
 	}
 
-	.specs-pillbox {
+	.flat-specs-grid {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
 		gap: 1rem;
-		margin: 0.5rem 0;
 	}
 
-	.spec-pill {
+	.flat-spec-item {
 		padding: 1rem 1.25rem;
 		border-radius: 12px;
+		border: 2px solid;
 		display: flex;
 		flex-direction: column;
 		gap: 0.25rem;
 	}
 
-	.pill-label {
+	.spec-kicker {
 		font-size: 0.72rem;
 		font-weight: 900;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
-		opacity: 0.8;
+		opacity: 0.85;
 	}
 
-	.pill-val {
+	.spec-data {
 		font-size: 1.05rem;
 		font-weight: 800;
 	}
 
-	.flavour-callout {
+	.flat-callout {
 		padding: 1.25rem 1.5rem;
 		border-radius: 12px;
 		font-size: 0.95rem;
@@ -859,131 +1028,107 @@
 		line-height: 1.5;
 	}
 
-	/* BUTTER THEME */
-	.flavour-butter {
+	/* BUTTER THEME (FLAT) */
+	.butter-screen {
 		background: #ffd640;
 		color: #4a3000;
 	}
-	.flavour-butter .flavour-name {
-		color: #4a3000;
+	.butter-face {
+		background: #4a3000;
+		border-color: #4a3000;
 	}
-	.flavour-butter .flavour-pack {
-		box-shadow: 0 20px 60px rgba(74, 48, 0, 0.45);
-		border: 4px solid #4a3000;
-	}
-	.flavour-butter .flip-btn {
+	.butter-btn {
 		background: #4a3000;
 		color: #ffd640;
-		border: 2px solid #4a3000;
+		border-color: #4a3000;
 	}
-	.flavour-butter .flip-btn:hover {
-		background: #6e4700;
-	}
-	.flavour-butter .spec-pill {
+	.butter-spec {
 		background: #e8c028;
+		border-color: #4a3000;
 		color: #4a3000;
-		border: 1.5px solid #4a3000;
 	}
-	.flavour-butter .flavour-callout {
+	.butter-callout {
 		background: #f7ca22;
 		border-left: 4px solid #4a3000;
 	}
 
-	/* RASPBERRY THEME */
-	.flavour-raspberry {
+	/* RASPBERRY THEME (FLAT) */
+	.raspberry-screen {
 		background: #ff467a;
 		color: #460820;
 	}
-	.flavour-raspberry .flavour-name {
-		color: #460820;
+	.raspberry-face {
+		background: #460820;
+		border-color: #460820;
 	}
-	.flavour-raspberry .flavour-pack {
-		box-shadow: 0 20px 60px rgba(70, 8, 32, 0.5);
-		border: 4px solid #460820;
-	}
-	.flavour-raspberry .flip-btn {
+	.raspberry-btn {
 		background: #460820;
 		color: #ff467a;
-		border: 2px solid #460820;
+		border-color: #460820;
 	}
-	.flavour-raspberry .flip-btn:hover {
-		background: #690f33;
-	}
-	.flavour-raspberry .spec-pill {
+	.raspberry-spec {
 		background: #e83366;
+		border-color: #460820;
 		color: #ffffff;
-		border: 1.5px solid #460820;
 	}
-	.flavour-raspberry .flavour-callout {
+	.raspberry-callout {
 		background: #eb386b;
 		color: #ffffff;
 		border-left: 4px solid #460820;
 	}
 
-	/* YEAST THEME */
-	.flavour-yeast {
+	/* YEAST THEME (FLAT) */
+	.yeast-screen {
 		background: #e24bff;
 		color: #3b0764;
 	}
-	.flavour-yeast .flavour-name {
-		color: #3b0764;
+	.yeast-face {
+		background: #3b0764;
+		border-color: #3b0764;
 	}
-	.flavour-yeast .flavour-pack {
-		box-shadow: 0 20px 60px rgba(59, 7, 100, 0.5);
-		border: 4px solid #3b0764;
-	}
-	.flavour-yeast .flip-btn {
+	.yeast-btn {
 		background: #3b0764;
 		color: #e24bff;
-		border: 2px solid #3b0764;
+		border-color: #3b0764;
 	}
-	.flavour-yeast .flip-btn:hover {
-		background: #540b8f;
-	}
-	.flavour-yeast .spec-pill {
+	.yeast-spec {
 		background: #cb32e8;
+		border-color: #3b0764;
 		color: #ffffff;
-		border: 1.5px solid #3b0764;
 	}
-	.flavour-yeast .flavour-callout {
+	.yeast-callout {
 		background: #d338f0;
 		color: #ffffff;
 		border-left: 4px solid #3b0764;
 	}
 
-	/* PEANUT THEME */
-	.flavour-peanut {
+	/* PEANUT THEME (FLAT) */
+	.peanut-screen {
 		background: #ff8c30;
 		color: #4e2408;
 	}
-	.flavour-peanut .flavour-name {
-		color: #4e2408;
+	.peanut-face {
+		background: #4e2408;
+		border-color: #4e2408;
 	}
-	.flavour-peanut .flavour-pack {
-		box-shadow: 0 20px 60px rgba(78, 36, 8, 0.5);
-		border: 4px solid #4e2408;
-	}
-	.flavour-peanut .flip-btn {
+	.peanut-btn {
 		background: #4e2408;
 		color: #ff8c30;
-		border: 2px solid #4e2408;
+		border-color: #4e2408;
 	}
-	.flavour-peanut .flip-btn:hover {
-		background: #73360d;
-	}
-	.flavour-peanut .spec-pill {
+	.peanut-spec {
 		background: #e87820;
+		border-color: #4e2408;
 		color: #ffffff;
-		border: 1.5px solid #4e2408;
 	}
-	.flavour-peanut .flavour-callout {
+	.peanut-callout {
 		background: #eb7c22;
 		color: #ffffff;
 		border-left: 4px solid #4e2408;
 	}
 
-	/* SECTION 7: MIXED SHEET & DISRUPTION */
-	.mixed-disruption-section {
+	/* SECTION 7: MIXED SHEET */
+	.mixed-pack-stage {
 		background: #240340;
 		border-top: 4px solid #e24bff;
 		padding: 6rem 2rem;
@@ -992,8 +1137,8 @@
 		justify-content: center;
 	}
 
-	.disruption-inner {
-		max-width: 1200px;
+	.mixed-content-container {
+		max-width: 1140px;
 		width: 100%;
 		display: grid;
 		grid-template-columns: 1fr 1fr;
@@ -1001,30 +1146,29 @@
 		align-items: center;
 	}
 
-	.four-packs-hero {
+	.mixed-four-packs {
 		width: 100%;
-		max-height: 480px;
+		max-height: 460px;
 		object-fit: contain;
 		border-radius: 16px;
-		box-shadow: 0 24px 64px rgba(18, 1, 30, 0.85);
 		border: 3px solid #e24bff;
 	}
 
-	.disruption-copy {
+	.mixed-copy-col {
 		display: flex;
 		flex-direction: column;
 		gap: 1.5rem;
 	}
 
-	.disruption-kicker {
+	.mixed-kicker {
 		color: #e24bff;
 		font-size: 0.95rem;
 		font-weight: 900;
 		letter-spacing: 0.16em;
 	}
 
-	.disruption-title {
-		font-size: clamp(2.8rem, 5vw, 4.2rem);
+	.mixed-heading {
+		font-size: clamp(2.6rem, 5vw, 4rem);
 		font-weight: 900;
 		line-height: 1;
 		color: #ffffff;
@@ -1032,13 +1176,13 @@
 		margin: 0;
 	}
 
-	.disruption-lead {
+	.mixed-lead {
 		font-size: 1.2rem;
 		line-height: 1.5;
 		color: #f4c7ff;
 	}
 
-	.disruption-price-card {
+	.flat-price-card {
 		background: #3b0764;
 		border: 2px solid #e24bff;
 		padding: 1.75rem;
@@ -1048,27 +1192,27 @@
 		gap: 0.5rem;
 	}
 
-	.big-price {
+	.price-giant {
 		font-size: 3rem;
 		font-weight: 900;
 		color: #e24bff;
 		line-height: 1;
 	}
 
-	.price-context {
+	.price-explainer {
 		font-size: 0.95rem;
 		color: #f4c7ff;
 		line-height: 1.45;
 	}
 
-	.disruption-actions {
+	.mixed-btn-row {
 		display: flex;
 		gap: 1rem;
 		flex-wrap: wrap;
 		margin-top: 0.5rem;
 	}
 
-	.bold-cta-btn {
+	.flat-action-btn {
 		background: #e24bff;
 		color: #3b0764;
 		font-weight: 900;
@@ -1076,19 +1220,19 @@
 		padding: 1rem 1.8rem;
 		border-radius: 9999px;
 		text-decoration: none;
+		border: 2px solid #e24bff;
 		transition: all 0.15s ease;
-		box-shadow: 0 4px 20px rgba(226, 75, 255, 0.5);
 	}
 
-	.bold-cta-btn:hover {
-		background: #ff85ff;
-		transform: translateY(-2px);
-	}
-
-	.bold-outline-btn {
+	.flat-action-btn:hover {
 		background: transparent;
 		color: #e24bff;
-		font-weight: 800;
+	}
+
+	.flat-outline-btn {
+		background: transparent;
+		color: #e24bff;
+		font-weight: 900;
 		font-size: 1rem;
 		padding: 1rem 1.8rem;
 		border-radius: 9999px;
@@ -1098,59 +1242,66 @@
 		transition: all 0.15s ease;
 	}
 
-	.bold-outline-btn:hover {
-		background: rgba(226, 75, 255, 0.2);
-		transform: translateY(-2px);
+	.flat-outline-btn:hover {
+		background: #e24bff;
+		color: #3b0764;
 	}
 
-	/* RESPONSIVENESS */
+	/* RESPONSIVE */
 	@media (max-width: 960px) {
 		.steps-grid {
 			grid-template-columns: 1fr;
 			gap: 1.5rem;
 		}
 
-		.flavour-inner {
+		.step-card-1.blast-tl,
+		.step-card-2.blast-down,
+		.step-card-3.blast-tr {
+			transform: scale(0.9);
+			opacity: 0.15;
+		}
+
+		.flavour-content-grid {
 			grid-template-columns: 1fr;
 			gap: 2.5rem;
 			text-align: center;
 		}
 
-		.flavour-info {
+		.flavour-copy-side {
 			align-items: center;
 		}
 
-		.disruption-inner {
+		.mixed-content-container {
 			grid-template-columns: 1fr;
 			text-align: center;
 		}
 
-		.disruption-copy {
+		.mixed-copy-col {
 			align-items: center;
 		}
 	}
 
 	@media (max-width: 640px) {
-		.hero-pack-img {
-			max-height: 280px;
+		.hero-flat-pack {
+			max-height: 260px;
 		}
 
 		.step-card {
 			padding: 2rem 1.5rem;
 		}
 
-		.specs-pillbox {
+		.flat-specs-grid {
 			grid-template-columns: 1fr;
 			width: 100%;
 		}
 
-		.disruption-actions {
+		.mixed-btn-row {
 			flex-direction: column;
 			width: 100%;
 		}
 
-		.bold-cta-btn,
-		.bold-outline-btn {
+		.flat-action-btn,
+		.flat-outline-btn {
 			width: 100%;
 			text-align: center;
 		}
