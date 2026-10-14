@@ -174,24 +174,16 @@
 			aria-label="Stamp Conversation"
 			style:background-color={colorScheme.tertiary}
 		>
-			<!-- Top Header of the Flyout: Assistant title with close button in top right -->
-			<div class="flyout-header" style:color={colorScheme.primary}>
-				<div class="flyout-title-wrap">
-					<span class="bot-badge-small" style:background-color={colorScheme.primary} style:color={colorScheme.tertiary}>S</span>
-					<div class="flyout-title">
-						<strong>Stamp Assistant</strong>
-					</div>
-				</div>
-				<button
-					type="button"
-					class="close-flyout-btn"
-					onclick={collapseBar}
-					aria-label="Close responses"
-					style:color={colorScheme.primary}
-				>
-					✕
-				</button>
-			</div>
+			<!-- Close button top-right inside flyout -->
+			<button
+				type="button"
+				class="close-flyout-btn"
+				onclick={collapseBar}
+				aria-label="Close responses"
+				style:color={colorScheme.primary}
+			>
+				✕
+			</button>
 
 			<!-- Scrollable Messages Window showing initial assistant greeting and conversation -->
 			<div class="flyout-messages" bind:this={messagesContainer}>
@@ -247,14 +239,15 @@
 			style:color="#ffffff"
 		/>
 
-		<!-- Send icon on the right (always visible) -->
+		<!-- Send icon on the right (always visible, cleanly styled) -->
 		<button
 			type="button"
 			class="bar-send-btn"
+			class:active={userInput.trim().length > 0}
 			onclick={() => handleSend()}
 			disabled={!userInput.trim() || isThinking}
 			aria-label="Send query"
-			style:background-color={userInput.trim() ? colorScheme.primary : 'rgba(255, 255, 255, 0.14)'}
+			style:background-color={userInput.trim() ? colorScheme.primary : 'transparent'}
 			style:color={userInput.trim() ? colorScheme.tertiary : colorScheme.primary}
 		>
 			<svg class="send-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
@@ -327,8 +320,8 @@
 	}
 
 	.bar-send-btn {
-		width: 40px;
-		height: 40px;
+		width: 38px;
+		height: 38px;
 		border-radius: 50%;
 		border: none;
 		display: inline-flex;
@@ -336,7 +329,13 @@
 		justify-content: center;
 		cursor: pointer;
 		flex-shrink: 0;
+		opacity: 0.45;
 		transition: transform 0.15s ease, background-color 0.2s ease, opacity 0.2s ease;
+	}
+
+	.bar-send-btn.active {
+		opacity: 1;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
 	}
 
 	.bar-send-btn:hover:not(:disabled) {
@@ -345,7 +344,6 @@
 
 	.bar-send-btn:disabled {
 		cursor: default;
-		opacity: 0.6;
 	}
 
 	.send-arrow-svg {
@@ -356,6 +354,7 @@
 
 	/* RESPONSES FLYOUT ABOVE THE BAR */
 	.responses-flyout {
+		position: relative;
 		width: 100%;
 		max-height: 440px;
 		border-radius: 24px;
@@ -379,60 +378,39 @@
 		}
 	}
 
-	.flyout-header {
-		padding: 1rem 1.4rem;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-		flex-shrink: 0;
-	}
-
-	.flyout-title-wrap {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-	}
-
-	.bot-badge-small {
+	.close-flyout-btn {
+		position: absolute;
+		top: 12px;
+		right: 14px;
+		z-index: 10;
+		background: rgba(255, 255, 255, 0.08);
+		border: none;
+		font-size: 0.95rem;
 		width: 28px;
 		height: 28px;
 		border-radius: 50%;
-		font-weight: 900;
-		font-size: 0.85rem;
-		display: flex;
+		cursor: pointer;
+		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-	}
-
-	.flyout-title {
-		display: flex;
-		align-items: center;
-		font-size: 0.95rem;
-	}
-
-	.close-flyout-btn {
-		background: transparent;
-		border: none;
-		font-size: 1.15rem;
-		cursor: pointer;
-		padding: 0.2rem 0.5rem;
 		opacity: 0.75;
-		transition: opacity 0.15s;
+		transition: opacity 0.15s, background-color 0.15s, transform 0.15s;
 	}
 
 	.close-flyout-btn:hover {
 		opacity: 1;
+		background: rgba(255, 255, 255, 0.18);
+		transform: scale(1.06);
 	}
 
 	.flyout-messages {
 		flex: 1;
-		padding: 1.2rem 1.4rem;
+		padding: 1.5rem 1.4rem 1.25rem;
 		overflow-y: auto;
 		display: flex;
 		flex-direction: column;
 		gap: 0.9rem;
-		max-height: 340px;
+		max-height: 360px;
 	}
 
 	.msg-row {
@@ -459,7 +437,7 @@
 	}
 
 	.msg-bubble {
-		max-width: 84%;
+		max-width: 80%;
 		padding: 0.8rem 1.1rem;
 		border-radius: 16px;
 		font-size: 0.92rem;

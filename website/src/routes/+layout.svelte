@@ -228,7 +228,7 @@
 	.site-footer {
 		background: transparent;
 		color: #f4c7ff;
-		padding: 5rem 1.5rem 3rem;
+		padding: 5rem 1.5rem 7.5rem;
 	}
 
 	.footer-inner {
@@ -331,7 +331,7 @@
 			font-size: 0.8rem;
 		}
 		.site-footer {
-			padding: 3rem 1rem 1.5rem;
+			padding: 3rem 1rem 6.5rem;
 		}
 		.footer-inner {
 			grid-template-columns: 1fr;
