@@ -2,11 +2,9 @@
 	import type { Snippet } from 'svelte';
 	import ChatWidget from '../lib/ChatWidget.svelte';
 	import Wordmark from '../lib/Wordmark.svelte';
-	import { themeState, THEME_CONFIG } from '../lib/theme.svelte';
+	import { colorScheme } from '../lib/theme.svelte';
 
 	let { children }: { children: Snippet } = $props();
-
-	let currentTheme = $derived(THEME_CONFIG[themeState.active] || THEME_CONFIG.hero);
 </script>
 
 <svelte:head>
@@ -17,35 +15,38 @@
 	/>
 </svelte:head>
 
-<!-- FIXED STATIONARY BACKGROUND THAT FADES BETWEEN SECTION BRAND COLORS -->
+<!-- FIXED STATIONARY BACKGROUND: SECONDARY COLOR (MORPHS SMOOTHLY) -->
 <div
 	class="stationary-viewport-bg"
-	style:background-color={currentTheme.screenBg}
+	style:background-color={colorScheme.secondary}
 	aria-hidden="true"
 ></div>
 
-<div class="site-container">
-	<!-- FLOATING DYNAMIC HEADER - FLAT SOLID COLOR, ZERO OUTLINES -->
+<div
+	class="site-container"
+	style="--color-primary: {colorScheme.primary}; --color-secondary: {colorScheme.secondary}; --color-tertiary: {colorScheme.tertiary};"
+>
+	<!-- FLOATING DYNAMIC HEADER - TERTIARY BG, PRIMARY TEXT, ZERO OUTLINES -->
 	<header
 		class="site-header floating-header"
-		style:background-color={currentTheme.headerBg}
-		style:color={currentTheme.text}
+		style:background-color={colorScheme.tertiary}
+		style:color={colorScheme.primary}
 	>
 		<div class="header-inner">
-			<a href="/" class="brand-link" style:color={currentTheme.text}>
+			<a href="/" class="brand-link" style:color={colorScheme.primary}>
 				<div class="header-wordmark-wrap">
-					<Wordmark color={currentTheme.text} />
+					<Wordmark color={colorScheme.primary} />
 				</div>
 			</a>
 			<nav class="site-nav">
-				<a href="/#steps" class="nav-link" style:color={currentTheme.text}>Gesture</a>
-				<a href="/#flavours" class="nav-link" style:color={currentTheme.text}>Flavours</a>
-				<a href="/flavours" class="nav-link" style:color={currentTheme.text}>Specs</a>
+				<a href="/#steps" class="nav-link" style:color={colorScheme.primary}>Gesture</a>
+				<a href="/#flavours" class="nav-link" style:color={colorScheme.primary}>Flavours</a>
+				<a href="/flavours" class="nav-link" style:color={colorScheme.primary}>Specs</a>
 				<button
 					type="button"
 					class="nav-link chat-btn"
-					style:background-color={currentTheme.btnBg}
-					style:color={currentTheme.btnText}
+					style:background-color={colorScheme.primary}
+					style:color={colorScheme.secondary}
 					onclick={() => {
 						if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('stamp:open-chat'));
 					}}>Ask Stamp</button
@@ -64,15 +65,15 @@
 		<div class="footer-inner">
 			<div class="footer-col">
 				<div class="footer-brand-wrap">
-					<Wordmark color="#e24bff" />
+					<Wordmark color={colorScheme.primary} />
 				</div>
-				<p class="footer-tagline">PEEL. PRESS. TOAST.</p>
+				<p class="footer-tagline" style:color={colorScheme.primary}>PEEL. PRESS. TOAST.</p>
 				<p class="footer-desc">
 					10 g single-serve spread portions on food-safe release film. 12 months ambient pantry stability.
 				</p>
 			</div>
 			<div class="footer-col">
-				<h4 class="footer-heading">Range & Navigation</h4>
+				<h4 class="footer-heading" style:color={colorScheme.primary}>Range & Navigation</h4>
 				<ul class="footer-links">
 					<li><a href="/#steps">The 3-Step Gesture</a></li>
 					<li><a href="/#flavours">4 Launch Flavours</a></li>
@@ -89,7 +90,7 @@
 				</ul>
 			</div>
 			<div class="footer-col">
-				<h4 class="footer-heading">Product Integrity</h4>
+				<h4 class="footer-heading" style:color={colorScheme.primary}>Product Integrity</h4>
 				<p class="footer-note">
 					$5.00 NZD per 8-stamp sheet ($6.25 / 100 g). No false certification marks or therapeutic claims. Produced in a facility handling milk, gluten, and peanuts.
 				</p>

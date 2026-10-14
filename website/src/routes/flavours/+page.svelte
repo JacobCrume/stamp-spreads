@@ -191,7 +191,7 @@
 	.page-container {
 		max-width: 1120px;
 		margin: 0 auto;
-		padding: 3rem 1.5rem 5rem;
+		padding: 7rem 1.5rem 5rem;
 		background: transparent;
 	}
 
@@ -204,24 +204,25 @@
 	.page-title {
 		font-size: 2.8rem;
 		font-weight: 900;
-		color: #e24bff;
+		color: var(--color-primary);
 		margin-bottom: 1rem;
 		letter-spacing: -0.02em;
 	}
 
 	.page-intro {
 		font-size: 1.15rem;
-		color: #f4c7ff;
+		color: #ffffff;
 		line-height: 1.6;
+		opacity: 0.95;
 	}
 
 	.mixed-pack-banner {
-		background: #3b0764;
-		color: #f4c7ff;
+		background: var(--color-tertiary);
+		color: #ffffff;
 		border-radius: 16px;
 		padding: 2.5rem;
 		margin-bottom: 3.5rem;
-		border: 3px solid #e24bff;
+		border: none;
 	}
 
 	.banner-inner {
@@ -239,8 +240,8 @@
 
 	.badge {
 		display: inline-block;
-		background: #e24bff;
-		color: #240340;
+		background: var(--color-primary);
+		color: var(--color-secondary);
 		font-size: 0.75rem;
 		font-weight: 900;
 		letter-spacing: 0.08em;
@@ -253,18 +254,19 @@
 		font-size: 2rem;
 		font-weight: 900;
 		margin-bottom: 0.5rem;
-		color: #ffd640;
+		color: var(--color-primary);
 	}
 
 	.banner-desc {
 		font-size: 1rem;
-		color: #f4c7ff;
+		color: #ffffff;
+		opacity: 0.95;
 		line-height: 1.5;
 	}
 
 	.banner-price {
-		background: #240340;
-		border: 2px solid #e24bff;
+		background: var(--color-secondary);
+		border: none;
 		padding: 1.25rem 2rem;
 		border-radius: 14px;
 		text-align: center;
@@ -273,12 +275,13 @@
 	.price-tag {
 		font-size: 2.2rem;
 		font-weight: 900;
-		color: #ffd640;
+		color: var(--color-primary);
 	}
 
 	.price-sub {
 		font-size: 0.85rem;
-		color: #f4c7ff;
+		color: #ffffff;
+		opacity: 0.9;
 	}
 
 	.flavour-list {
@@ -289,8 +292,8 @@
 	}
 
 	.flavour-detail-card {
-		background: #240340;
-		border: 3px solid #e24bff;
+		background: var(--color-tertiary);
+		border: none;
 		border-radius: 16px;
 		overflow: hidden;
 		display: grid;
@@ -298,8 +301,8 @@
 	}
 
 	.flavour-media {
-		background: #3b0764;
-		border-right: 3px solid #e24bff;
+		background: var(--color-secondary);
+		border: none;
 		padding: 2.5rem 1.5rem;
 		display: flex;
 		flex-direction: column;
@@ -316,9 +319,9 @@
 
 	.pack-badge {
 		margin-top: 1.5rem;
-		background: #3b0764;
-		border: 2px solid #e24bff;
-		color: #e24bff;
+		background: var(--color-tertiary);
+		border: none;
+		color: var(--color-primary);
 		font-size: 0.82rem;
 		font-weight: 800;
 		padding: 0.35rem 0.85rem;
@@ -338,25 +341,26 @@
 		gap: 1.25rem;
 		margin-bottom: 1.5rem;
 		padding-bottom: 1rem;
-		border-bottom: 2px solid #3b0764;
+		border-bottom: none;
 	}
 
 	.flavour-number {
 		font-size: 2rem;
 		font-weight: 900;
-		color: #e24bff;
+		color: var(--color-primary);
 		line-height: 1;
 	}
 
 	.flavour-name {
 		font-size: 1.8rem;
 		font-weight: 900;
-		color: #ffd640;
+		color: var(--color-primary);
 	}
 
 	.flavour-subtitle {
 		font-size: 0.95rem;
-		color: #f4c7ff;
+		color: #ffffff;
+		opacity: 0.9;
 		font-weight: 700;
 	}
 
@@ -367,15 +371,14 @@
 	}
 
 	.spec-block {
-		background: #3b0764;
+		background: var(--color-secondary);
 		padding: 1.2rem;
 		border-radius: 12px;
-		border: 2px solid #e24bff;
+		border: none;
 	}
 
 	.highlight-allergen {
-		background: #460820;
-		border-color: #ff467a;
+		background: var(--color-secondary);
 	}
 
 	.spec-label {
@@ -383,27 +386,27 @@
 		font-weight: 900;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
-		color: #e24bff;
+		color: var(--color-primary);
 		margin-bottom: 0.4rem;
 	}
 
 	.spec-value {
 		font-size: 0.92rem;
-		color: #f4c7ff;
+		color: #ffffff;
 		line-height: 1.45;
 		font-weight: 700;
 	}
 
 	.spec-sub {
 		font-size: 0.82rem;
-		color: #ffd640;
+		color: var(--color-primary);
 		margin-top: 0.4rem;
 		line-height: 1.4;
 	}
 
 	.regulatory-box {
-		background: #240340;
-		border: 3px solid #e24bff;
+		background: var(--color-tertiary);
+		border: none;
 		border-radius: 16px;
 		padding: 2rem;
 	}
@@ -411,15 +414,16 @@
 	.reg-title {
 		font-size: 1.3rem;
 		font-weight: 900;
-		color: #ffd640;
+		color: var(--color-primary);
 		margin-bottom: 0.75rem;
 	}
 
 	.reg-text {
 		font-size: 0.95rem;
-		color: #f4c7ff;
+		color: #ffffff;
 		margin-bottom: 1rem;
 		line-height: 1.5;
+		opacity: 0.95;
 	}
 
 	.reg-list {
@@ -429,7 +433,8 @@
 		flex-direction: column;
 		gap: 0.6rem;
 		font-size: 0.92rem;
-		color: #f4c7ff;
+		color: #ffffff;
+		opacity: 0.95;
 	}
 
 	@media (max-width: 860px) {

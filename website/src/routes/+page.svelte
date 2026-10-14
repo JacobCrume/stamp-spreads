@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import Wordmark from '../lib/Wordmark.svelte';
-	import { setSectionTheme, type SectionTheme } from '../lib/theme.svelte';
+	import { colorScheme, setSectionTheme, type SectionTheme } from '../lib/theme.svelte';
 
 	let scrollY = $state(0);
 	let innerHeight = $state(800);
@@ -23,7 +23,7 @@
 	}
 
 	onMount(() => {
-		// Active section observer to smoothly fade stationary background between brand colors
+		// Active section observer to smoothly change the global colorScheme object
 		const updateActiveSection = () => {
 			const sections: { id: string; theme: SectionTheme }[] = [
 				{ id: 'hero-section', theme: 'hero' },
@@ -87,9 +87,9 @@
 	<div class="hero-clean-inner">
 		<div class="hero-kicker">NEW ZEALAND BREAKFAST INNOVATION</div>
 
-		<!-- Authentic Drawn STAMP Vector Wordmark -->
+		<!-- Authentic Drawn STAMP Vector Wordmark (uses colorScheme.primary) -->
 		<div class="hero-wordmark-container">
-			<Wordmark color="#e24bff" />
+			<Wordmark color={colorScheme.primary} />
 		</div>
 
 		<h1 class="hero-tagline">PEEL. PRESS. TOAST.</h1>
@@ -133,7 +133,7 @@
 		<div class="threshold-control-bar">
 			<button
 				type="button"
-				class="threshold-btn {isExploded ? 'active' : ''}"
+				class="threshold-btn"
 				onclick={() => (isExploded = !isExploded)}
 			>
 				{isExploded ? '↺ Reset 3 Steps' : '💥 Trigger Explosion'}
@@ -188,17 +188,17 @@
 
 <!-- SECTIONS 3-6: DEDICATED FULL-SCREEN IMMERSIVE FLAVOUR WORLDS (FLAT, ZERO OUTLINES) -->
 <div id="flavours" class="flavour-worlds-list">
-	<!-- FLAVOUR 1: SALTED BUTTER (ELECTRIC GOLD & ROASTED CARAMEL) -->
-	<section id="flavour-butter" class="flavour-screen butter-screen">
+	<!-- FLAVOUR 1: SALTED BUTTER -->
+	<section id="flavour-butter" class="flavour-screen">
 		<div class="flavour-content-grid">
 			<div class="flavour-media-side">
 				<!-- 3D Lift & Flip Card (Flat Solid Surfaces, No Outline Borders) -->
 				<div class="flip-stage">
 					<div class="flip-card {flipped.butter ? 'flipped' : ''}">
-						<div class="flip-face flip-front butter-face">
+						<div class="flip-face flip-front">
 							<img src="/flavours/butter.png" alt="Salted Butter Stamp Pack" class="flavour-pack-img" />
 						</div>
-						<div class="flip-face flip-back butter-face">
+						<div class="flip-face flip-back">
 							<img src="/flavours/butter-back.png" alt="Salted Butter Nutritional Panel" class="flavour-pack-img" />
 						</div>
 					</div>
@@ -207,7 +207,7 @@
 				<!-- Animated Lift & Flip Button (Flat Solid Pill, No Outlines) -->
 				<button
 					type="button"
-					class="flat-flip-trigger butter-btn"
+					class="flat-flip-trigger"
 					class:is-flipped={flipped.butter}
 					onclick={() => toggleFlip('butter')}
 					aria-label="Lift and flip Salted Butter card"
@@ -237,42 +237,42 @@
 				</p>
 
 				<div class="flat-specs-grid">
-					<div class="flat-spec-item butter-spec">
+					<div class="flat-spec-item">
 						<span class="spec-kicker">FORMULA</span>
 						<span class="spec-data">78 g butterfat · 2 g salt</span>
 					</div>
-					<div class="flat-spec-item butter-spec">
+					<div class="flat-spec-item">
 						<span class="spec-kicker">ALLERGEN</span>
 						<span class="spec-data">CONTAINS MILK</span>
 					</div>
-					<div class="flat-spec-item butter-spec">
+					<div class="flat-spec-item">
 						<span class="spec-kicker">STABILITY</span>
 						<span class="spec-data">12 Months Ambient</span>
 					</div>
-					<div class="flat-spec-item butter-spec">
+					<div class="flat-spec-item">
 						<span class="spec-kicker">PORTION</span>
 						<span class="spec-data">10 g Discs · 8 per Sheet</span>
 					</div>
 				</div>
 
-				<div class="flat-callout butter-callout">
+				<div class="flat-callout">
 					Sold as a shelf-stable butter spread, not a pat of fridge butter. Zero added vegetable oils or artificial preservatives.
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<!-- FLAVOUR 2: RASPBERRY (VIBRANT NEON RASPBERRY & DARK WILD BERRY) -->
-	<section id="flavour-raspberry" class="flavour-screen raspberry-screen">
+	<!-- FLAVOUR 2: RASPBERRY -->
+	<section id="flavour-raspberry" class="flavour-screen">
 		<div class="flavour-content-grid">
 			<div class="flavour-media-side">
 				<!-- 3D Lift & Flip Card (Flat Solid Surfaces, No Outline Borders) -->
 				<div class="flip-stage">
 					<div class="flip-card {flipped.raspberry ? 'flipped' : ''}">
-						<div class="flip-face flip-front raspberry-face">
+						<div class="flip-face flip-front">
 							<img src="/flavours/raspberry.png" alt="Raspberry Stamp Pack" class="flavour-pack-img" />
 						</div>
-						<div class="flip-face flip-back raspberry-face">
+						<div class="flip-face flip-back">
 							<img src="/flavours/raspberry-back.png" alt="Raspberry Nutritional Panel" class="flavour-pack-img" />
 						</div>
 					</div>
@@ -281,7 +281,7 @@
 				<!-- Animated Lift & Flip Button (Flat Solid Pill, No Outlines) -->
 				<button
 					type="button"
-					class="flat-flip-trigger raspberry-btn"
+					class="flat-flip-trigger"
 					class:is-flipped={flipped.raspberry}
 					onclick={() => toggleFlip('raspberry')}
 					aria-label="Lift and flip Raspberry card"
@@ -311,42 +311,42 @@
 				</p>
 
 				<div class="flat-specs-grid">
-					<div class="flat-spec-item raspberry-spec">
+					<div class="flat-spec-item">
 						<span class="spec-kicker">FRUIT PROPORTION</span>
 						<span class="spec-data">150 g fruit / 100 g spread</span>
 					</div>
-					<div class="flat-spec-item raspberry-spec">
+					<div class="flat-spec-item">
 						<span class="spec-kicker">ALLERGENS</span>
 						<span class="spec-data">No Major Recipe Allergens</span>
 					</div>
-					<div class="flat-spec-item raspberry-spec">
+					<div class="flat-spec-item">
 						<span class="spec-kicker">PRESERVATION</span>
 						<span class="spec-data">Natural Fruit Solids</span>
 					</div>
-					<div class="flat-spec-item raspberry-spec">
+					<div class="flat-spec-item">
 						<span class="spec-kicker">PORTION</span>
 						<span class="spec-data">10 g Discs · 8 per Sheet</span>
 					</div>
 				</div>
 
-				<div class="flat-callout raspberry-callout">
+				<div class="flat-callout">
 					Whole raspberries, caster sugar, and lemon juice. No artificial gelling agents and no unsupported organic claims.
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<!-- FLAVOUR 3: YEAST EXTRACT (ELECTRIC VIOLET & DEEP INK PURPLE) -->
-	<section id="flavour-yeast" class="flavour-screen yeast-screen">
+	<!-- FLAVOUR 3: YEAST EXTRACT -->
+	<section id="flavour-yeast" class="flavour-screen">
 		<div class="flavour-content-grid">
 			<div class="flavour-media-side">
 				<!-- 3D Lift & Flip Card (Flat Solid Surfaces, No Outline Borders) -->
 				<div class="flip-stage">
 					<div class="flip-card {flipped.yeast ? 'flipped' : ''}">
-						<div class="flip-face flip-front yeast-face">
+						<div class="flip-face flip-front">
 							<img src="/flavours/yeast.png" alt="Yeast Extract Stamp Pack" class="flavour-pack-img" />
 						</div>
-						<div class="flip-face flip-back yeast-face">
+						<div class="flip-face flip-back">
 							<img src="/flavours/yeast-back.png" alt="Yeast Extract Nutritional Panel" class="flavour-pack-img" />
 						</div>
 					</div>
@@ -355,7 +355,7 @@
 				<!-- Animated Lift & Flip Button (Flat Solid Pill, No Outlines) -->
 				<button
 					type="button"
-					class="flat-flip-trigger yeast-btn"
+					class="flat-flip-trigger"
 					class:is-flipped={flipped.yeast}
 					onclick={() => toggleFlip('yeast')}
 					aria-label="Lift and flip Yeast Extract card"
@@ -385,42 +385,42 @@
 				</p>
 
 				<div class="flat-specs-grid">
-					<div class="flat-spec-item yeast-spec">
+					<div class="flat-spec-item">
 						<span class="spec-kicker">YEAST EXTRACT</span>
 						<span class="spec-data">80% Concentrated</span>
 					</div>
-					<div class="flat-spec-item yeast-spec">
+					<div class="flat-spec-item">
 						<span class="spec-kicker">MALT EXTRACT</span>
 						<span class="spec-data">15.5% Barley Malt</span>
 					</div>
-					<div class="flat-spec-item yeast-spec">
+					<div class="flat-spec-item">
 						<span class="spec-kicker">ALLERGEN</span>
 						<span class="spec-data">CONTAINS GLUTEN (BARLEY)</span>
 					</div>
-					<div class="flat-spec-item yeast-spec">
+					<div class="flat-spec-item">
 						<span class="spec-kicker">PORTION</span>
 						<span class="spec-data">10 g Discs · 8 per Sheet</span>
 					</div>
 				</div>
 
-				<div class="flat-callout yeast-callout">
+				<div class="flat-callout">
 					NOT gluten-free. Contains barley malt extract. No therapeutic or medical treatment claims.
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<!-- FLAVOUR 4: ROASTED PEANUT (WARM OCHRE ORANGE & ROASTED UMBER) -->
-	<section id="flavour-peanut" class="flavour-screen peanut-screen">
+	<!-- FLAVOUR 4: ROASTED PEANUT -->
+	<section id="flavour-peanut" class="flavour-screen">
 		<div class="flavour-content-grid">
 			<div class="flavour-media-side">
 				<!-- 3D Lift & Flip Card (Flat Solid Surfaces, No Outline Borders) -->
 				<div class="flip-stage">
 					<div class="flip-card {flipped.peanut ? 'flipped' : ''}">
-						<div class="flip-face flip-front peanut-face">
+						<div class="flip-face flip-front">
 							<img src="/flavours/peanut.png" alt="Roasted Peanut Stamp Pack" class="flavour-pack-img" />
 						</div>
-						<div class="flip-face flip-back peanut-face">
+						<div class="flip-face flip-back">
 							<img src="/flavours/peanut-back.png" alt="Roasted Peanut Nutritional Panel" class="flavour-pack-img" />
 						</div>
 					</div>
@@ -429,7 +429,7 @@
 				<!-- Animated Lift & Flip Button (Flat Solid Pill, No Outlines) -->
 				<button
 					type="button"
-					class="flat-flip-trigger peanut-btn"
+					class="flat-flip-trigger"
 					class:is-flipped={flipped.peanut}
 					onclick={() => toggleFlip('peanut')}
 					aria-label="Lift and flip Roasted Peanut card"
@@ -459,25 +459,25 @@
 				</p>
 
 				<div class="flat-specs-grid">
-					<div class="flat-spec-item peanut-spec">
+					<div class="flat-spec-item">
 						<span class="spec-kicker">PEANUT CONTENT</span>
 						<span class="spec-data">96% Roasted Peanuts</span>
 					</div>
-					<div class="flat-spec-item peanut-spec">
+					<div class="flat-spec-item">
 						<span class="spec-kicker">STABILIZER</span>
 						<span class="spec-data">2.3% Anti-Oil Fraction</span>
 					</div>
-					<div class="flat-spec-item peanut-spec">
+					<div class="flat-spec-item">
 						<span class="spec-kicker">ALLERGEN</span>
 						<span class="spec-data">CONTAINS PEANUTS</span>
 					</div>
-					<div class="flat-spec-item peanut-spec">
+					<div class="flat-spec-item">
 						<span class="spec-kicker">PORTION</span>
 						<span class="spec-data">10 g Discs · 8 per Sheet</span>
 					</div>
 				</div>
 
-				<div class="flat-callout peanut-callout">
+				<div class="flat-callout">
 					96% peanuts, vegetable fat, and sea salt. Zero separated oil pooling; melts across toast instantly.
 				</div>
 			</div>
@@ -524,6 +524,27 @@
 </section>
 
 <style>
+	/* ALL THEMED ELEMENTS REFER TO THE ONE COLORSCHEME VIA CSS VARIABLES */
+	.hero-clean-stage,
+	.steps-stage,
+	.flavour-screen,
+	.mixed-pack-stage,
+	.hero-badge,
+	.hero-btn-primary,
+	.hero-btn-secondary,
+	.step-card,
+	.threshold-btn,
+	.alert-box,
+	.flip-face,
+	.flat-flip-trigger,
+	.flat-spec-item,
+	.flat-callout,
+	.flat-price-card,
+	.flat-action-btn,
+	.flat-outline-btn {
+		transition: background-color 0.45s ease, color 0.45s ease;
+	}
+
 	/* SECTION 1: CLEAN, NORMAL, HIGH-IMPACT HERO */
 	.hero-clean-stage {
 		position: relative;
@@ -550,7 +571,7 @@
 		font-size: 0.88rem;
 		font-weight: 900;
 		letter-spacing: 0.18em;
-		color: #e24bff;
+		color: var(--color-primary);
 	}
 
 	.hero-wordmark-container {
@@ -567,7 +588,7 @@
 		font-size: clamp(1.8rem, 4.5vw, 3rem);
 		font-weight: 900;
 		letter-spacing: 0.16em;
-		color: #f4c7ff;
+		color: var(--color-primary);
 		margin: 0;
 		line-height: 1.1;
 	}
@@ -575,10 +596,11 @@
 	.hero-lead {
 		font-size: clamp(1.05rem, 2vw, 1.3rem);
 		line-height: 1.6;
-		color: #f4c7ff;
+		color: #ffffff;
 		max-width: 680px;
 		margin: 0 auto;
 		font-weight: 600;
+		opacity: 0.95;
 	}
 
 	.hero-pack-showcase {
@@ -604,8 +626,8 @@
 		position: absolute;
 		top: -10px;
 		right: -10px;
-		background: #ffd640;
-		color: #4a3000;
+		background: var(--color-primary);
+		color: var(--color-secondary);
 		font-weight: 900;
 		font-size: 0.78rem;
 		letter-spacing: 0.08em;
@@ -628,8 +650,8 @@
 		letter-spacing: 0.06em;
 		padding: 0.45rem 1rem;
 		border-radius: 9999px;
-		background: #3b0764;
-		color: #e24bff;
+		background: var(--color-tertiary);
+		color: var(--color-primary);
 	}
 
 	.hero-actions-row {
@@ -641,8 +663,8 @@
 	}
 
 	.hero-btn-primary {
-		background: #e24bff;
-		color: #240340;
+		background: var(--color-primary);
+		color: var(--color-secondary);
 		font-weight: 900;
 		font-size: 1.05rem;
 		padding: 0.95rem 2.2rem;
@@ -658,8 +680,8 @@
 	}
 
 	.hero-btn-secondary {
-		background: #3b0764;
-		color: #ffd640;
+		background: var(--color-tertiary);
+		color: var(--color-primary);
 		font-weight: 900;
 		font-size: 1.05rem;
 		padding: 0.95rem 2.2rem;
@@ -692,9 +714,9 @@
 	}
 
 	.section-kicker {
-		color: #e24bff;
+		color: var(--color-primary);
 		font-size: 0.95rem;
-		font-weight: 800;
+		font-weight: 900;
 		letter-spacing: 0.16em;
 		margin-bottom: 0.5rem;
 	}
@@ -702,7 +724,7 @@
 	.section-title {
 		font-size: clamp(2.4rem, 5.5vw, 4.2rem);
 		font-weight: 900;
-		color: #e24bff;
+		color: var(--color-primary);
 		letter-spacing: -0.03em;
 		margin-bottom: 1rem;
 	}
@@ -711,7 +733,8 @@
 		max-width: 660px;
 		margin: 0 auto 2.5rem;
 		font-size: 1.1rem;
-		color: #f4c7ff;
+		color: #ffffff;
+		opacity: 0.95;
 		line-height: 1.5;
 	}
 
@@ -732,8 +755,8 @@
 		border-radius: 9999px;
 		cursor: pointer;
 		border: none;
-		background: #e24bff;
-		color: #240340;
+		background: var(--color-primary);
+		color: var(--color-secondary);
 		letter-spacing: 0.04em;
 		transition: all 0.15s ease;
 	}
@@ -742,14 +765,9 @@
 		transform: scale(1.05);
 	}
 
-	.threshold-btn.active {
-		background: #ffd640;
-		color: #4a3000;
-	}
-
 	.threshold-status {
 		font-size: 0.88rem;
-		color: #f4c7ff;
+		color: var(--color-primary);
 		font-weight: 700;
 		letter-spacing: 0.03em;
 	}
@@ -770,9 +788,13 @@
 		border: none;
 		min-height: 340px;
 		position: relative;
+		background: var(--color-tertiary);
+		color: #ffffff;
 		transition:
 			transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-			opacity 0.65s ease;
+			opacity 0.65s ease,
+			background-color 0.45s ease,
+			color 0.45s ease;
 	}
 
 	/* Explosive Dispersal Transforms on Threshold */
@@ -788,36 +810,12 @@
 		transform: translate(45px, -40px) rotate(6deg);
 	}
 
-	.step-card-1 {
-		background: #3b0764;
-		color: #f4c7ff;
-	}
-
-	.step-card-2 {
-		background: #4a3000;
-		color: #ffeaa0;
-	}
-
-	.step-card-3 {
-		background: #460820;
-		color: #ffc0d2;
-	}
-
 	.step-badge {
 		font-size: 3rem;
 		font-weight: 900;
 		line-height: 1;
 		margin-bottom: 1.25rem;
-	}
-
-	.step-card-1 .step-badge {
-		color: #e24bff;
-	}
-	.step-card-2 .step-badge {
-		color: #ffd640;
-	}
-	.step-card-3 .step-badge {
-		color: #ff467a;
+		color: var(--color-primary);
 	}
 
 	.step-label {
@@ -825,22 +823,15 @@
 		font-weight: 900;
 		letter-spacing: 0.02em;
 		margin-bottom: 0.75rem;
-	}
-
-	.step-card-1 .step-label {
-		color: #e24bff;
-	}
-	.step-card-2 .step-label {
-		color: #ffd640;
-	}
-	.step-card-3 .step-label {
-		color: #ff467a;
+		color: var(--color-primary);
 	}
 
 	.step-text {
 		font-size: 1.05rem;
 		line-height: 1.5;
 		flex: 1;
+		color: #ffffff;
+		opacity: 0.95;
 	}
 
 	.flat-rule {
@@ -848,16 +839,7 @@
 		width: 44px;
 		border-radius: 999px;
 		margin-top: 1.5rem;
-	}
-
-	.step-card-1 .flat-rule {
-		background: #e24bff;
-	}
-	.step-card-2 .flat-rule {
-		background: #ffd640;
-	}
-	.step-card-3 .flat-rule {
-		background: #ff467a;
+		background: var(--color-primary);
 	}
 
 	.exploded-banner {
@@ -870,8 +852,8 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 0.75rem;
-		background: #ffd640;
-		color: #4a3000;
+		background: var(--color-primary);
+		color: var(--color-secondary);
 		padding: 0.7rem 1.6rem;
 		border-radius: 9999px;
 		font-weight: 900;
@@ -939,6 +921,7 @@
 		justify-content: center;
 		overflow: hidden;
 		padding: 1.5rem;
+		background: var(--color-tertiary);
 	}
 
 	.flip-back {
@@ -964,8 +947,10 @@
 		border-radius: 9999px;
 		cursor: pointer;
 		border: none;
+		background: var(--color-tertiary);
+		color: var(--color-primary);
 		letter-spacing: 0.03em;
-		transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s, color 0.2s;
+		transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.45s, color 0.45s;
 		animation: flipButtonPulse 3s ease-in-out infinite;
 	}
 
@@ -1030,6 +1015,7 @@
 		font-size: 0.95rem;
 		font-weight: 900;
 		letter-spacing: 0.16em;
+		color: var(--color-primary);
 	}
 
 	.flavour-headline {
@@ -1038,12 +1024,15 @@
 		line-height: 0.95;
 		letter-spacing: -0.03em;
 		margin: 0;
+		color: var(--color-primary);
 	}
 
 	.flavour-lead {
 		font-size: 1.2rem;
 		line-height: 1.5;
 		font-weight: 600;
+		color: #ffffff;
+		opacity: 0.95;
 	}
 
 	.flat-specs-grid {
@@ -1059,6 +1048,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.3rem;
+		background: var(--color-tertiary);
 	}
 
 	.spec-kicker {
@@ -1067,13 +1057,13 @@
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 		opacity: 0.85;
-		color: inherit;
+		color: var(--color-primary);
 	}
 
 	.spec-data {
 		font-size: 1.05rem;
 		font-weight: 800;
-		color: inherit;
+		color: #ffffff;
 	}
 
 	.flat-callout {
@@ -1083,86 +1073,8 @@
 		font-size: 0.95rem;
 		font-weight: 700;
 		line-height: 1.5;
-	}
-
-	/* BUTTER THEME (FLAT SOLID) */
-	.butter-screen {
-		color: #4a3000;
-	}
-	.butter-face {
-		background: #4a3000;
-	}
-	.butter-btn {
-		background: #4a3000;
-		color: #ffd640;
-	}
-	.butter-spec {
-		background: #f7ca22;
-		color: #4a3000;
-	}
-	.butter-callout {
-		background: #f7ca22;
-		color: #4a3000;
-	}
-
-	/* RASPBERRY THEME (FLAT SOLID - ZERO WHITE) */
-	.raspberry-screen {
-		color: #460820;
-	}
-	.raspberry-face {
-		background: #460820;
-	}
-	.raspberry-btn {
-		background: #460820;
-		color: #ff467a;
-	}
-	.raspberry-spec {
-		background: #e83366;
-		color: #460820;
-	}
-	.raspberry-callout {
-		background: #e83366;
-		color: #460820;
-	}
-
-	/* YEAST THEME (FLAT SOLID - ZERO WHITE) */
-	.yeast-screen {
-		color: #3b0764;
-	}
-	.yeast-face {
-		background: #3b0764;
-	}
-	.yeast-btn {
-		background: #3b0764;
-		color: #e24bff;
-	}
-	.yeast-spec {
-		background: #cb32e8;
-		color: #3b0764;
-	}
-	.yeast-callout {
-		background: #cb32e8;
-		color: #3b0764;
-	}
-
-	/* PEANUT THEME (FLAT SOLID - ZERO WHITE) */
-	.peanut-screen {
-		color: #4e2408;
-	}
-	.peanut-face {
-		background: #4e2408;
-	}
-	.peanut-btn {
-		background: #4e2408;
-		color: #ff8c30;
-	}
-	.peanut-spec {
-		background: #e87820;
-		color: #4e2408;
-	}
-	.peanut-callout {
-		background: #e87820;
-		color: #4e2408;
+		background: var(--color-tertiary);
+		color: var(--color-primary);
 	}
 
 	/* SECTION 7: MIXED SHEET (FLAT SOLID) */
@@ -1197,7 +1109,7 @@
 	}
 
 	.mixed-kicker {
-		color: #e24bff;
+		color: var(--color-primary);
 		font-size: 0.95rem;
 		font-weight: 900;
 		letter-spacing: 0.16em;
@@ -1207,19 +1119,20 @@
 		font-size: clamp(2.6rem, 5vw, 4rem);
 		font-weight: 900;
 		line-height: 1;
-		color: #e24bff;
+		color: var(--color-primary);
 		letter-spacing: -0.03em;
 		margin: 0;
 	}
 
 	.mixed-lead {
 		font-size: 1.2rem;
-		color: #f4c7ff;
+		color: #ffffff;
+		opacity: 0.95;
 		line-height: 1.5;
 	}
 
 	.flat-price-card {
-		background: #3b0764;
+		background: var(--color-tertiary);
 		border-radius: 20px;
 		padding: 2.25rem;
 		display: flex;
@@ -1231,18 +1144,19 @@
 	.price-giant {
 		font-size: 3.2rem;
 		font-weight: 900;
-		color: #ffd640;
+		color: var(--color-primary);
 		letter-spacing: -0.02em;
 	}
 
 	.price-explainer {
 		font-size: 1rem;
-		color: #f4c7ff;
+		color: #ffffff;
+		opacity: 0.95;
 		line-height: 1.5;
 	}
 
 	.price-explainer strong {
-		color: #ffd640;
+		color: var(--color-primary);
 	}
 
 	.mixed-btn-row {
@@ -1252,8 +1166,8 @@
 	}
 
 	.flat-action-btn {
-		background: #e24bff;
-		color: #240340;
+		background: var(--color-primary);
+		color: var(--color-secondary);
 		font-weight: 900;
 		font-size: 1.05rem;
 		padding: 1rem 2.2rem;
@@ -1270,8 +1184,8 @@
 
 	.flat-outline-btn {
 		font-family: inherit;
-		background: #3b0764;
-		color: #e24bff;
+		background: var(--color-tertiary);
+		color: var(--color-primary);
 		font-weight: 900;
 		font-size: 1.05rem;
 		padding: 1rem 2.2rem;

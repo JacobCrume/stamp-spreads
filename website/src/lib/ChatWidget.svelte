@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy, tick } from 'svelte';
 	import { marked } from 'marked';
+	import { colorScheme } from './theme.svelte';
 
 	// Configure marked for clean, safe GFM formatting
 	marked.setOptions({
@@ -168,41 +169,62 @@
 
 <div class="chat-widget-root">
 	{#if isOpen}
-		<div class="chat-window" role="dialog" aria-label="Stamp Customer Support">
-			<div class="chat-header">
+		<div
+			class="chat-window"
+			role="dialog"
+			aria-label="Stamp Customer Support"
+			style:background-color={colorScheme.secondary}
+		>
+			<div
+				class="chat-header"
+				style:background-color={colorScheme.tertiary}
+				style:color={colorScheme.primary}
+			>
 				<div class="header-left">
-					<div class="avatar">S</div>
+					<div class="avatar" style:background-color={colorScheme.primary} style:color={colorScheme.secondary}>S</div>
 					<div>
-						<div class="header-title">Stamp Support</div>
+						<div class="header-title" style:color={colorScheme.primary}>Stamp Support</div>
 						<div class="header-sub">
 							<span class="status-dot green"></span>
-							<span>Online · Ready to help</span>
+							<span style:color={colorScheme.primary}>Online · Ready to help</span>
 						</div>
 					</div>
 				</div>
-				<button class="close-btn" onclick={toggleChat} aria-label="Close Chat">
+				<button class="close-btn" onclick={toggleChat} aria-label="Close Chat" style:color={colorScheme.primary}>
 					✕
 				</button>
 			</div>
 
-			<div class="quick-chips">
+			<div class="quick-chips" style:background-color={colorScheme.tertiary}>
 				{#each quickQuestions as q}
-					<button class="chip" onclick={() => handleSend(q)} disabled={isThinking}>{q}</button>
+					<button
+						class="chip"
+						onclick={() => handleSend(q)}
+						disabled={isThinking}
+						style:background-color={colorScheme.secondary}
+						style:color={colorScheme.primary}
+					>
+						{q}
+					</button>
 				{/each}
 			</div>
 
-			<div class="chat-messages" bind:this={messagesContainer}>
+			<div class="chat-messages" bind:this={messagesContainer} style:background-color={colorScheme.secondary}>
 				{#each messages as msg (msg.id)}
 					<div class="msg-row {msg.sender}">
 						{#if msg.sender === 'bot'}
-							<div class="bot-badge">S</div>
+							<div class="bot-badge" style:background-color={colorScheme.primary} style:color={colorScheme.secondary}>S</div>
 						{/if}
-						<div class="msg-bubble {msg.sender}">
+						<div
+							class="msg-bubble {msg.sender}"
+							style:background-color={msg.sender === 'user' ? colorScheme.primary : colorScheme.tertiary}
+							style:color={msg.sender === 'user' ? colorScheme.secondary : '#ffffff'}
+						>
 							<div class="msg-text prose">
 								{@html renderMarkdown(msg.text)}
 							</div>
 							<div class="msg-meta">
-								<span>{msg.timestamp}</span>
+								<span style:color={msg.sender === 'user' ? colorScheme.secondary : colorScheme.primary}>{msg.timestamp}</span>
 							</div>
 						</div>
 					</div>
@@ -210,17 +232,17 @@
 
 				{#if isThinking}
 					<div class="msg-row bot">
-						<div class="bot-badge">S</div>
-						<div class="msg-bubble bot thinking">
-							<span class="dot"></span>
-							<span class="dot"></span>
-							<span class="dot"></span>
+						<div class="bot-badge" style:background-color={colorScheme.primary} style:color={colorScheme.secondary}>S</div>
+						<div class="msg-bubble bot thinking" style:background-color={colorScheme.tertiary}>
+							<span class="dot" style:background-color={colorScheme.primary}></span>
+							<span class="dot" style:background-color={colorScheme.primary}></span>
+							<span class="dot" style:background-color={colorScheme.primary}></span>
 						</div>
 					</div>
 				{/if}
 			</div>
 
-			<div class="chat-input-area">
+			<div class="chat-input-area" style:background-color={colorScheme.tertiary}>
 				<input
 					type="text"
 					bind:this={inputElement}
@@ -229,12 +251,16 @@
 					placeholder="Ask about flavours, allergens, price..."
 					disabled={isThinking}
 					aria-label="Your question"
+					style:background-color={colorScheme.secondary}
+					style:color={colorScheme.primary}
 				/>
 				<button
 					class="send-btn"
 					onclick={() => handleSend()}
 					disabled={!userInput.trim() || isThinking}
 					aria-label="Send message"
+					style:background-color={colorScheme.primary}
+					style:color={colorScheme.secondary}
 				>
 					➤
 				</button>
@@ -247,6 +273,8 @@
 		class="chat-launcher {isOpen ? 'open' : ''}"
 		onclick={toggleChat}
 		aria-label={isOpen ? 'Close support chat' : 'Open customer support chat'}
+		style:background-color={isOpen ? colorScheme.tertiary : colorScheme.primary}
+		style:color={isOpen ? colorScheme.primary : colorScheme.secondary}
 	>
 		{#if isOpen}
 			<span class="launcher-icon">✕</span>
