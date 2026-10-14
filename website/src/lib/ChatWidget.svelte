@@ -417,10 +417,22 @@
 		display: flex;
 		gap: 0.6rem;
 		align-items: flex-start;
+		animation: msgRowFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
 	}
 
 	.msg-row.user {
 		justify-content: flex-end;
+	}
+
+	@keyframes msgRowFadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 
 	.bot-icon {
@@ -434,6 +446,18 @@
 		justify-content: center;
 		flex-shrink: 0;
 		margin-top: 2px;
+		animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+	}
+
+	@keyframes popIn {
+		from {
+			opacity: 0;
+			transform: scale(0.6);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
 	}
 
 	.msg-bubble {
@@ -443,15 +467,42 @@
 		font-size: 0.92rem;
 		line-height: 1.5;
 		word-break: break-word;
+		box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
 	}
 
 	.msg-bubble.user {
 		border-bottom-right-radius: 4px;
 		font-weight: 700;
+		transform-origin: bottom right;
+		animation: userBubbleEnter 0.32s cubic-bezier(0.34, 1.4, 0.64, 1) both;
 	}
 
 	.msg-bubble.bot {
 		border-bottom-left-radius: 4px;
+		transform-origin: bottom left;
+		animation: botBubbleEnter 0.32s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+	}
+
+	@keyframes userBubbleEnter {
+		from {
+			opacity: 0;
+			transform: scale(0.92) translateY(8px) translateX(6px);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1) translateY(0) translateX(0);
+		}
+	}
+
+	@keyframes botBubbleEnter {
+		from {
+			opacity: 0;
+			transform: scale(0.92) translateY(8px) translateX(-6px);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1) translateY(0) translateX(0);
+		}
 	}
 
 	.msg-text.prose :global(p) {
