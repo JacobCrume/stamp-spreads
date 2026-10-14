@@ -82,36 +82,15 @@
 	/>
 </svelte:head>
 
-<!-- SECTION 1: CLEAN, NORMAL, HIGH-IMPACT HERO -->
+<!-- SECTION 1: SIMPLIFIED, HIGH-IMPACT HERO -->
 <section id="hero-section" class="hero-clean-stage">
 	<div class="hero-clean-inner">
-		<div class="hero-kicker">NEW ZEALAND BREAKFAST INNOVATION</div>
-
 		<!-- Authentic Drawn STAMP Vector Wordmark (uses colorScheme.primary) -->
 		<div class="hero-wordmark-container">
 			<Wordmark color={colorScheme.primary} />
 		</div>
 
 		<h1 class="hero-tagline">PEEL. PRESS. TOAST.</h1>
-
-		<p class="hero-lead">
-			Single-serve 10 g spread discs for hot toast. Sits dry in your fingers, melts into the crumb in 3 seconds, and leaves no open jar or sticky butter knife.
-		</p>
-
-		<!-- Packshot Showcase (Flat Solid, Zero Outlines) -->
-		<div class="hero-pack-showcase">
-			<div class="hero-pack-wrap">
-				<img src="/pack.png" alt="STAMP 8-Stamp Sheet" class="hero-pack-img" />
-				<div class="hero-pack-pill">8 DISCS · 80 g</div>
-			</div>
-		</div>
-
-		<div class="hero-badges-row">
-			<span class="hero-badge">$5.00 NZD / SHEET</span>
-			<span class="hero-badge">$6.25 / 100 g</span>
-			<span class="hero-badge">12 MO. PANTRY STABILITY</span>
-			<span class="hero-badge">MELT THRESHOLD: 32°C - 38°C</span>
-		</div>
 
 		<div class="hero-actions-row">
 			<a href="#flavours" class="hero-btn-primary">Explore The 4 Flavours ↓</a>
@@ -529,7 +508,6 @@
 	.steps-stage,
 	.flavour-screen,
 	.mixed-pack-stage,
-	.hero-badge,
 	.hero-btn-primary,
 	.hero-btn-secondary,
 	.step-card,
@@ -545,7 +523,7 @@
 		transition: background-color 0.45s ease, color 0.45s ease;
 	}
 
-	/* SECTION 1: CLEAN, NORMAL, HIGH-IMPACT HERO */
+	/* SECTION 1: SIMPLIFIED, HIGH-IMPACT HERO */
 	.hero-clean-stage {
 		position: relative;
 		min-height: 100vh;
@@ -553,7 +531,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 7.5rem 1.5rem 4.5rem;
+		padding: 7.5rem 1.5rem 5rem;
 		background: transparent;
 		text-align: center;
 	}
@@ -564,99 +542,30 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 1.5rem;
-	}
-
-	.hero-kicker {
-		font-size: 0.88rem;
-		font-weight: 900;
-		letter-spacing: 0.18em;
-		color: var(--color-primary);
+		gap: 2.25rem;
 	}
 
 	.hero-wordmark-container {
 		width: 100%;
-		max-width: 520px;
-		height: 110px;
+		max-width: 660px;
+		height: 150px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		margin: 0.25rem 0;
 	}
 
 	.hero-tagline {
-		font-size: clamp(1.8rem, 4.5vw, 3rem);
+		font-size: clamp(2.2rem, 5.5vw, 3.8rem);
 		font-weight: 900;
 		letter-spacing: 0.16em;
 		color: var(--color-primary);
 		margin: 0;
-		line-height: 1.1;
-	}
-
-	.hero-lead {
-		font-size: clamp(1.05rem, 2vw, 1.3rem);
-		line-height: 1.6;
-		color: #ffffff;
-		max-width: 680px;
-		margin: 0 auto;
-		font-weight: 600;
-		opacity: 0.95;
-	}
-
-	.hero-pack-showcase {
-		margin: 1rem 0;
-		display: flex;
-		justify-content: center;
-	}
-
-	.hero-pack-wrap {
-		position: relative;
-		max-width: 340px;
-		width: 100%;
-	}
-
-	.hero-pack-img {
-		width: 100%;
-		max-height: 280px;
-		object-fit: contain;
-		border-radius: 16px;
-	}
-
-	.hero-pack-pill {
-		position: absolute;
-		top: -10px;
-		right: -10px;
-		background: var(--color-primary);
-		color: var(--color-secondary);
-		font-weight: 900;
-		font-size: 0.78rem;
-		letter-spacing: 0.08em;
-		padding: 0.4rem 0.85rem;
-		border-radius: 9999px;
-		transform: rotate(6deg);
-	}
-
-	.hero-badges-row {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.75rem;
-		justify-content: center;
-		margin: 0.25rem 0;
-	}
-
-	.hero-badge {
-		font-size: 0.8rem;
-		font-weight: 900;
-		letter-spacing: 0.06em;
-		padding: 0.45rem 1rem;
-		border-radius: 9999px;
-		background: var(--color-tertiary);
-		color: var(--color-primary);
+		line-height: 1.05;
 	}
 
 	.hero-actions-row {
 		display: flex;
-		gap: 1rem;
+		gap: 1.25rem;
 		flex-wrap: wrap;
 		justify-content: center;
 		margin-top: 0.75rem;
@@ -664,36 +573,38 @@
 
 	.hero-btn-primary {
 		background: var(--color-primary);
-		color: var(--color-secondary);
+		color: var(--color-tertiary);
 		font-weight: 900;
-		font-size: 1.05rem;
-		padding: 0.95rem 2.2rem;
+		font-size: 1.1rem;
+		padding: 1.1rem 2.4rem;
 		border-radius: 9999px;
 		text-decoration: none;
 		letter-spacing: 0.03em;
-		transition: transform 0.15s ease;
+		border: none;
+		transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.45s, color 0.45s;
 		display: inline-block;
 	}
 
 	.hero-btn-primary:hover {
-		transform: scale(1.04);
+		transform: translateY(-2px) scale(1.03);
 	}
 
 	.hero-btn-secondary {
 		background: var(--color-tertiary);
 		color: var(--color-primary);
 		font-weight: 900;
-		font-size: 1.05rem;
-		padding: 0.95rem 2.2rem;
+		font-size: 1.1rem;
+		padding: 1.1rem 2.4rem;
 		border-radius: 9999px;
 		text-decoration: none;
 		letter-spacing: 0.03em;
-		transition: transform 0.15s ease;
+		border: none;
+		transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.45s, color 0.45s;
 		display: inline-block;
 	}
 
 	.hero-btn-secondary:hover {
-		transform: scale(1.04);
+		transform: translateY(-2px) scale(1.03);
 	}
 
 	/* SECTION 2: THE 3 STEPS WITH THRESHOLD EXPLOSION (FLAT, ZERO OUTLINES) */
@@ -1207,10 +1118,7 @@
 			padding: 6.5rem 1rem 3.5rem;
 		}
 		.hero-wordmark-container {
-			height: 75px;
-		}
-		.hero-pack-img {
-			max-height: 200px;
+			height: 90px;
 		}
 		.steps-grid {
 			grid-template-columns: 1fr;
