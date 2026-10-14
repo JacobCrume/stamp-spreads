@@ -1,0 +1,42 @@
+%%{init: {"theme": "base", "themeVariables": {"fontSize": "16px", "fontFamily": "sans-serif"}}}%%
+erDiagram
+    Customer ||--o{ Order : places
+    Order ||--|{ OrderLine : contains
+    OrderLine }o--|| Sheet : sells
+    Product }o--o{ Sheet : "included on"
+    Product ||--o{ Batch : "deposited in"
+    Manufacturer ||--o{ Batch : runs
+    Batch }o--o{ Sheet : "supplies if the check passes"
+    Campaign |o--o{ Order : draws
+
+    Customer {
+        string name
+    }
+    Order {
+        date ordered_on
+        date promised_dispatch
+        date dispatched_on
+    }
+    OrderLine {
+        int sheet_qty
+    }
+    Sheet {
+        string pack_name
+        float shelf_price
+        int stamps_on_sheet
+    }
+    Product {
+        string flavour
+    }
+    Batch {
+        date started_on
+        int stamps_checked
+        int weight_rejects
+        int release_rejects
+    }
+    Manufacturer {
+        string trading_name
+    }
+    Campaign {
+        string name
+    }

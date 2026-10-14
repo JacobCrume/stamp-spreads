@@ -1,0 +1,18 @@
+%%{init: {"theme": "base", "themeVariables": {"fontSize": "18px", "fontFamily": "sans-serif", "primaryTextColor": "#1a1a1a", "lineColor": "#333333"}, "flowchart": {"htmlLabels": true, "wrappingWidth": 220, "nodeSpacing": 32, "rankSpacing": 44, "padding": 14}}}%%
+flowchart TD
+    A["Order in"] --> B["Batch deposit onto film"]
+    B --> C["Cut"]
+    C --> D["Nest 8 discs on the card"]
+    D --> E{"Check: 10 g ± 0.5 g, and the film releases?"}
+    E -->|Pass| F["Pack"]
+    F --> G["Dispatch"]
+    E -->|Fail| H["Reject<br/>Failed weight, or the film will not release<br/>This stamp does not ship"]
+
+    classDef step fill:#f4f1ea,stroke:#333333,color:#1a1a1a,stroke-width:1.5px;
+    classDef gate fill:#fff4cc,stroke:#8a6d00,color:#1a1a1a,stroke-width:1.5px;
+    classDef good fill:#e5f2e4,stroke:#246b32,color:#1a1a1a,stroke-width:1.5px;
+    classDef bad fill:#f8d4d4,stroke:#8f1d1d,color:#2a0a0a,stroke-width:2px;
+    class A,B,C,D step;
+    class E gate;
+    class F,G good;
+    class H bad;

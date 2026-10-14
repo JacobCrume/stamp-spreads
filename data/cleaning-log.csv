@@ -1,0 +1,134 @@
+row_id,Date,Product Name,Brand,Category,Weight,weight_parse,price_original,Unit Price (NZD),price_action,units_original,Units Sold (Thousands),revenue_original,Revenue (Thousands NZD),imputed_flag,identity_mismatch
+185,2022-Q1,Macadamia Nuts & Honey Gourmet Granola,Something to Crow,Breakfast Cereals,400g,parsed_single,13.99,13.99,kept,,14.01,196.0,196.0,units,False
+239,2022-Q1,Mango Crush Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,41.0,41.0,kept_high_consistent,1.28,1.28,52.48,52.48,,False
+240,2022-Q1,Mixed Berry Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,41.0,41.0,kept_high_consistent,1.38,1.38,56.58,56.58,,False
+305,2022-Q1,Crunchy Peanut Butter Energy Bar,Clif Bar,Nutritional Cereal Bars,68g,parsed_single,4.99,4.99,kept,27.96,27.96,146.75,146.75,,True
+336,2022-Q1,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,3pk,unparsed,2.99,2.99,kept,0.88,0.88,2.63,2.63,,False
+352,2022-Q1,Protein Bar Chocolate Brownie,Health Lab,Nutritional Cereal Bars,60g,parsed_single,4.79,4.79,kept,1.18,1.18,,5.6522,revenue,False
+452,2022-Q1,Cranberry Choc Bars,Pure Delish,Nutritional Cereal Bars,4 x 57g,parsed_multipack,17.49,17.49,kept,2.92,2.92,,51.0708,revenue,False
+498,2022-Q1,Raspberry & White Choc Oat Baked Squares,Tasti,Nutritional Cereal Bars,150g,parsed_single,1763.64,4.49,replaced_with_implied,75.26,75.26,337.92,337.92,,False
+625,2022-Q1,Peanut Butter Crunchy,Essentials,Spreads,375g,parsed_single,2.49,2.49,kept,,0.9598,2.39,2.39,units,False
+762,2022-Q2,Vanilla Bean & Chia Seed Probiotic Porridge,Blue Frog,Breakfast Cereals,7 x 40g,parsed_multipack,7.99,7.99,kept,19.09,19.09,,152.5291,revenue,False
+934,2022-Q2,Grain Free Keto Pecan & Cinnamon Muesli,Something to Crow,Breakfast Cereals,400g,parsed_single,17.49,17.49,kept,,13.2499,231.74,231.74,units,False
+990,2022-Q2,Mango Crush Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,41.0,41.0,kept_high_consistent,1.22,1.22,50.02,50.02,,False
+991,2022-Q2,Mixed Berry Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,41.0,41.0,kept_high_consistent,1.36,1.36,55.76,55.76,,False
+1087,2022-Q2,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,3pk,unparsed,3.0,3.0,kept,6.22,6.22,18.66,18.66,,False
+1287,2022-Q2,Muesli Bars Choco Honeycomb 6pk,Woolworths,Nutritional Cereal Bars,180g,parsed_single,2.0,2.0,kept,,21.98,43.96,43.96,units,False
+1391,2022-Q2,Smooth Almond Butter,Fix & Fogg,Spreads,500g,parsed_single,2434.76,18.49,replaced_with_implied,58.25,58.25,1077.04,1077.04,,False
+1505,2022-Q3,Granola Salted Maple & Cashew,Be Mighty,Breakfast Cereals,400g,parsed_single,6.99,6.99,kept,,5.6695,39.63,39.63,units,False
+1743,2022-Q3,Mixed Berry Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,41.0,41.0,kept_high_consistent,1.13,1.13,46.33,46.33,,False
+1744,2022-Q3,Quick Brekkie Chocolate Flavour UHT Milk,Meadow Fresh,Liquid Breakfasts,6 x 250ml,parsed_multipack,2512.66,11.49,replaced_with_implied,84.51,84.51,971.02,971.02,,False
+1784,2022-Q3,Fruit Snack Apple & Strawberry,Annies,Nutritional Cereal Bars,30g,parsed_single,2.0,2.0,kept,,8.97,17.94,17.94,units,False
+1792,2022-Q3,Peanut Butter Protein Bar,Blue Dinosaur,Nutritional Cereal Bars,60g,parsed_single,5.79,5.79,kept,,5.9896,34.68,34.68,units,False
+1839,2022-Q3,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,3pk,unparsed,3.0,3.0,kept,6.64,6.64,19.92,19.92,,False
+1853,2022-Q3,Cookies N Dream Balls 3pack,Health Lab,Nutritional Cereal Bars,40g each,parsed_each_from_name,11.99,11.99,kept,,0.95,11.39,11.39,units,False
+2030,2022-Q3,Salted Caramel Snackaballs,Tom & Luke,Nutritional Cereal Bars,396g,parsed_single,9.0,9.0,kept,,15.26,137.34,137.34,units,False
+2152,2022-Q3,Hemp + Nuts + Seeds Super Food,Forty Thieves,Spreads,500g,parsed_single,10.79,10.79,kept,2.0,2.0,,21.58,revenue,False
+2492,2022-Q4,Rolled Oats Whole Grain Australian,Woolworths,Breakfast Cereals,1.5kg,parsed_single,4.99,4.99,kept,,31.2204,155.79,155.79,units,False
+2494,2022-Q4,Mixed Berry Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,41.0,41.0,kept_high_consistent,1.06,1.06,43.46,43.46,,False
+2554,2022-Q4,Snack Bar Carob Milk,Carob Kitchen,Nutritional Cereal Bars,80g,parsed_single,10.79,10.79,kept,,11.81,127.43,127.43,units,False
+2590,2022-Q4,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,3pk,unparsed,3.0,3.0,kept,7.88,7.88,23.64,23.64,,False
+2591,2022-Q4,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,40g,parsed_single,1.49,1.49,kept,,7.0403,10.49,10.49,units,False
+2764,2022-Q4,GF Almond & Cacao Muesli Bar,The Crafty Weka,Nutritional Cereal Bars,70g,parsed_single,3.83,3.83,kept,5.78,5.78,,22.1374,revenue,False
+2881,2022-Q4,Peanut Butter Smooth,Essentials,Spreads,375g,parsed_single,2.49,2.49,kept,,1.1205,2.79,2.79,units,False
+2883,2022-Q4,Almond Butter With Everything,Fix & Fogg,Spreads,275g,parsed_single,11.49,11.49,kept,,60.2298,692.04,692.04,units,False
+2920,2022-Q4,Yeast Spread Promite,MasterFoods,Spreads,290g,parsed_single,7.79,7.79,kept,8.39,8.39,,65.3581,revenue,False
+3200,2023-Q1,Oats Apple & Cinnamon Breakfast Bakes,Uncle Tobys,Breakfast Cereals,260g,parsed_single,3044.02,7.4901,replaced_with_implied,25.22,25.22,188.9,188.9,,False
+3245,2023-Q1,Mixed Berry Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,42.49,42.49,kept_high_consistent,1.43,1.43,60.76,60.76,,False
+3304,2023-Q1,White Chocolate Blondie Slice,Bumper,Nutritional Cereal Bars,80g,parsed_single,2024.92,3.4902,replaced_with_implied,11.22,11.22,39.16,39.16,,False
+3341,2023-Q1,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,3pk,unparsed,3.0,3.0,kept,7.96,7.96,23.88,23.88,,False
+3535,2023-Q1,No Sugar Added Snack Bar Dark Chocolate,Well Naturally,Nutritional Cereal Bars,90g,parsed_single,6.79,6.79,kept,1.76,1.76,,11.9504,revenue,False
+3621,2023-Q1,Manuka MG85+ 5+ Honey,Clearskys,Spreads,250g,parsed_single,13.59,13.59,kept,,1.1398,15.49,15.49,units,False
+3655,2023-Q1,Hulled Organic Tahini,Forty Thieves,Spreads,290g,parsed_single,8.99,8.99,kept,0.85,0.85,,7.6415,revenue,False
+3757,2023-Q2,Granola Blueberry & Seeds,Be Mighty,Breakfast Cereals,400g,parsed_single,6.99,6.99,kept,5.98,5.98,,41.8002,revenue,False
+3938,2023-Q2,"Brazil Nut, Almond & Raspberry Gourmet Granola",Something to Crow,Breakfast Cereals,400g,parsed_single,14.49,14.49,kept,,13.9503,202.14,202.14,units,False
+3996,2023-Q2,Mixed Berry Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,42.49,42.49,kept_high_consistent,1.39,1.39,59.06,59.06,,False
+4090,2023-Q2,Snack Bar Nut Delight,Go Natural,Nutritional Cereal Bars,40g,parsed_single,2.79,2.79,kept,,8.7993,24.55,24.55,units,False
+4092,2023-Q2,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,3pk,unparsed,3.0,3.0,kept,6.5,6.5,19.5,19.5,,False
+4391,2023-Q2,Everything Butter,Fix & Fogg,Spreads,275g,parsed_single,6.49,6.49,kept,,63.9908,415.3,415.3,units,False
+4527,2023-Q3,Protein Green Apple & Cinnamon Overnight Oats,FULLER,Breakfast Cereals,71g,parsed_single,5.0,5.0,kept,,6.93,34.65,34.65,units,False
+4530,2023-Q3,Classic XO Cocoa Crunch Cereal,Freedom,Breakfast Cereals,360g,parsed_single,8.79,8.79,kept,,4.4005,38.68,38.68,units,False
+4829,2023-Q3,Snacker Caramel Choc Muesli Bar,Flemings,Nutritional Cereal Bars,6 x 27g,parsed_multipack,3.0,3.0,kept,,1.32,3.96,3.96,units,False
+4844,2023-Q3,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,3pk,unparsed,3.0,3.0,kept,6.91,6.91,20.73,20.73,,False
+5027,2023-Q3,Original Muesli Bite,The Crafty Weka,Nutritional Cereal Bars,40g,parsed_single,2.49,2.49,kept,5.04,5.04,,12.5496,revenue,False
+5040,2023-Q3,No Sugar Added Snack Bar Milk Choc Fruit & Nut,Well Naturally,Nutritional Cereal Bars,90g,parsed_single,7.49,7.49,kept,2.86,2.86,,21.4214,revenue,False
+5333,2023-Q4,Very Berry Clusters & Crispy Flakes,Hubbards,Breakfast Cereals,475g,parsed_single,1829.22,8.4902,replaced_with_implied,17.36,17.36,147.39,147.39,,False
+5379,2023-Q4,Granola Golden Oats,Orchard Valley,Breakfast Cereals,300g,parsed_single,3.99,3.99,kept,2.54,2.54,,10.1346,revenue,False
+5381,2023-Q4,Muesli Bulk Natural,Orchard Valley,Breakfast Cereals,800g,parsed_single,8.0,8.0,kept,,3.14,25.12,25.12,units,False
+5410,2023-Q4,Natural Brown Rice Flakes,Real Foods,Breakfast Cereals,500g,parsed_single,9.49,9.49,kept,,13.6997,130.01,130.01,units,False
+5499,2023-Q4,Mango Crush Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,41.0,41.0,kept_high_consistent,1.12,1.12,45.92,45.92,,False
+5505,2023-Q4,Vanilla Milkshake Flavour High Protein Milk Drink,Musashi,Liquid Breakfasts,375ml,parsed_single,5.49,5.49,kept,,1.3607,7.47,7.47,units,False
+5577,2023-Q4,Chewy Apricot Choc Chip Muesli Bar,Flemings,Nutritional Cereal Bars,6 x 30g,parsed_multipack,3.0,3.0,kept,,1.56,4.68,4.68,units,False
+5596,2023-Q4,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,3pk,unparsed,3.0,3.0,kept,8.2,8.2,24.6,24.6,,False
+5635,2023-Q4,Oat Bites Muesli Slices 5x30g,Koja,Nutritional Cereal Bars,150g,parsed_single,8.79,8.79,kept,,2.4005,21.1,21.1,units,False
+5766,2023-Q4,Cacao & Hemp Muesli Bite,The Crafty Weka,Nutritional Cereal Bars,40g,parsed_single,3.0,3.0,kept,,6.15,18.45,18.45,units,False
+5778,2023-Q4,Original Muesli Bar Bites,The Crafty Weka,Nutritional Cereal Bars,240g,parsed_single,14.0,14.0,kept,,5.2,72.8,72.8,units,False
+5789,2023-Q4,Muesli Bars Apple Crumble 6pk,Weight Watchers,Nutritional Cereal Bars,180g,parsed_single,6.0,6.0,kept,39.06,39.06,,234.36,revenue,False
+5866,2023-Q4,Yeast Extract,Bovril,Spreads,230g,parsed_single,10.79,10.79,kept,,8.2502,89.02,89.02,units,False
+5874,2023-Q4,Beekeepers Choice Manuka Honey,Clearskys,Spreads,4 x 30g,parsed_multipack,2295.16,22.99,replaced_with_implied,1.0,1.0,22.99,22.99,,False
+5950,2023-Q4,Hazelnut Smooth Spread,Pams,Spreads,400g,parsed_single,2855.32,4.49,replaced_with_implied,29.61,29.61,132.95,132.95,,False
+6250,2024-Q1,Mango Crush Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,41.0,41.0,kept_high_consistent,1.51,1.51,61.91,61.91,,False
+6343,2024-Q1,Raspberry Dark Choc Plant Powered Energy Balls,Frooze Balls,Nutritional Cereal Bars,70g,parsed_single,1711.79,2.4901,replaced_with_implied,12.67,12.67,31.55,31.55,,False
+6347,2024-Q1,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,3pk,unparsed,2.49,2.49,kept,9.62,9.62,23.95,23.95,,False
+6720,2024-Q1,Really Good Crunchy No Salt PB,Pic's,Spreads,1kg,parsed_single,17.99,17.99,kept,118.91,118.91,,2139.1909,revenue,False
+6733,2024-Q1,Yeast Spread Jar,Promite,Spreads,290g,parsed_single,7.89,7.89,kept,,16.3105,128.69,128.69,units,False
+6762,2024-Q1,Spread Choc Hazelnut,Woolworths,Spreads,750g,parsed_single,6.79,6.79,kept,175.0,175.0,,1188.25,revenue,False
+6777,2024-Q2,Probiotic Spiced Apple & Maca Easy Oats,Chantal Organics,Breakfast Cereals,65g,parsed_single,4.0,4.0,kept,23.46,23.46,,93.84,revenue,False
+6912,2024-Q2,Natural Brown Rice Flakes,Real Foods,Breakfast Cereals,500g,parsed_single,9.49,9.49,kept,12.9,12.9,,122.421,revenue,False
+6989,2024-Q2,Granola Vanilla Almond,Woolworths,Breakfast Cereals,500g,parsed_single,7.79,7.79,kept,,29.5905,230.51,230.51,units,False
+7001,2024-Q2,Mango Crush Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,42.49,42.49,kept_high_consistent,1.4,1.4,59.49,59.49,,False
+7078,2024-Q2,Salted Caramel Drizzle Squares,Fibre One,Nutritional Cereal Bars,5 x 24g,parsed_multipack,2930.81,6.0,replaced_with_implied,10.88,10.88,65.28,65.28,,False
+7098,2024-Q2,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,3pk,unparsed,3.0,3.0,kept,7.02,7.02,21.06,21.06,,False
+7723,2024-Q3,Cafe-Style Toasted Peanut Coconut & Cacao Muesli,Vogel's,Breakfast Cereals,400g,parsed_single,10.89,10.89,kept,11.2,11.2,115.12,115.12,,True
+7731,2024-Q3,Cereal Crackling Cocoa Puffs,Woolworths,Breakfast Cereals,500g,parsed_single,5.0,5.0,kept,,32.65,163.25,163.25,units,False
+7752,2024-Q3,Mango Crush Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,43.0,43.0,kept_high_consistent,1.16,1.16,49.88,49.88,,False
+7796,2024-Q3,Hokey Pokey Luxe Protein + Iron Bar,Athena,Nutritional Cereal Bars,55g,parsed_single,5.0,5.0,kept,10.81,10.81,,54.05,revenue,False
+7849,2024-Q3,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,3pk,unparsed,3.0,3.0,kept,7.41,7.41,22.23,22.23,,False
+7854,2024-Q3,Really Fruity Fruit Sticks Pineapple & Passionfruit,GoodnessMe,Nutritional Cereal Bars,30g,parsed_single,2.0,2.0,kept,,6.26,12.52,12.52,units,False
+8046,2024-Q3,No Sugar Added Snack Bar Milk Chocolate,Well Naturally,Nutritional Cereal Bars,90g,parsed_single,6.0,6.0,kept,3.27,3.27,,19.62,revenue,False
+8061,2024-Q3,Honey for Kids,Airborne,Spreads,500g,parsed_single,11.0,11.0,kept,15.38,15.38,159.64,159.64,,True
+8102,2024-Q3,NZ Blackcurrant Fruit Preserve,Barker's,Spreads,350g,parsed_single,7.0,7.0,kept,16.76,16.76,,117.32,revenue,False
+8116,2024-Q3,Manuka Honey MG 100+,Biohoney,Spreads,130g,parsed_single,13.49,13.49,kept,,3.0,40.47,40.47,units,False
+8128,2024-Q3,Manuka MG265+ (10+) Honey,Clearskys,Spreads,250g,parsed_single,29.49,29.49,kept,,1.0,29.49,29.49,units,False
+8140,2024-Q3,Peanut Butter Smooth,Essentials,Spreads,375g,parsed_single,2.0,2.0,kept,,1.38,2.76,2.76,units,False
+8250,2024-Q3,Peanut Butter Super Chunk,Skippy,Spreads,462g,parsed_single,5.49,5.49,kept,,12.2495,67.25,67.25,units,False
+8254,2024-Q3,Strawberry Fruit Spread,St. Dalfour,Spreads,284g,parsed_single,7.79,7.79,kept,,9.19,71.59,71.59,units,False
+8503,2024-Q4,Mango Crush Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,43.0,43.0,kept_high_consistent,1.11,1.11,47.73,47.73,,False
+8544,2024-Q4,Fruit Bars Apple & Raspberry,Annies,Nutritional Cereal Bars,30g,parsed_single,2.0,2.0,kept,,11.71,23.42,23.42,units,False
+8559,2024-Q4,Raspberry White Chocolate Sticks,Bumper,Nutritional Cereal Bars,5 x 30g,parsed_multipack,8.0,8.0,kept,,15.48,123.84,123.84,units,False
+8596,2024-Q4,Raspberry Dark Choc Plant Powered Energy Balls,Frooze Balls,Nutritional Cereal Bars,70g,parsed_single,2.49,2.49,kept,,13.4016,33.37,33.37,units,False
+8600,2024-Q4,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,3pk,unparsed,3.0,3.0,kept,8.61,8.61,25.83,25.83,,False
+8988,2024-Q4,English Breakfast Marmalade,Rose's,Spreads,375g,parsed_single,4.79,4.79,kept,,6.5303,31.28,31.28,units,False
+9230,2025-Q1,Hazelnut Almond And Cacao Delightful Granola,Vogel's,Breakfast Cereals,400g,parsed_single,8.89,8.89,kept,,11.4904,102.15,102.15,units,False
+9254,2025-Q1,Mango Crush Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,43.0,43.0,kept_high_consistent,1.53,1.53,65.79,65.79,,False
+9297,2025-Q1,Wiggle Fruit Bar Cherry Berry,Annies,Nutritional Cereal Bars,12g,parsed_single,1.79,1.79,kept,,11.2011,20.05,20.05,units,False
+9321,2025-Q1,White Chocolate Macadamia Nut Bar,Clif Bar,Nutritional Cereal Bars,68g,parsed_single,4.49,4.49,kept,36.71,36.71,,164.8279,revenue,False
+9351,2025-Q1,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,3pk,unparsed,3.0,3.0,kept,9.18,9.18,27.54,27.54,,False
+9371,2025-Q1,Burger Rice Wheel Snack,Healtheries,Nutritional Cereal Bars,126g,parsed_single,3.99,3.99,kept,,111.2607,443.93,443.93,units,False
+9422,2025-Q1,Family Pack Variety Pack Crunchy Granola Bars,Nature Valley,Nutritional Cereal Bars,12 x 42g,parsed_multipack,11.49,11.49,kept,,20.2802,233.02,233.02,units,False
+9457,2025-Q1,Everyday Nutrition Muesli Bars Blueberry & Blackcurrant 2pk,One Square Meal,Nutritional Cereal Bars,146g,parsed_single,6.49,6.49,kept,,133.7596,868.1,868.1,units,False
+9524,2025-Q1,Date & Orange Muesli Bite,The Crafty Weka,Nutritional Cereal Bars,40g,parsed_single,2.99,2.99,kept,6.49,6.49,,19.4051,revenue,False
+9534,2025-Q1,Original Muesli Bite,The Crafty Weka,Nutritional Cereal Bars,40g,parsed_single,2.99,2.99,kept,,6.5886,19.7,19.7,units,False
+9540,2025-Q1,Pic's Peanut Butter Chocolate Coated Snackaballs,Tom & Luke,Nutritional Cereal Bars,133g,parsed_single,7.79,7.79,kept,,25.3594,197.55,197.55,units,False
+9688,2025-Q1,Peanut Butter Smooth Slightly Salted,Nut Brothers,Spreads,500g,parsed_single,7.79,7.79,kept,,9.2901,72.37,72.37,units,False
+9790,2025-Q2,Rolled Oats Wheat Free,Glorious Free,Breakfast Cereals,500g,parsed_single,17.49,17.49,kept,9.42,9.42,,164.7558,revenue,False
+10005,2025-Q2,Mango Crush Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,43.0,43.0,kept_high_consistent,1.48,1.48,63.64,63.64,,False
+10006,2025-Q2,Mixed Berry Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,36.79,36.79,kept,,1.8899,69.53,69.53,units,False
+10043,2025-Q2,Fruit Bar Apple & Apricot,Annies,Nutritional Cereal Bars,30g,parsed_single,3432.46,2.49,replaced_with_implied,8.0,8.0,19.92,19.92,,False
+10067,2025-Q2,Chocolate Raspberry Wholefood Fudgy Bites,Ceres Organics,Nutritional Cereal Bars,120g,parsed_single,10.49,10.49,kept,,12.6702,132.91,132.91,units,False
+10101,2025-Q2,Snack Bar Yoghurt Coated Almond Apricot,Go Natural,Nutritional Cereal Bars,40g,parsed_single,2.79,2.79,kept,,11.6595,32.53,32.53,units,False
+10102,2025-Q2,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,3pk,unparsed,3.0,3.0,kept,7.28,7.28,21.84,21.84,,False
+10103,2025-Q2,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,40g,parsed_single,1.49,1.49,kept,,6.4497,9.61,9.61,units,False
+10279,2025-Q2,Gluten Free Nutty Caramel Muesli Bites Pouch,The Crafty Weka,Nutritional Cereal Bars,5 x 30g,parsed_multipack,9.49,9.49,kept,5.79,5.79,58.91,58.91,,True
+10336,2025-Q2,Strawberry Jam,Anathoth Farm,Spreads,455g,parsed_single,7.0,7.0,kept,6.39,6.39,,44.73,revenue,False
+10389,2025-Q2,Intense Manuka Honey 265+ MGO,Egmont Honey,Spreads,250g,parsed_single,21.79,21.79,kept,,12.1799,265.4,265.4,units,False
+10756,2025-Q3,Mango Crush Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,43.0,43.0,kept_high_consistent,1.26,1.26,54.18,54.18,,False
+10833,2025-Q3,Salted Caramel Drizzle Squares,Fibre One,Nutritional Cereal Bars,5 x 24g,parsed_multipack,6.0,6.0,kept,,12.27,73.62,73.62,units,False
+10853,2025-Q3,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,3pk,unparsed,3.0,3.0,kept,7.68,7.68,23.04,23.04,,False
+10961,2025-Q3,Afghan Oat Baked Bars,Pams,Nutritional Cereal Bars,240g,parsed_single,2537.72,3.49,replaced_with_implied,71.55,71.55,249.71,249.71,,False
+11169,2025-Q3,Smooth Almond Butter,Forty Thieves,Spreads,500g,parsed_single,16.49,16.49,kept,,2.06,33.97,33.97,units,False
+11508,2025-Q4,Mango Crush Flavour Protein Water + Collagen Powder,Athena,Liquid Breakfasts,360g,parsed_single,43.89,43.89,kept_high_consistent,1.2,1.2,52.67,52.67,,False
+11605,2025-Q4,Original Sesame Snaps,Golden Days,Nutritional Cereal Bars,3pk,unparsed,2.49,2.49,kept,9.99,9.99,24.88,24.88,,False
+11670,2025-Q4,Peanut Crunch Flavour Deluxe Protein Bar,Musashi,Nutritional Cereal Bars,60g,parsed_single,5.95,5.95,kept,,52.2992,311.18,311.18,units,False
+11712,2025-Q4,Raspberry With Pomegranate Bars,One Square Meal,Nutritional Cereal Bars,2 x 85g,parsed_multipack,7.0,7.0,kept,,138.01,966.07,966.07,units,False
+11787,2025-Q4,Original Muesli Bar Bites,The Crafty Weka,Nutritional Cereal Bars,240g,parsed_single,14.0,14.0,kept,,5.89,82.46,82.46,units,False
