@@ -564,60 +564,20 @@ def build_presentation(work_dir: Path):
     # SECTION 1: The Problem (Scheme: Raspberry #460820 / #FF467A / #FFFFFF)
     # -----------------------------------------------------------------------
 
-    # Slide 2: The Core Problem
+    # Slide 2: The Core Problem (Consolidated & Punchy)
     add_statement_slide(
         prs,
         scheme_key="raspberry",
         mark_paths=mark_paths,
         line1="The Problem",
-        line2="Jars Require Infrastructure.",
-        line3="Table knives, kitchen benches, and hot running water.",
+        line2="Eating Away from Home is Broken.",
+        line3="Jars require knives, kitchen benches, and running water.",
         line1_size=22,
         line2_size=46,
         line3_size=22,
         notes=(
-            "[0:06–0:11 | 5s]\n"
-            "Eating toast away from a full residential kitchen is fundamentally broken. Jars require infrastructure."
-        ),
-    )
-
-    # Slide 3: Who Fails
-    add_statement_slide(
-        prs,
-        scheme_key="raspberry",
-        mark_paths=mark_paths,
-        line1="Eating Away from Home is Broken.",
-        line2="Desk workers, commuters, and students in dorms.",
-        line3="Nobody carries a 500g sticky glass jar.",
-        line1_color="white",
-        line2_color="primary",
-        line3_color="white",
-        line1_size=44,
-        line2_size=26,
-        line3_size=22,
-        notes=(
-            "[0:11–0:17 | 6s]\n"
-            "Desk workers, students in dorms, and commuters can't lug sticky 500-gram glass jars or hunt for knives in shared office kitchens."
-        ),
-    )
-
-    # Slide 4: The Unmet Need
-    add_statement_slide(
-        prs,
-        scheme_key="raspberry",
-        mark_paths=mark_paths,
-        line1="The Unmet Need.",
-        line2="Consumers abandon toast for dry cereal bars.",
-        line3="Portability has never existed for real breakfast spreads.",
-        line1_color="white",
-        line2_color="primary",
-        line3_color="white",
-        line1_size=44,
-        line2_size=26,
-        line3_size=22,
-        notes=(
-            "[0:17–0:23 | 6s]\n"
-            "Tethered to kitchen counters, millions abandon toast for dry cereal bars. Portability has never existed for real breakfast spreads."
+            "[0:06–0:13 | 7s]\n"
+            "Eating toast away from home is broken. Sticky jars require table knives, kitchen benches, and running water."
         ),
     )
 
@@ -625,7 +585,7 @@ def build_presentation(work_dir: Path):
     # SECTION 2: Solution & Product Showcase (Scheme: Butter #4A3000 / #FFD640 / #FFFFFF)
     # -----------------------------------------------------------------------
 
-    # Slide 5: The Solution — All 4 Flavours Up Front with Very Little Text
+    # Slide 3: The Solution — All 4 Flavours Showcase
     add_figure_slide(
         prs,
         scheme_key="butter",
@@ -636,12 +596,12 @@ def build_presentation(work_dir: Path):
         img_width=10.2,
         img_top=2.45,
         notes=(
-            "[0:23–0:31 | 8s]\n"
-            "Stamp reinvents the category with calibrated 10-gram spread discs on release film across four iconic flavours: Salted Butter, Raspberry, Yeast, and Peanut."
+            "[0:13–0:21 | 8s]\n"
+            "Stamp solves this with calibrated 10-gram spread discs on release film across four iconic flavours: Salted Butter, Raspberry, Yeast, and Peanut."
         ),
     )
 
-    # Slide 6: The Physical Gesture (Zero Cutlery / Thermal Melt)
+    # Slide 4: The Physical Gesture (Zero Cutlery / Thermal Melt)
     add_statement_slide(
         prs,
         scheme_key="butter",
@@ -656,28 +616,8 @@ def build_presentation(work_dir: Path):
         line2_size=26,
         line3_size=20,
         notes=(
-            "[0:31–0:38 | 7s]\n"
-            "You peel off the release liner and press the disc directly onto hot bread. Residual toast heat melts it in seconds—zero cutlery required."
-        ),
-    )
-
-    # Slide 7: Form Factor & Shelf Stability
-    add_statement_slide(
-        prs,
-        scheme_key="butter",
-        mark_paths=mark_paths,
-        line1="12-Month Ambient Life.",
-        line2="High-stability emulsification for room temperature.",
-        line3="Hermetically sealed 8-stamp card sheets for pantry and bag.",
-        line1_color="white",
-        line2_color="primary",
-        line3_color="white",
-        line1_size=44,
-        line2_size=24,
-        line3_size=20,
-        notes=(
-            "[0:38–0:44 | 6s]\n"
-            "High-stability emulsions deliver 12 months of ambient pantry life in slim, pocket-sized 8-stamp card sheets with zero refrigeration."
+            "[0:21–0:28 | 7s]\n"
+            "Peel the release liner and press onto hot toast. Residual heat melts it in seconds—zero cutlery or mess."
         ),
     )
 
@@ -685,21 +625,7 @@ def build_presentation(work_dir: Path):
     # SECTION 3: Market Opportunity & Unit Economics (Scheme: Peanut #4E2408 / #FF8C30 / #FFFFFF)
     # -----------------------------------------------------------------------
 
-    # Slide 8: Market Scale Metric (Measured, 54pt)
-    add_metric_slide(
-        prs,
-        scheme_key="peanut",
-        mark_paths=mark_paths,
-        metric_number="$341M Category",
-        headline="New Zealand Spreads Market.",
-        detail="+24% category revenue growth across 2022–2025.",
-        notes=(
-            "[0:44–0:50 | 6s]\n"
-            "Cleaned retail supermarket scan data shows the New Zealand spreads market expanded 24% to a 341 million dollar category."
-        ),
-    )
-
-    # Slide 9: Premium Shift Visual (Tier Growth Chart)
+    # Slide 5: Premium Shift Visual (Tier Growth Chart)
     add_figure_slide(
         prs,
         scheme_key="peanut",
@@ -710,26 +636,12 @@ def build_presentation(work_dir: Path):
         img_width=6.6,
         img_top=2.35,
         notes=(
-            "[0:50–0:58 | 8s]\n"
-            "Premium spreads surged 29% from 88 million to 113 million dollars, proving kiwi consumers actively trade up for quality and portion convenience."
+            "[0:28–0:37 | 9s]\n"
+            "In a 341-million-dollar category with zero portable rivals, premium spreads surged 29% to 113 million as consumers trade up for convenience."
         ),
     )
 
-    # Slide 10: Competitive Void
-    add_metric_slide(
-        prs,
-        scheme_key="peanut",
-        mark_paths=mark_paths,
-        metric_number="0 Rivals",
-        headline="Across 154 Supermarket Spreads.",
-        detail="Zero single-serve or utensil-free formats in NZ retail.",
-        notes=(
-            "[0:58–1:04 | 6s]\n"
-            "Across 154 supermarket spreads, every rival is a bulk glass jar. Zero single-serve or utensil-free formats exist in retail."
-        ),
-    )
-
-    # Slide 11: Unit Economics
+    # Slide 6: Unit Economics
     add_metric_slide(
         prs,
         scheme_key="peanut",
@@ -738,16 +650,16 @@ def build_presentation(work_dir: Path):
         headline="$5.00 Retail • $1.75 Margin per Pack.",
         detail="63¢ per serving on an assumed $1.50 contract packaging cost.",
         notes=(
-            "[1:04–1:11 | 7s]\n"
-            "At five dollars retail—just 63 cents a serving—we capture a 35% gross margin, netting one-seventy-five per pack to fund expansion."
+            "[0:37–0:44 | 7s]\n"
+            "At five dollars retail—just 63 cents a serving—we capture a 35% margin, netting one-seventy-five per pack to fund expansion."
         ),
     )
 
     # -----------------------------------------------------------------------
-    # SECTION 4: Operations & Lean Scaling (Scheme: Butter #4A3000 / #FFD640 / #FFFFFF)
+    # SECTION 4: Operations & Lean Manufacturing (Scheme: Butter #4A3000 / #FFD640 / #FFFFFF)
     # -----------------------------------------------------------------------
 
-    # Slide 12: Co-Manufacturing Process Figure
+    # Slide 7: Co-Manufacturing Process Figure
     add_figure_slide(
         prs,
         scheme_key="butter",
@@ -758,28 +670,8 @@ def build_presentation(work_dir: Path):
         img_width=8.0,
         img_top=2.5,
         notes=(
-            "[1:11–1:18 | 7s]\n"
-            "Production uses standard contract rotary-die continuous deposit lines onto food-grade release liner with zero custom tooling outlay."
-        ),
-    )
-
-    # Slide 13: Lean Capex Pilot
-    add_statement_slide(
-        prs,
-        scheme_key="butter",
-        mark_paths=mark_paths,
-        line1="Lean Capex Pilot.",
-        line2="Partnering with Auckland contract food packagers.",
-        line3="Zero heavy machinery outlay required for market entry.",
-        line1_color="white",
-        line2_color="primary",
-        line3_color="white",
-        line1_size=44,
-        line2_size=24,
-        line3_size=20,
-        notes=(
-            "[1:18–1:25 | 7s]\n"
-            "Partnering with established Auckland contract packagers lets us validate supermarket demand with minimal initial capital expenditure."
+            "[0:44–0:52 | 8s]\n"
+            "Production runs on existing contract rotary-die deposition lines in Auckland, launching lean with zero custom tooling outlay."
         ),
     )
 
@@ -787,7 +679,7 @@ def build_presentation(work_dir: Path):
     # SECTION 5: Reflection 1 — AI Steering & Verification (Scheme: Raspberry #460820 / #FF467A / #FFFFFF)
     # -----------------------------------------------------------------------
 
-    # Slide 14: Negative Constraints
+    # Slide 8: Negative Constraints
     add_statement_slide(
         prs,
         scheme_key="raspberry",
@@ -799,12 +691,12 @@ def build_presentation(work_dir: Path):
         line2_size=46,
         line3_size=22,
         notes=(
-            "[1:25–1:36 | 11s]\n"
+            "[0:52–1:03 | 11s]\n"
             "In steering the models, my most effective tool was negative prompt constraints—explicitly barring fake organic certifications, miracle health claims, and hyperbolic advertising jargon."
         ),
     )
 
-    # Slide 15: Modular Session Architecture
+    # Slide 9: Modular Session Architecture
     add_statement_slide(
         prs,
         scheme_key="raspberry",
@@ -816,12 +708,12 @@ def build_presentation(work_dir: Path):
         line1_size=46,
         line2_size=24,
         notes=(
-            "[1:36–1:47 | 11s]\n"
+            "[1:03–1:14 | 11s]\n"
             "To prevent context drift, I partitioned distinct modular sessions for data cleaning, branding, packaging copy, and financial modeling, passing clean intermediate summaries between them."
         ),
     )
 
-    # Slide 16: The Turning Point: Catching Spoilage
+    # Slide 10: The Turning Point: Catching Spoilage
     add_statement_slide(
         prs,
         scheme_key="raspberry",
@@ -836,12 +728,12 @@ def build_presentation(work_dir: Path):
         line2_size=26,
         line3_size=22,
         notes=(
-            "[1:47–2:00 | 13s]\n"
+            "[1:14–1:27 | 13s]\n"
             "My pivotal moment occurred when the AI claimed standard churned butter could sit ambiently for 12 months. Catching this spoilage hallucination forced reformulation to a low-water-activity cultured dairy spread."
         ),
     )
 
-    # Slide 17: AI as Drafter, Not Director
+    # Slide 11: AI as Drafter, Not Director
     add_statement_slide(
         prs,
         scheme_key="raspberry",
@@ -853,7 +745,7 @@ def build_presentation(work_dir: Path):
         line1_size=44,
         line2_size=24,
         notes=(
-            "[2:00–2:11 | 11s]\n"
+            "[1:27–1:38 | 11s]\n"
             "I treated AI strictly as a junior drafter. I audited raw supermarket scan outliers and manually verified retail shelf prices rather than accepting model summaries."
         ),
     )
@@ -862,7 +754,7 @@ def build_presentation(work_dir: Path):
     # SECTION 6: Reflection 2 — Authenticity, AI Slop & Ethics (Scheme: Yeast #240340 / #E24BFF / #FFFFFF)
     # -----------------------------------------------------------------------
 
-    # Slide 18: Combating AI Slop
+    # Slide 12: Combating AI Slop
     add_statement_slide(
         prs,
         scheme_key="yeast",
@@ -877,12 +769,12 @@ def build_presentation(work_dir: Path):
         line2_size=26,
         line3_size=24,
         notes=(
-            "[2:11–2:21 | 10s]\n"
+            "[1:38–1:48 | 10s]\n"
             "To combat AI slop, I stripped corporate clichés in favour of grounded physical facts: Peel. Press. Toast., anchored in real contract manufacturing capabilities."
         ),
     )
 
-    # Slide 19: Zero Hallucination Tolerance
+    # Slide 13: Zero Hallucination Tolerance
     add_statement_slide(
         prs,
         scheme_key="yeast",
@@ -894,12 +786,12 @@ def build_presentation(work_dir: Path):
         line1_size=46,
         line2_size=24,
         notes=(
-            "[2:21–2:32 | 11s]\n"
+            "[1:48–1:59 | 11s]\n"
             "In food and beverage, AI hallucinations are a lethal liability. I enforced strict FSANZ compliance and made allergen callouts prominent—errors here risk anaphylaxis."
         ),
     )
 
-    # Slide 20: Human Accountability
+    # Slide 14: Human Accountability
     add_statement_slide(
         prs,
         scheme_key="yeast",
@@ -911,14 +803,14 @@ def build_presentation(work_dir: Path):
         line1_size=46,
         line2_size=24,
         notes=(
-            "[2:32–2:45 | 13s]\n"
+            "[1:59–2:12 | 13s]\n"
             "Ultimately, moral and legal accountability can never be outsourced to an algorithm. Generative AI accelerates drafting velocity, but human skepticism, discernment, and ethical ownership remain indispensable."
         ),
     )
 
     OUT_PPTX.parent.mkdir(parents=True, exist_ok=True)
     prs.save(str(OUT_PPTX))
-    print(f"Successfully generated {OUT_PPTX} (20 well-paced, visual slides)")
+    print(f"Successfully generated {OUT_PPTX} (14 focused, well-paced slides)")
 
 
 def main():
