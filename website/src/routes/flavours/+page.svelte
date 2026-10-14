@@ -1,12 +1,28 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { setSectionTheme } from '../../lib/theme.svelte';
+	import FlavourPackFront from '../../lib/FlavourPackFront.svelte';
 
 	onMount(() => {
 		setSectionTheme('mixed');
 	});
 
-	const flavours = [
+	interface FlavourItem {
+		id: 'butter' | 'raspberry' | 'yeast' | 'peanut';
+		name: string;
+		subtitle: string;
+		netWeight: string;
+		price: string;
+		image: string;
+		tasteProfile: string;
+		formula: string;
+		allergens: string;
+		facilityStatement: string;
+		shelfLife: string;
+		claimsNotice: string;
+	}
+
+	const flavours: FlavourItem[] = [
 		{
 			id: 'butter',
 			name: 'Salted Butter Spread',
@@ -120,7 +136,9 @@
 			{#each flavours as item, idx}
 				<article class="flavour-detail-card" id={item.id}>
 					<div class="flavour-media">
-						<img src={item.image} alt={item.name} class="flavour-pack-img" />
+						<div class="flavour-svg-wrap">
+							<FlavourPackFront flavour={item.id} />
+						</div>
 						<div class="pack-badge">80 g · 8 Stamps · $5.00</div>
 					</div>
 
@@ -311,10 +329,15 @@
 		position: relative;
 	}
 
-	.flavour-pack-img {
-		max-height: 240px;
-		max-width: 100%;
-		object-fit: contain;
+	.flavour-svg-wrap {
+		width: 100%;
+		max-width: 220px;
+		filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.3));
+		transition: transform 0.25s ease;
+	}
+
+	.flavour-svg-wrap:hover {
+		transform: translateY(-4px) scale(1.02);
 	}
 
 	.pack-badge {
@@ -477,8 +500,8 @@
 		.flavour-media {
 			padding: 1.75rem 1rem;
 		}
-		.flavour-pack-img {
-			max-height: 180px;
+		.flavour-svg-wrap {
+			max-width: 180px;
 		}
 		.flavour-info {
 			padding: 1.25rem 1rem;

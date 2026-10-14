@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import Wordmark from '../lib/Wordmark.svelte';
+	import FlavourPackFront from '../lib/FlavourPackFront.svelte';
+	import FlavourPackBack from '../lib/FlavourPackBack.svelte';
 	import { colorScheme, setSectionTheme, type SectionTheme } from '../lib/theme.svelte';
 
 	let scrollY = $state(0);
@@ -27,7 +29,7 @@
 		const updateActiveSection = () => {
 			const sections: { id: string; theme: SectionTheme }[] = [
 				{ id: 'hero-section', theme: 'hero' },
-				{ id: 'steps-section', theme: 'steps' },
+				{ id: 'steps', theme: 'steps' },
 				{ id: 'flavour-butter', theme: 'butter' },
 				{ id: 'flavour-raspberry', theme: 'raspberry' },
 				{ id: 'flavour-yeast', theme: 'yeast' },
@@ -110,7 +112,7 @@
 </section>
 
 <!-- SECTION 2: THE 3 STEPS WITH THRESHOLD EXPLOSION (FLAT, ZERO OUTLINES) -->
-<section id="steps-section" class="steps-stage">
+<section id="steps" class="steps-stage">
 	<div class="steps-inner">
 		<div class="section-kicker">THE 3-SECOND GESTURE</div>
 		<h2 class="section-title">HOW STAMP WORKS</h2>
@@ -185,10 +187,10 @@
 				<div class="flip-stage">
 					<div class="flip-card {flipped.butter ? 'flipped' : ''}">
 						<div class="flip-face flip-front">
-							<img src="/flavours/butter.png" alt="Salted Butter Stamp Pack" class="flavour-pack-img" />
+							<FlavourPackFront flavour="butter" />
 						</div>
 						<div class="flip-face flip-back">
-							<img src="/flavours/butter-back.png" alt="Salted Butter Nutritional Panel" class="flavour-pack-img" />
+							<FlavourPackBack flavour="butter" />
 						</div>
 					</div>
 				</div>
@@ -259,10 +261,10 @@
 				<div class="flip-stage">
 					<div class="flip-card {flipped.raspberry ? 'flipped' : ''}">
 						<div class="flip-face flip-front">
-							<img src="/flavours/raspberry.png" alt="Raspberry Stamp Pack" class="flavour-pack-img" />
+							<FlavourPackFront flavour="raspberry" />
 						</div>
 						<div class="flip-face flip-back">
-							<img src="/flavours/raspberry-back.png" alt="Raspberry Nutritional Panel" class="flavour-pack-img" />
+							<FlavourPackBack flavour="raspberry" />
 						</div>
 					</div>
 				</div>
@@ -333,10 +335,10 @@
 				<div class="flip-stage">
 					<div class="flip-card {flipped.yeast ? 'flipped' : ''}">
 						<div class="flip-face flip-front">
-							<img src="/flavours/yeast.png" alt="Yeast Extract Stamp Pack" class="flavour-pack-img" />
+							<FlavourPackFront flavour="yeast" />
 						</div>
 						<div class="flip-face flip-back">
-							<img src="/flavours/yeast-back.png" alt="Yeast Extract Nutritional Panel" class="flavour-pack-img" />
+							<FlavourPackBack flavour="yeast" />
 						</div>
 					</div>
 				</div>
@@ -407,10 +409,10 @@
 				<div class="flip-stage">
 					<div class="flip-card {flipped.peanut ? 'flipped' : ''}">
 						<div class="flip-face flip-front">
-							<img src="/flavours/peanut.png" alt="Roasted Peanut Stamp Pack" class="flavour-pack-img" />
+							<FlavourPackFront flavour="peanut" />
 						</div>
 						<div class="flip-face flip-back">
-							<img src="/flavours/peanut-back.png" alt="Roasted Peanut Nutritional Panel" class="flavour-pack-img" />
+							<FlavourPackBack flavour="peanut" />
 						</div>
 					</div>
 				</div>
@@ -478,7 +480,12 @@
 <section id="mixed-section" class="mixed-pack-stage">
 	<div class="mixed-content-container">
 		<div class="mixed-media-col">
-			<img src="/flavour-packs.png" alt="All 4 Stamp Flavour Packs" class="mixed-four-packs" />
+			<div class="mixed-packs-grid">
+				<div class="mixed-pack-item"><FlavourPackFront flavour="butter" /></div>
+				<div class="mixed-pack-item"><FlavourPackFront flavour="raspberry" /></div>
+				<div class="mixed-pack-item"><FlavourPackFront flavour="yeast" /></div>
+				<div class="mixed-pack-item"><FlavourPackFront flavour="peanut" /></div>
+			</div>
 		</div>
 
 		<div class="mixed-copy-col">
@@ -842,7 +849,7 @@
 	.flip-stage {
 		width: 100%;
 		max-width: 420px;
-		height: 480px;
+		height: 560px;
 		perspective: 1200px;
 	}
 
@@ -863,24 +870,18 @@
 		inset: 0;
 		backface-visibility: hidden;
 		-webkit-backface-visibility: hidden;
-		border-radius: 20px;
+		border-radius: 48px;
 		border: none;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		overflow: hidden;
-		padding: 1.5rem;
-		background: var(--color-tertiary);
+		padding: 0;
+		background: transparent;
+		filter: drop-shadow(0 20px 48px rgba(0, 0, 0, 0.22));
 	}
 
 	.flip-back {
 		transform: rotateY(180deg);
-	}
-
-	.flavour-pack-img {
-		max-height: 100%;
-		max-width: 100%;
-		object-fit: contain;
 	}
 
 	/* ANIMATED LIFT & FLIP BUTTON (FLAT SOLID PILL, ZERO OUTLINES) */
@@ -1045,11 +1046,23 @@
 		align-items: center;
 	}
 
-	.mixed-four-packs {
+	.mixed-packs-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.25rem;
+		max-width: 480px;
 		width: 100%;
-		max-height: 460px;
-		object-fit: contain;
-		border-radius: 20px;
+		margin: 0 auto;
+	}
+
+	.mixed-pack-item {
+		filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.28));
+		border-radius: 24px;
+		transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+
+	.mixed-pack-item:hover {
+		transform: translateY(-6px) scale(1.03);
 	}
 
 	.mixed-copy-col {
