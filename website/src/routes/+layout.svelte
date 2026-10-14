@@ -2,6 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import ChatWidget from '../lib/ChatWidget.svelte';
 	import Wordmark from '../lib/Wordmark.svelte';
+	import MorphCursor from '../lib/MorphCursor.svelte';
 	import { colorScheme } from '../lib/theme.svelte';
 
 	let { children }: { children: Snippet } = $props();
@@ -14,6 +15,9 @@
 		content="Stamp: Single-serve peel-and-press spread discs for toast. Bold flat breakfast innovation with no knife and no open jar."
 	/>
 </svelte:head>
+
+<!-- FLUID GOOEY MORPHING CURSOR -->
+<MorphCursor primaryColor={colorScheme.primary} />
 
 <!-- FIXED STATIONARY BACKGROUND: SECONDARY COLOR (MORPHS SMOOTHLY) -->
 <div
