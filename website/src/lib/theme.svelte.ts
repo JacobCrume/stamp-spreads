@@ -18,24 +18,24 @@ export const THEME_PALETTES: Record<SectionTheme, ColorScheme> = {
 		tertiary: '#3b0764'
 	},
 	butter: {
-		primary: '#ffd640',    // Electric Butter Gold (wordmark on header, button accents)
-		secondary: '#ffd640',  // Bright Electric Butter Gold screen background (as before)
-		tertiary: '#4a3000'    // Roasted Caramel Brown (header bg, cards, text contrast)
+		primary: '#ffd640',    // Electric Butter Gold (wordmark on header, button accents, pack front)
+		secondary: '#4a3000',  // Roasted Caramel Brown screen background
+		tertiary: '#2d1d00'    // Deep Umber (header background, pack back, elevated surfaces)
 	},
 	raspberry: {
-		primary: '#ff467a',    // Neon Wild Raspberry (wordmark on header, button accents)
-		secondary: '#ff467a',  // Bright Neon Wild Raspberry screen background (as before)
-		tertiary: '#460820'    // Dark Berry Maroon (header bg, cards, text contrast)
+		primary: '#ff467a',    // Neon Wild Raspberry (wordmark on header, button accents, pack front)
+		secondary: '#460820',  // Rich Berry screen background
+		tertiary: '#2d0414'    // Dark Berry Maroon (header background, pack back, elevated surfaces)
 	},
 	yeast: {
-		primary: '#e24bff',    // Electric Violet (wordmark on header, button accents)
-		secondary: '#e24bff',  // Bright Electric Violet screen background (as before)
-		tertiary: '#240340'    // Deep Night Ink (header bg, cards, text contrast)
+		primary: '#e24bff',    // Electric Violet (wordmark on header, button accents, pack front)
+		secondary: '#240340',  // Deep Night Ink screen background
+		tertiary: '#18012b'    // Deepest Midnight Purple (header background, pack back, elevated surfaces)
 	},
 	peanut: {
-		primary: '#ff8c30',    // Roasted Peanut Ochre (wordmark on header, button accents)
-		secondary: '#ff8c30',  // Bright Roasted Peanut Ochre screen background (as before)
-		tertiary: '#4e2408'    // Deep Peanut Umber (header bg, cards, text contrast)
+		primary: '#ff8c30',    // Roasted Peanut Ochre (wordmark on header, button accents, pack front)
+		secondary: '#4e2408',  // Deep Peanut Umber screen background
+		tertiary: '#2d1403'    // Dark Roasted Nut Brown (header background, pack back, elevated surfaces)
 	},
 	mixed: {
 		primary: '#e24bff',

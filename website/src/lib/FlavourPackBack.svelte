@@ -2,9 +2,32 @@
 	interface Props {
 		flavour: 'butter' | 'raspberry' | 'yeast' | 'peanut';
 		class?: string;
+		standalone?: boolean;
 	}
 
-	let { flavour, class: className = '' }: Props = $props();
+	let { flavour, class: className = '', standalone = false }: Props = $props();
+
+	const ORIGINAL_PACK_COLORS = {
+		butter: {
+			primary: '#ffd640',
+			tertiary: '#2d1d00'
+		},
+		raspberry: {
+			primary: '#ff467a',
+			tertiary: '#2d0414'
+		},
+		yeast: {
+			primary: '#e24bff',
+			tertiary: '#18012b'
+		},
+		peanut: {
+			primary: '#ff8c30',
+			tertiary: '#2d1403'
+		}
+	};
+
+	let primaryColor = $derived(standalone ? ORIGINAL_PACK_COLORS[flavour].primary : 'var(--color-primary)');
+	let tertiaryColor = $derived(standalone ? ORIGINAL_PACK_COLORS[flavour].tertiary : 'var(--color-tertiary)');
 
 	const FLAVOUR_BACK_DATA = {
 		butter: {
@@ -82,12 +105,12 @@
 		width="1200"
 		height="1600"
 		rx="48"
-		fill="var(--color-tertiary)"
+		fill={tertiaryColor}
 		class="pack-card-base"
 	/>
 
 	<!-- STAMP Wordmark at Top of Back Panel -->
-	<g transform="translate(360, 48) scale(0.33)" fill="var(--color-primary)" class="pack-svg-mark">
+	<g transform="translate(360, 48) scale(0.33)" fill={primaryColor} class="pack-svg-mark">
 		<!-- S -->
 		<g transform="translate(0.0 0)">
 			<path
@@ -139,7 +162,7 @@
 		font-family="'Manrope', sans-serif"
 		font-weight="900"
 		font-size="44"
-		fill="var(--color-primary)"
+		fill={primaryColor}
 		class="pack-svg-text"
 	>
 		{FLAVOUR_BACK_DATA[flavour].title} spread
@@ -148,7 +171,7 @@
 	<!-- Mini Vector Icon -->
 	<g
 		transform="translate(450, 240) scale(0.46)"
-		stroke="var(--color-primary)"
+		stroke={primaryColor}
 		stroke-width="14"
 		stroke-linecap="round"
 		stroke-linejoin="round"
@@ -197,7 +220,7 @@
 		font-weight="900"
 		font-size="28"
 		letter-spacing="0.1em"
-		fill="var(--color-primary)"
+		fill={primaryColor}
 		class="pack-svg-text"
 	>
 		INGREDIENTS
@@ -220,7 +243,7 @@
 		font-family="'Manrope', sans-serif"
 		font-weight="800"
 		font-size="26"
-		fill="var(--color-primary)"
+		fill={primaryColor}
 		class="pack-svg-text"
 	>
 		{FLAVOUR_BACK_DATA[flavour].allergens}
@@ -246,7 +269,7 @@
 		font-weight="900"
 		font-size="28"
 		letter-spacing="0.1em"
-		fill="var(--color-primary)"
+		fill={primaryColor}
 		class="pack-svg-text"
 	>
 		NUTRITION INFORMATION
@@ -265,14 +288,14 @@
 	</text>
 
 	<!-- Table Rule Top -->
-	<line x1="90" y1="720" x2="1110" y2="720" stroke="var(--color-primary)" stroke-width="3" opacity="0.4" class="pack-svg-stroke" />
+	<line x1="90" y1="720" x2="1110" y2="720" stroke={primaryColor} stroke-width="3" opacity="0.4" class="pack-svg-stroke" />
 
 	<!-- Table Column Headers -->
-	<text x="90" y="755" font-family="'Manrope', sans-serif" font-weight="900" font-size="22" fill="var(--color-primary)" class="pack-svg-text">Average Quantity</text>
-	<text x="750" y="755" text-anchor="end" font-family="'Manrope', sans-serif" font-weight="900" font-size="22" fill="var(--color-primary)" class="pack-svg-text">Per Serving (10 g)</text>
-	<text x="1110" y="755" text-anchor="end" font-family="'Manrope', sans-serif" font-weight="900" font-size="22" fill="var(--color-primary)" class="pack-svg-text">Per 100 g</text>
+	<text x="90" y="755" font-family="'Manrope', sans-serif" font-weight="900" font-size="22" fill={primaryColor} class="pack-svg-text">Average Quantity</text>
+	<text x="750" y="755" text-anchor="end" font-family="'Manrope', sans-serif" font-weight="900" font-size="22" fill={primaryColor} class="pack-svg-text">Per Serving (10 g)</text>
+	<text x="1110" y="755" text-anchor="end" font-family="'Manrope', sans-serif" font-weight="900" font-size="22" fill={primaryColor} class="pack-svg-text">Per 100 g</text>
 
-	<line x1="90" y1="775" x2="1110" y2="775" stroke="var(--color-primary)" stroke-width="3" class="pack-svg-stroke" />
+	<line x1="90" y1="775" x2="1110" y2="775" stroke={primaryColor} stroke-width="3" class="pack-svg-stroke" />
 
 	<!-- Nutrition Rows -->
 	{#each FLAVOUR_BACK_DATA[flavour].nutrition as row, idx}
@@ -291,7 +314,7 @@
 		{/if}
 	{/each}
 
-	<line x1="90" y1="1350" x2="1110" y2="1350" stroke="var(--color-primary)" stroke-width="3" opacity="0.4" class="pack-svg-stroke" />
+	<line x1="90" y1="1350" x2="1110" y2="1350" stroke={primaryColor} stroke-width="3" opacity="0.4" class="pack-svg-stroke" />
 
 	<!-- Regulatory Microcopy -->
 	<text x="600" y="1400" text-anchor="middle" font-family="'Manrope', sans-serif" font-weight="600" font-size="22" fill="#ffffff" opacity="0.8">
@@ -301,7 +324,7 @@
 	<!-- Bottom Brand Footer Bar -->
 	<path
 		d="M 0 1460 H 1200 V 1552 A 48 48 0 0 1 1152 1600 H 48 A 48 48 0 0 1 0 1552 Z"
-		fill="var(--color-primary)"
+		fill={primaryColor}
 		class="pack-peel-bar"
 	/>
 
@@ -313,7 +336,7 @@
 		font-weight="900"
 		font-size="34"
 		letter-spacing="0.08em"
-		fill="var(--color-tertiary)"
+		fill={tertiaryColor}
 		class="pack-peel-text"
 	>
 		MADE IN NEW ZEALAND · NO KNIFE REQUIRED

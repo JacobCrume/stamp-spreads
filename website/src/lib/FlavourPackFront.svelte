@@ -2,9 +2,32 @@
 	interface Props {
 		flavour: 'butter' | 'raspberry' | 'yeast' | 'peanut';
 		class?: string;
+		standalone?: boolean;
 	}
 
-	let { flavour, class: className = '' }: Props = $props();
+	let { flavour, class: className = '', standalone = false }: Props = $props();
+
+	const ORIGINAL_PACK_COLORS = {
+		butter: {
+			primary: '#ffd640',
+			tertiary: '#2d1d00'
+		},
+		raspberry: {
+			primary: '#ff467a',
+			tertiary: '#2d0414'
+		},
+		yeast: {
+			primary: '#e24bff',
+			tertiary: '#18012b'
+		},
+		peanut: {
+			primary: '#ff8c30',
+			tertiary: '#2d1403'
+		}
+	};
+
+	let primaryColor = $derived(standalone ? ORIGINAL_PACK_COLORS[flavour].primary : 'var(--color-primary)');
+	let tertiaryColor = $derived(standalone ? ORIGINAL_PACK_COLORS[flavour].tertiary : 'var(--color-tertiary)');
 
 	const FLAVOUR_DATA = {
 		butter: {
@@ -41,17 +64,17 @@
 	aria-label="{FLAVOUR_DATA[flavour].title} Stamp Pack Front"
 	class="flavour-pack-svg {className}"
 >
-	<!-- Pack Card Base (Flat Solid Surface, Dynamic Tertiary Brand Color) -->
+	<!-- Pack Card Base (Flat Solid Surface) -->
 	<rect
 		width="1200"
 		height="1600"
 		rx="48"
-		fill="var(--color-tertiary)"
+		fill={tertiaryColor}
 		class="pack-card-base"
 	/>
 
 	<!-- STAMP Wordmark at Top of Card -->
-	<g transform="translate(200, 110) scale(0.55)" fill="var(--color-primary)" class="pack-svg-mark">
+	<g transform="translate(200, 110) scale(0.55)" fill={primaryColor} class="pack-svg-mark">
 		<!-- S -->
 		<g transform="translate(0.0 0)">
 			<path
@@ -105,7 +128,7 @@
 		font-weight="700"
 		font-size="28"
 		letter-spacing="0.14em"
-		fill="var(--color-primary)"
+		fill={primaryColor}
 		class="pack-svg-text"
 	>
 		{FLAVOUR_DATA[flavour].meta}
@@ -114,7 +137,7 @@
 	<!-- Vector Line Icon Centered -->
 	<g
 		transform="translate(280, 470)"
-		stroke="var(--color-primary)"
+		stroke={primaryColor}
 		stroke-width="14"
 		stroke-linecap="round"
 		stroke-linejoin="round"
@@ -185,7 +208,7 @@
 		font-weight="900"
 		font-size="76"
 		letter-spacing="-0.02em"
-		fill="var(--color-primary)"
+		fill={primaryColor}
 		class="pack-svg-text"
 	>
 		{FLAVOUR_DATA[flavour].title}
@@ -200,7 +223,7 @@
 		font-weight="600"
 		font-size="42"
 		letter-spacing="0.04em"
-		fill="var(--color-primary)"
+		fill={primaryColor}
 		opacity="0.85"
 		class="pack-svg-text"
 	>
@@ -210,7 +233,7 @@
 	<!-- Bottom Peel Bar with Curved Bottom Corners -->
 	<path
 		d="M 0 1420 H 1200 V 1552 A 48 48 0 0 1 1152 1600 H 48 A 48 48 0 0 1 0 1552 Z"
-		fill="var(--color-primary)"
+		fill={primaryColor}
 		class="pack-peel-bar"
 	/>
 
@@ -222,7 +245,7 @@
 		font-weight="900"
 		font-size="48"
 		letter-spacing="0.08em"
-		fill="var(--color-tertiary)"
+		fill={tertiaryColor}
 		class="pack-peel-text"
 	>
 		PEEL. PRESS. TOAST.

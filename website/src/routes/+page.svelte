@@ -481,10 +481,10 @@
 	<div class="mixed-content-container">
 		<div class="mixed-media-col">
 			<div class="mixed-packs-grid">
-				<div class="mixed-pack-item"><FlavourPackFront flavour="butter" /></div>
-				<div class="mixed-pack-item"><FlavourPackFront flavour="raspberry" /></div>
-				<div class="mixed-pack-item"><FlavourPackFront flavour="yeast" /></div>
-				<div class="mixed-pack-item"><FlavourPackFront flavour="peanut" /></div>
+				<div class="mixed-pack-item"><FlavourPackFront flavour="butter" standalone={true} /></div>
+				<div class="mixed-pack-item"><FlavourPackFront flavour="raspberry" standalone={true} /></div>
+				<div class="mixed-pack-item"><FlavourPackFront flavour="yeast" standalone={true} /></div>
+				<div class="mixed-pack-item"><FlavourPackFront flavour="peanut" standalone={true} /></div>
 			</div>
 		</div>
 
@@ -965,7 +965,7 @@
 		font-size: 0.95rem;
 		font-weight: 900;
 		letter-spacing: 0.16em;
-		color: var(--color-tertiary);
+		color: var(--color-primary);
 		opacity: 0.85;
 	}
 
@@ -975,15 +975,15 @@
 		line-height: 0.95;
 		letter-spacing: -0.03em;
 		margin: 0;
-		color: var(--color-tertiary);
+		color: var(--color-primary);
 	}
 
 	.flavour-lead {
 		font-size: 1.2rem;
 		line-height: 1.5;
 		font-weight: 600;
-		color: var(--color-tertiary);
-		opacity: 0.92;
+		color: #ffffff;
+		opacity: 0.95;
 	}
 
 	.flat-specs-grid {
