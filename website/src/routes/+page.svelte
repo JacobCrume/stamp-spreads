@@ -22,63 +22,8 @@
 		flipped[id] = !flipped[id];
 	}
 
-	// Peel.js integration for Hero section
-	let peelEl: HTMLElement | null = $state(null);
-	let peelTrackEl: HTMLElement | null = $state(null);
-	let peelInstance: any = null;
-	let peelProgress = $state(0.04);
-	let manualPeelOverride = $state(false);
-
-	function toggleManualPeel() {
-		manualPeelOverride = true;
-		if (peelProgress < 0.5) {
-			peelProgress = 1.0;
-		} else {
-			peelProgress = 0.04;
-		}
-		if (peelInstance) {
-			peelInstance.setTimeAlongPath(peelProgress);
-		}
-	}
-
-	onMount(async () => {
-		// 1. Initialize Peel.js
-		try {
-			const { Peel, PeelCorners } = await import('peel.js');
-			if (peelEl) {
-				peelInstance = new Peel(peelEl, {
-					corner: PeelCorners.BOTTOM_RIGHT,
-					topShadow: false,
-					backShadow: false,
-					bottomShadow: false,
-					backReflection: false,
-					fadeThreshold: 0.96
-				});
-
-				const updatePeelDimensions = () => {
-					if (!peelEl || !peelInstance) return;
-					const w = peelEl.offsetWidth || window.innerWidth;
-					const h = peelEl.offsetHeight || window.innerHeight;
-					// Diagonal peel path from bottom-right (w, h) to past top-left (-w*0.35, -h*0.35)
-					peelInstance.setPeelPath(w, h, -w * 0.35, -h * 0.35);
-					peelInstance.setTimeAlongPath(peelProgress);
-				};
-
-				updatePeelDimensions();
-
-				// Enable mouse & touch drag on peel sheet
-				peelInstance.handle('drag', (_evt: any, x: number, y: number) => {
-					manualPeelOverride = true;
-					peelInstance.setPeelPosition(x, y);
-				});
-
-				window.addEventListener('resize', updatePeelDimensions);
-			}
-		} catch (err) {
-			console.error('Peel.js setup notice:', err);
-		}
-
-		// 2. Active section observer to fade stationary background smoothly between brand colors
+	onMount(() => {
+		// Active section observer to smoothly fade stationary background between brand colors
 		const updateActiveSection = () => {
 			const sections: { id: string; theme: SectionTheme }[] = [
 				{ id: 'hero-section', theme: 'hero' },
@@ -109,22 +54,7 @@
 
 	onDestroy(() => {
 		if (typeof window !== 'undefined') {
-			// clean up any listeners if needed
-		}
-	});
-
-	// Peel along path with scroll progress
-	$effect(() => {
-		if (!peelInstance || manualPeelOverride) return;
-		if (peelTrackEl) {
-			const rect = peelTrackEl.getBoundingClientRect();
-			const scrollDistance = rect.height - innerHeight;
-			if (scrollDistance > 0) {
-				const progress = Math.max(0, Math.min(1, -rect.top / scrollDistance));
-				// Map scrollProgress: 0 -> 0.04 (starter tease), 1.0 -> 1.0 (fully peeled open)
-				peelProgress = 0.04 + progress * 0.96;
-				peelInstance.setTimeAlongPath(peelProgress);
-			}
+			// clean up
 		}
 	});
 
@@ -152,76 +82,45 @@
 	/>
 </svelte:head>
 
-<!-- SECTION 1: FULL-SCREEN HERO WITH PEEL.JS INTERACTION -->
-<section id="hero-section" class="hero-peel-track" bind:this={peelTrackEl}>
-	<div class="hero-peel-sticky">
-		<div class="peel hero-peel-box" bind:this={peelEl}>
-			<!-- BOTTOM LAYER: Underneath surface revealed when peeled -->
-			<div class="peel-bottom hero-peel-bottom">
-				<div class="hero-bottom-content">
-					<div class="under-eyebrow">REVEALED BENEATH THE FOIL</div>
-					<h2 class="under-headline">HOT SOURDOUGH + 10 g STAMP DISC</h2>
-					<p class="under-note">
-						No knives. No sticky butter dishes. No messy jars. 
-						Peel the seal, press the solid disc onto hot toast, and watch it melt evenly in 3 seconds.
-					</p>
-					<div class="under-spec-badges">
-						<span class="under-badge">MELT THRESHOLD: 32°C - 38°C</span>
-						<span class="under-badge">8 DISCS PER SHEET</span>
-						<span class="under-badge">100% RECYCLABLE FILM</span>
-					</div>
-					<div class="under-actions">
-						<a href="#steps-section" class="flat-btn-ghost">View The 3-Step Gesture ↓</a>
-						<button type="button" class="flat-btn-reset-peel" onclick={toggleManualPeel}>
-							{peelProgress > 0.5 ? '↩ Re-Seal Disc' : 'Peel Open Stamp ↗'}
-						</button>
-					</div>
-				</div>
+<!-- SECTION 1: CLEAN, NORMAL, HIGH-IMPACT HERO -->
+<section id="hero-section" class="hero-clean-stage">
+	<div class="hero-clean-inner">
+		<div class="hero-kicker">NEW ZEALAND BREAKFAST INNOVATION</div>
+
+		<!-- Authentic Drawn STAMP Vector Wordmark -->
+		<div class="hero-wordmark-container">
+			<Wordmark color="#e24bff" />
+		</div>
+
+		<h1 class="hero-tagline">PEEL. PRESS. TOAST.</h1>
+
+		<p class="hero-lead">
+			Single-serve 10 g spread discs for hot toast. Sits dry in your fingers, melts into the crumb in 3 seconds, and leaves no open jar or sticky butter knife.
+		</p>
+
+		<!-- Packshot Showcase (Flat Solid, Zero Outlines) -->
+		<div class="hero-pack-showcase">
+			<div class="hero-pack-wrap">
+				<img src="/pack.png" alt="STAMP 8-Stamp Sheet" class="hero-pack-img" />
+				<div class="hero-pack-pill">8 DISCS · 80 g</div>
 			</div>
+		</div>
 
-			<!-- BACK LAYER: Underside of the peeled foil sheet that curls over -->
-			<div class="peel-back hero-peel-back">
-				<div class="foil-pattern">
-					<div class="foil-stamp-text">STAMP • 10G SPREAD DISC • NZ FOODTECH INNOVATION • PEEL &amp; PRESS • </div>
-					<div class="foil-stamp-text">STAMP • 10G SPREAD DISC • NZ FOODTECH INNOVATION • PEEL &amp; PRESS • </div>
-					<div class="foil-stamp-text">STAMP • 10G SPREAD DISC • NZ FOODTECH INNOVATION • PEEL &amp; PRESS • </div>
-					<div class="foil-stamp-text">STAMP • 10G SPREAD DISC • NZ FOODTECH INNOVATION • PEEL &amp; PRESS • </div>
-				</div>
-			</div>
+		<div class="hero-badges-row">
+			<span class="hero-badge">$5.00 NZD / SHEET</span>
+			<span class="hero-badge">$6.25 / 100 g</span>
+			<span class="hero-badge">12 MO. PANTRY STABILITY</span>
+			<span class="hero-badge">MELT THRESHOLD: 32°C - 38°C</span>
+		</div>
 
-			<!-- TOP LAYER: Front hero cover sheet -->
-			<div class="peel-top hero-peel-top">
-				<div class="hero-top-kicker">NEW ZEALAND BREAKFAST INNOVATION</div>
-
-				<!-- Actual Drawn STAMP Vector Wordmark -->
-				<div class="hero-wordmark-container">
-					<Wordmark color="#e24bff" />
-				</div>
-
-				<p class="hero-tagline">PEEL. PRESS. TOAST.</p>
-
-				<div class="hero-pack-box">
-					<img src="/pack.png" alt="STAMP 8-Stamp Sheet" class="hero-flat-pack" />
-					<div class="flat-peel-tag">PEEL ME</div>
-				</div>
-
-				<div class="hero-meta-row">
-					<span class="meta-tag">$5.00 NZD / SHEET</span>
-					<span class="meta-tag">8 × 10 g DISCS</span>
-					<span class="meta-tag">PANTRY STABLE 12 MO.</span>
-				</div>
-
-				<!-- Animated corner peel indicator with click-to-peel toggle -->
-				<button type="button" class="hero-peel-indicator" onclick={toggleManualPeel}>
-					<span class="peel-arrow">↘</span>
-					<span class="peel-label">SCROLL OR CLICK CORNER TO PEEL</span>
-				</button>
-			</div>
+		<div class="hero-actions-row">
+			<a href="#flavours" class="hero-btn-primary">Explore The 4 Flavours ↓</a>
+			<a href="#steps" class="hero-btn-secondary">How Stamp Works ↓</a>
 		</div>
 	</div>
 </section>
 
-<!-- SECTION 2: THE 3 STEPS WITH THRESHOLD EXPLOSION -->
+<!-- SECTION 2: THE 3 STEPS WITH THRESHOLD EXPLOSION (FLAT, ZERO OUTLINES) -->
 <section id="steps-section" class="steps-stage">
 	<div class="steps-inner">
 		<div class="section-kicker">THE 3-SECOND GESTURE</div>
@@ -287,13 +186,13 @@
 	</div>
 </section>
 
-<!-- SECTIONS 3-6: DEDICATED FULL-SCREEN IMMERSIVE FLAVOUR WORLDS -->
+<!-- SECTIONS 3-6: DEDICATED FULL-SCREEN IMMERSIVE FLAVOUR WORLDS (FLAT, ZERO OUTLINES) -->
 <div id="flavours" class="flavour-worlds-list">
 	<!-- FLAVOUR 1: SALTED BUTTER (ELECTRIC GOLD & ROASTED CARAMEL) -->
 	<section id="flavour-butter" class="flavour-screen butter-screen">
 		<div class="flavour-content-grid">
 			<div class="flavour-media-side">
-				<!-- 3D Lift & Flip Card -->
+				<!-- 3D Lift & Flip Card (Flat Solid Surfaces, No Outline Borders) -->
 				<div class="flip-stage">
 					<div class="flip-card {flipped.butter ? 'flipped' : ''}">
 						<div class="flip-face flip-front butter-face">
@@ -305,7 +204,7 @@
 					</div>
 				</div>
 
-				<!-- Animated Lift & Flip Button -->
+				<!-- Animated Lift & Flip Button (Flat Solid Pill, No Outlines) -->
 				<button
 					type="button"
 					class="flat-flip-trigger butter-btn"
@@ -367,7 +266,7 @@
 	<section id="flavour-raspberry" class="flavour-screen raspberry-screen">
 		<div class="flavour-content-grid">
 			<div class="flavour-media-side">
-				<!-- 3D Lift & Flip Card -->
+				<!-- 3D Lift & Flip Card (Flat Solid Surfaces, No Outline Borders) -->
 				<div class="flip-stage">
 					<div class="flip-card {flipped.raspberry ? 'flipped' : ''}">
 						<div class="flip-face flip-front raspberry-face">
@@ -379,7 +278,7 @@
 					</div>
 				</div>
 
-				<!-- Animated Lift & Flip Button -->
+				<!-- Animated Lift & Flip Button (Flat Solid Pill, No Outlines) -->
 				<button
 					type="button"
 					class="flat-flip-trigger raspberry-btn"
@@ -441,7 +340,7 @@
 	<section id="flavour-yeast" class="flavour-screen yeast-screen">
 		<div class="flavour-content-grid">
 			<div class="flavour-media-side">
-				<!-- 3D Lift & Flip Card -->
+				<!-- 3D Lift & Flip Card (Flat Solid Surfaces, No Outline Borders) -->
 				<div class="flip-stage">
 					<div class="flip-card {flipped.yeast ? 'flipped' : ''}">
 						<div class="flip-face flip-front yeast-face">
@@ -453,7 +352,7 @@
 					</div>
 				</div>
 
-				<!-- Animated Lift & Flip Button -->
+				<!-- Animated Lift & Flip Button (Flat Solid Pill, No Outlines) -->
 				<button
 					type="button"
 					class="flat-flip-trigger yeast-btn"
@@ -515,7 +414,7 @@
 	<section id="flavour-peanut" class="flavour-screen peanut-screen">
 		<div class="flavour-content-grid">
 			<div class="flavour-media-side">
-				<!-- 3D Lift & Flip Card -->
+				<!-- 3D Lift & Flip Card (Flat Solid Surfaces, No Outline Borders) -->
 				<div class="flip-stage">
 					<div class="flip-card {flipped.peanut ? 'flipped' : ''}">
 						<div class="flip-face flip-front peanut-face">
@@ -527,7 +426,7 @@
 					</div>
 				</div>
 
-				<!-- Animated Lift & Flip Button -->
+				<!-- Animated Lift & Flip Button (Flat Solid Pill, No Outlines) -->
 				<button
 					type="button"
 					class="flat-flip-trigger peanut-btn"
@@ -586,7 +485,7 @@
 	</section>
 </div>
 
-<!-- SECTION 7: THE MIXED SHEET & CATEGORY DISRUPTION -->
+<!-- SECTION 7: THE MIXED SHEET & CATEGORY DISRUPTION (FLAT, ZERO OUTLINES) -->
 <section id="mixed-section" class="mixed-pack-stage">
 	<div class="mixed-content-container">
 		<div class="mixed-media-col">
@@ -625,216 +524,30 @@
 </section>
 
 <style>
-	/* PEEL.JS SYSTEM CONTAINER & LAYERS */
-	.peel {
+	/* SECTION 1: CLEAN, NORMAL, HIGH-IMPACT HERO */
+	.hero-clean-stage {
 		position: relative;
-		opacity: 0;
-	}
-	:global(.peel-ready) {
-		opacity: 1 !important;
-	}
-	:global(.peel-svg-clip-element) {
-		position: absolute;
-		top: -10000px;
-		left: -10000px;
-		width: 1px;
-		height: 1px;
-		opacity: 0;
-		pointer-events: none;
-	}
-	:global(.peel-layer) {
-		position: absolute;
-		z-index: 1;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		user-select: none;
-		transform-origin: top left;
-	}
-
-	/* SECTION 1: HERO PEEL TRACK (STATIONARY VIEWPORT CANVAS) */
-	.hero-peel-track {
-		position: relative;
-		height: 190vh; /* provides scroll length for peel */
+		min-height: 100vh;
+		min-height: 100dvh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 7.5rem 1.5rem 4.5rem;
 		background: transparent;
-	}
-
-	.hero-peel-sticky {
-		position: sticky;
-		top: 0;
-		height: 100vh;
-		width: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		overflow: hidden;
-		padding: 76px 1.5rem 1.5rem;
-	}
-
-	.hero-peel-box {
-		width: 100%;
-		max-width: 1140px;
-		height: calc(100vh - 100px);
-		max-height: 860px;
-		border-radius: 20px;
-		border: 3px solid #e24bff;
-		background: #240340;
-		overflow: hidden;
-	}
-
-	/* BOTTOM LAYER (UNDER PEEL): HOT SOURDOUGH & GESTURE REVEAL */
-	.hero-peel-bottom {
-		background: #240340;
-		border-radius: 17px;
-		padding: 3rem 2.5rem;
-		display: flex;
-		align-items: center;
-		justify-content: center;
 		text-align: center;
 	}
 
-	.hero-bottom-content {
-		max-width: 680px;
+	.hero-clean-inner {
+		max-width: 860px;
+		width: 100%;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		gap: 1.5rem;
 	}
 
-	.under-eyebrow {
-		color: #e24bff;
-		font-weight: 800;
-		letter-spacing: 0.16em;
-		font-size: 0.95rem;
-	}
-
-	.under-headline {
-		color: #e24bff;
-		font-size: clamp(2.2rem, 5vw, 3.8rem);
-		font-weight: 900;
-		letter-spacing: -0.02em;
-		line-height: 1.05;
-		margin: 0;
-	}
-
-	.under-note {
-		color: #f4c7ff;
-		font-size: 1.15rem;
-		line-height: 1.55;
-	}
-
-	.under-spec-badges {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.75rem;
-		justify-content: center;
-	}
-
-	.under-badge {
-		font-size: 0.8rem;
-		font-weight: 900;
-		letter-spacing: 0.08em;
-		padding: 0.45rem 1rem;
-		border-radius: 9999px;
-		border: 2px solid #e24bff;
-		color: #e24bff;
-		background: #3b0764;
-	}
-
-	.under-actions {
-		display: flex;
-		gap: 1rem;
-		flex-wrap: wrap;
-		justify-content: center;
-		margin-top: 0.5rem;
-	}
-
-	.flat-btn-ghost {
-		font-size: 1rem;
-		font-weight: 900;
-		padding: 0.85rem 1.8rem;
-		border-radius: 9999px;
-		text-decoration: none;
-		border: 2px solid #e24bff;
-		color: #240340;
-		background: #e24bff;
-		letter-spacing: 0.02em;
-		transition: transform 0.15s;
-	}
-
-	.flat-btn-ghost:hover {
-		transform: scale(1.04);
-	}
-
-	.flat-btn-reset-peel {
-		font-family: inherit;
-		font-size: 1rem;
-		font-weight: 900;
-		padding: 0.85rem 1.8rem;
-		border-radius: 9999px;
-		border: 2px solid #ffd640;
-		color: #4a3000;
-		background: #ffd640;
-		cursor: pointer;
-		letter-spacing: 0.02em;
-		transition: transform 0.15s;
-	}
-
-	.flat-btn-reset-peel:hover {
-		transform: scale(1.04);
-	}
-
-	/* BACK LAYER: UNDERSIDE OF FOIL SHEET */
-	.hero-peel-back {
-		background: #e24bff;
-		border: 3px solid #ffd640;
-		border-radius: 17px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		overflow: hidden;
-	}
-
-	.foil-pattern {
-		transform: rotate(-35deg);
-		display: flex;
-		flex-direction: column;
-		gap: 1.5rem;
-		opacity: 0.45;
-		user-select: none;
-		pointer-events: none;
-	}
-
-	.foil-stamp-text {
-		font-size: 1.6rem;
-		font-weight: 900;
-		letter-spacing: 0.12em;
-		white-space: nowrap;
-		color: #3b0764;
-	}
-
-	/* TOP LAYER: FRONT HERO COVER */
-	.hero-peel-top {
-		background: #240340;
-		border-radius: 17px;
-		padding: 2.2rem 2rem 1.75rem;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: space-between;
-		text-align: center;
-		cursor: grab;
-	}
-
-	.hero-peel-top:active {
-		cursor: grabbing;
-	}
-
-	.hero-top-kicker {
-		font-size: 0.85rem;
+	.hero-kicker {
+		font-size: 0.88rem;
 		font-weight: 900;
 		letter-spacing: 0.18em;
 		color: #e24bff;
@@ -842,8 +555,8 @@
 
 	.hero-wordmark-container {
 		width: 100%;
-		max-width: 480px;
-		height: 95px;
+		max-width: 520px;
+		height: 110px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -851,103 +564,117 @@
 	}
 
 	.hero-tagline {
-		font-size: clamp(1.2rem, 3vw, 1.85rem);
+		font-size: clamp(1.8rem, 4.5vw, 3rem);
 		font-weight: 900;
-		letter-spacing: 0.22em;
+		letter-spacing: 0.16em;
 		color: #f4c7ff;
-		margin-bottom: 0.5rem;
+		margin: 0;
+		line-height: 1.1;
 	}
 
-	.hero-pack-box {
-		position: relative;
-		width: 100%;
-		max-width: 320px;
+	.hero-lead {
+		font-size: clamp(1.05rem, 2vw, 1.3rem);
+		line-height: 1.6;
+		color: #f4c7ff;
+		max-width: 680px;
 		margin: 0 auto;
+		font-weight: 600;
+	}
+
+	.hero-pack-showcase {
+		margin: 1rem 0;
 		display: flex;
-		align-items: center;
 		justify-content: center;
 	}
 
-	.hero-flat-pack {
+	.hero-pack-wrap {
+		position: relative;
+		max-width: 340px;
 		width: 100%;
-		max-height: 250px;
-		object-fit: contain;
-		border-radius: 14px;
-		border: 3px solid #e24bff;
 	}
 
-	.flat-peel-tag {
+	.hero-pack-img {
+		width: 100%;
+		max-height: 280px;
+		object-fit: contain;
+		border-radius: 16px;
+	}
+
+	.hero-pack-pill {
 		position: absolute;
-		top: -12px;
-		right: -12px;
+		top: -10px;
+		right: -10px;
 		background: #ffd640;
 		color: #4a3000;
 		font-weight: 900;
-		font-size: 0.75rem;
+		font-size: 0.78rem;
 		letter-spacing: 0.08em;
-		padding: 0.35rem 0.75rem;
+		padding: 0.4rem 0.85rem;
 		border-radius: 9999px;
-		border: 2px solid #4a3000;
-		transform: rotate(8deg);
+		transform: rotate(6deg);
 	}
 
-	.hero-meta-row {
+	.hero-badges-row {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.75rem;
 		justify-content: center;
-		margin: 0.5rem 0;
+		margin: 0.25rem 0;
 	}
 
-	.meta-tag {
+	.hero-badge {
 		font-size: 0.8rem;
-		font-weight: 800;
-		letter-spacing: 0.05em;
-		padding: 0.35rem 0.85rem;
+		font-weight: 900;
+		letter-spacing: 0.06em;
+		padding: 0.45rem 1rem;
 		border-radius: 9999px;
 		background: #3b0764;
-		border: 2px solid #e24bff;
 		color: #e24bff;
 	}
 
-	.hero-peel-indicator {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.6rem;
-		background: #3b0764;
-		border: 2px solid #ffd640;
-		color: #ffd640;
-		padding: 0.45rem 1.1rem;
-		border-radius: 9999px;
-		font-family: inherit;
-		font-size: 0.82rem;
+	.hero-actions-row {
+		display: flex;
+		gap: 1rem;
+		flex-wrap: wrap;
+		justify-content: center;
+		margin-top: 0.75rem;
+	}
+
+	.hero-btn-primary {
+		background: #e24bff;
+		color: #240340;
 		font-weight: 900;
-		cursor: pointer;
-		letter-spacing: 0.05em;
-		transition: transform 0.15s, background-color 0.15s;
-		animation: peelIndicatorWiggle 2.5s infinite ease-in-out;
+		font-size: 1.05rem;
+		padding: 0.95rem 2.2rem;
+		border-radius: 9999px;
+		text-decoration: none;
+		letter-spacing: 0.03em;
+		transition: transform 0.15s ease;
+		display: inline-block;
 	}
 
-	@keyframes peelIndicatorWiggle {
-		0%, 100% {
-			transform: translateX(0);
-		}
-		50% {
-			transform: translateX(4px);
-		}
+	.hero-btn-primary:hover {
+		transform: scale(1.04);
 	}
 
-	.hero-peel-indicator:hover {
-		transform: scale(1.05);
-		background: #4a3000;
-	}
-
-	.peel-arrow {
-		font-size: 1.1rem;
+	.hero-btn-secondary {
+		background: #3b0764;
 		color: #ffd640;
+		font-weight: 900;
+		font-size: 1.05rem;
+		padding: 0.95rem 2.2rem;
+		border-radius: 9999px;
+		text-decoration: none;
+		letter-spacing: 0.03em;
+		transition: transform 0.15s ease;
+		display: inline-block;
 	}
 
-	/* SECTION 2: THE 3 STEPS WITH THRESHOLD EXPLOSION */
+	.hero-btn-secondary:hover {
+		transform: scale(1.04);
+	}
+
+	/* SECTION 2: THE 3 STEPS WITH THRESHOLD EXPLOSION (FLAT, ZERO OUTLINES) */
 	.steps-stage {
 		position: relative;
 		min-height: 100vh;
@@ -1001,10 +728,10 @@
 		font-family: inherit;
 		font-weight: 900;
 		font-size: 0.95rem;
-		padding: 0.65rem 1.5rem;
+		padding: 0.7rem 1.6rem;
 		border-radius: 9999px;
 		cursor: pointer;
-		border: 2px solid #e24bff;
+		border: none;
 		background: #e24bff;
 		color: #240340;
 		letter-spacing: 0.04em;
@@ -1017,7 +744,6 @@
 
 	.threshold-btn.active {
 		background: #ffd640;
-		border-color: #ffd640;
 		color: #4a3000;
 	}
 
@@ -1036,12 +762,12 @@
 	}
 
 	.step-card {
-		border-radius: 18px;
+		border-radius: 20px;
 		padding: 2.75rem 2rem;
 		text-align: left;
 		display: flex;
 		flex-direction: column;
-		border: 3px solid;
+		border: none;
 		min-height: 340px;
 		position: relative;
 		transition:
@@ -1064,19 +790,16 @@
 
 	.step-card-1 {
 		background: #3b0764;
-		border-color: #e24bff;
 		color: #f4c7ff;
 	}
 
 	.step-card-2 {
 		background: #4a3000;
-		border-color: #ffd640;
 		color: #ffeaa0;
 	}
 
 	.step-card-3 {
 		background: #460820;
-		border-color: #ff467a;
 		color: #ffc0d2;
 	}
 
@@ -1149,15 +872,15 @@
 		gap: 0.75rem;
 		background: #ffd640;
 		color: #4a3000;
-		padding: 0.65rem 1.4rem;
+		padding: 0.7rem 1.6rem;
 		border-radius: 9999px;
 		font-weight: 900;
 		font-size: 0.85rem;
 		letter-spacing: 0.08em;
-		border: 2px solid #4a3000;
+		border: none;
 	}
 
-	/* SECTIONS 3-6: IMMERSIVE FLAVOUR SCREENS */
+	/* SECTIONS 3-6: IMMERSIVE FLAVOUR SCREENS (FLAT, ZERO OUTLINES) */
 	.flavour-screen {
 		position: relative;
 		min-height: 100vh;
@@ -1184,7 +907,7 @@
 		gap: 1.5rem;
 	}
 
-	/* 3D LIFT & FLIP INTERACTIVE CARD */
+	/* 3D LIFT & FLIP INTERACTIVE CARD (FLAT SOLID SURFACES, ZERO OUTLINES) */
 	.flip-stage {
 		width: 100%;
 		max-width: 420px;
@@ -1209,13 +932,13 @@
 		inset: 0;
 		backface-visibility: hidden;
 		-webkit-backface-visibility: hidden;
-		border-radius: 16px;
-		border: 3px solid;
+		border-radius: 20px;
+		border: none;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		overflow: hidden;
-		padding: 1rem;
+		padding: 1.5rem;
 	}
 
 	.flip-back {
@@ -1228,7 +951,7 @@
 		object-fit: contain;
 	}
 
-	/* ANIMATED LIFT & FLIP BUTTON */
+	/* ANIMATED LIFT & FLIP BUTTON (FLAT SOLID PILL, ZERO OUTLINES) */
 	.flat-flip-trigger {
 		display: inline-flex;
 		align-items: center;
@@ -1236,11 +959,11 @@
 		gap: 0.65rem;
 		font-family: inherit;
 		font-weight: 900;
-		font-size: 0.88rem;
-		padding: 0.75rem 1.6rem;
+		font-size: 0.9rem;
+		padding: 0.8rem 1.7rem;
 		border-radius: 9999px;
 		cursor: pointer;
-		border: 2px solid;
+		border: none;
 		letter-spacing: 0.03em;
 		transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s, color 0.2s;
 		animation: flipButtonPulse 3s ease-in-out infinite;
@@ -1278,7 +1001,6 @@
 	.flat-flip-trigger:hover .flip-icon-wrap {
 		transform: rotate(180deg);
 	}
-
 	.flat-flip-trigger.is-flipped:hover .flip-icon-wrap {
 		transform: rotate(360deg);
 	}
@@ -1331,12 +1053,12 @@
 	}
 
 	.flat-spec-item {
-		padding: 1rem 1.25rem;
-		border-radius: 12px;
-		border: 2px solid;
+		padding: 1.15rem 1.35rem;
+		border-radius: 14px;
+		border: none;
 		display: flex;
 		flex-direction: column;
-		gap: 0.25rem;
+		gap: 0.3rem;
 	}
 
 	.spec-kicker {
@@ -1355,113 +1077,97 @@
 	}
 
 	.flat-callout {
-		padding: 1.25rem 1.5rem;
-		border-radius: 12px;
+		padding: 1.35rem 1.6rem;
+		border-radius: 14px;
+		border: none;
 		font-size: 0.95rem;
 		font-weight: 700;
 		line-height: 1.5;
 	}
 
-	/* BUTTER THEME (FLAT) */
+	/* BUTTER THEME (FLAT SOLID) */
 	.butter-screen {
 		color: #4a3000;
 	}
 	.butter-face {
 		background: #4a3000;
-		border-color: #4a3000;
 	}
 	.butter-btn {
 		background: #4a3000;
 		color: #ffd640;
-		border-color: #4a3000;
 	}
 	.butter-spec {
-		background: #e8c028;
-		border-color: #4a3000;
+		background: #f7ca22;
 		color: #4a3000;
 	}
 	.butter-callout {
 		background: #f7ca22;
 		color: #4a3000;
-		border-left: 4px solid #4a3000;
 	}
 
-	/* RASPBERRY THEME (FLAT - ZERO WHITE) */
+	/* RASPBERRY THEME (FLAT SOLID - ZERO WHITE) */
 	.raspberry-screen {
 		color: #460820;
 	}
 	.raspberry-face {
 		background: #460820;
-		border-color: #460820;
 	}
 	.raspberry-btn {
 		background: #460820;
 		color: #ff467a;
-		border-color: #460820;
 	}
 	.raspberry-spec {
 		background: #e83366;
-		border-color: #460820;
 		color: #460820;
 	}
 	.raspberry-callout {
 		background: #e83366;
 		color: #460820;
-		border-left: 4px solid #460820;
 	}
 
-	/* YEAST THEME (FLAT - ZERO WHITE) */
+	/* YEAST THEME (FLAT SOLID - ZERO WHITE) */
 	.yeast-screen {
 		color: #3b0764;
 	}
 	.yeast-face {
 		background: #3b0764;
-		border-color: #3b0764;
 	}
 	.yeast-btn {
 		background: #3b0764;
 		color: #e24bff;
-		border-color: #3b0764;
 	}
 	.yeast-spec {
 		background: #cb32e8;
-		border-color: #3b0764;
 		color: #3b0764;
 	}
 	.yeast-callout {
 		background: #cb32e8;
 		color: #3b0764;
-		border-left: 4px solid #3b0764;
 	}
 
-	/* PEANUT THEME (FLAT - ZERO WHITE) */
+	/* PEANUT THEME (FLAT SOLID - ZERO WHITE) */
 	.peanut-screen {
 		color: #4e2408;
 	}
 	.peanut-face {
 		background: #4e2408;
-		border-color: #4e2408;
 	}
 	.peanut-btn {
 		background: #4e2408;
 		color: #ff8c30;
-		border-color: #4e2408;
 	}
 	.peanut-spec {
 		background: #e87820;
-		border-color: #4e2408;
 		color: #4e2408;
 	}
 	.peanut-callout {
 		background: #e87820;
 		color: #4e2408;
-		border-left: 4px solid #4e2408;
 	}
 
-	/* SECTION 7: MIXED SHEET */
+	/* SECTION 7: MIXED SHEET (FLAT SOLID) */
 	.mixed-pack-stage {
 		background: transparent;
-		border-top: 4px solid #e24bff;
 		padding: 6rem 2rem;
 		display: flex;
 		align-items: center;
@@ -1481,8 +1187,7 @@
 		width: 100%;
 		max-height: 460px;
 		object-fit: contain;
-		border-radius: 16px;
-		border: 3px solid #e24bff;
+		border-radius: 20px;
 	}
 
 	.mixed-copy-col {
@@ -1515,9 +1220,8 @@
 
 	.flat-price-card {
 		background: #3b0764;
-		border: 3px solid #e24bff;
-		border-radius: 16px;
-		padding: 2rem;
+		border-radius: 20px;
+		padding: 2.25rem;
 		display: flex;
 		align-items: baseline;
 		gap: 2rem;
@@ -1552,7 +1256,7 @@
 		color: #240340;
 		font-weight: 900;
 		font-size: 1.05rem;
-		padding: 0.95rem 2rem;
+		padding: 1rem 2.2rem;
 		border-radius: 9999px;
 		text-decoration: none;
 		letter-spacing: 0.02em;
@@ -1566,13 +1270,13 @@
 
 	.flat-outline-btn {
 		font-family: inherit;
-		background: transparent;
+		background: #3b0764;
 		color: #e24bff;
-		font-weight: 800;
+		font-weight: 900;
 		font-size: 1.05rem;
-		padding: 0.95rem 2rem;
+		padding: 1rem 2.2rem;
 		border-radius: 9999px;
-		border: 2px solid #e24bff;
+		border: none;
 		cursor: pointer;
 		letter-spacing: 0.02em;
 		transition: transform 0.15s;
@@ -1584,20 +1288,14 @@
 
 	/* RESPONSIVE */
 	@media (max-width: 900px) {
-		.hero-peel-sticky {
-			padding: 70px 1rem 1rem;
-		}
-		.hero-peel-box {
-			height: calc(100vh - 80px);
-		}
-		.hero-peel-top {
-			padding: 1.75rem 1.25rem;
+		.hero-clean-stage {
+			padding: 6.5rem 1rem 3.5rem;
 		}
 		.hero-wordmark-container {
-			height: 70px;
+			height: 75px;
 		}
-		.hero-flat-pack {
-			max-height: 180px;
+		.hero-pack-img {
+			max-height: 200px;
 		}
 		.steps-grid {
 			grid-template-columns: 1fr;

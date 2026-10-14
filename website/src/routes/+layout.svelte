@@ -25,11 +25,10 @@
 ></div>
 
 <div class="site-container">
-	<!-- FLOATING DYNAMIC HEADER - MATCHES BACKGROUND SECTION COLOR -->
+	<!-- FLOATING DYNAMIC HEADER - FLAT SOLID COLOR, ZERO OUTLINES -->
 	<header
 		class="site-header floating-header"
 		style:background-color={currentTheme.headerBg}
-		style:border-color={currentTheme.border}
 		style:color={currentTheme.text}
 	>
 		<div class="header-inner">
@@ -177,15 +176,14 @@
 		max-width: 1080px;
 		border-radius: 9999px;
 		z-index: 1000;
-		border: 2px solid;
+		border: none;
 		transition:
-			background-color 0.28s ease,
-			border-color 0.28s ease,
-			color 0.28s ease;
+			background-color 0.35s ease,
+			color 0.35s ease;
 	}
 
 	.header-inner {
-		padding: 0.7rem 1.4rem;
+		padding: 0.75rem 1.6rem;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -225,14 +223,14 @@
 	}
 
 	.chat-btn {
-		padding: 0.45rem 1.15rem;
+		padding: 0.5rem 1.3rem;
 		border-radius: 9999px;
 		font-weight: 900;
 		font-size: 0.88rem;
 		letter-spacing: 0.03em;
 		border: none;
 		cursor: pointer;
-		transition: all 0.15s ease;
+		transition: transform 0.15s ease;
 	}
 
 	.chat-btn:hover {
@@ -243,12 +241,11 @@
 		flex: 1;
 	}
 
-	/* FLAT FOOTER */
+	/* FLAT FOOTER - ZERO OUTLINES */
 	.site-footer {
 		background: transparent;
-		border-top: 3px solid #e24bff;
 		color: #f4c7ff;
-		padding: 4.5rem 1.5rem 2.5rem;
+		padding: 5rem 1.5rem 3rem;
 	}
 
 	.footer-inner {
@@ -325,7 +322,6 @@
 		max-width: 1140px;
 		margin: 3rem auto 0;
 		padding-top: 1.5rem;
-		border-top: 1px solid rgba(226, 75, 255, 0.25);
 		text-align: center;
 		font-size: 0.85rem;
 		color: #b56be8;

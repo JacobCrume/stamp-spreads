@@ -3,7 +3,6 @@ export type SectionTheme = 'hero' | 'steps' | 'butter' | 'raspberry' | 'yeast' |
 export interface ThemeColors {
 	screenBg: string;
 	headerBg: string;
-	border: string;
 	text: string;
 	btnBg: string;
 	btnText: string;
@@ -13,7 +12,6 @@ export const THEME_CONFIG: Record<SectionTheme, ThemeColors> = {
 	hero: {
 		screenBg: '#240340',
 		headerBg: '#3b0764',
-		border: '#e24bff',
 		text: '#e24bff',
 		btnBg: '#e24bff',
 		btnText: '#240340'
@@ -21,7 +19,6 @@ export const THEME_CONFIG: Record<SectionTheme, ThemeColors> = {
 	steps: {
 		screenBg: '#240340',
 		headerBg: '#3b0764',
-		border: '#e24bff',
 		text: '#e24bff',
 		btnBg: '#e24bff',
 		btnText: '#240340'
@@ -29,7 +26,6 @@ export const THEME_CONFIG: Record<SectionTheme, ThemeColors> = {
 	butter: {
 		screenBg: '#ffd640',
 		headerBg: '#4a3000',
-		border: '#4a3000',
 		text: '#ffd640',
 		btnBg: '#ffd640',
 		btnText: '#4a3000'
@@ -37,7 +33,6 @@ export const THEME_CONFIG: Record<SectionTheme, ThemeColors> = {
 	raspberry: {
 		screenBg: '#ff467a',
 		headerBg: '#460820',
-		border: '#460820',
 		text: '#ff467a',
 		btnBg: '#ff467a',
 		btnText: '#460820'
@@ -45,7 +40,6 @@ export const THEME_CONFIG: Record<SectionTheme, ThemeColors> = {
 	yeast: {
 		screenBg: '#e24bff',
 		headerBg: '#3b0764',
-		border: '#3b0764',
 		text: '#e24bff',
 		btnBg: '#e24bff',
 		btnText: '#3b0764'
@@ -53,7 +47,6 @@ export const THEME_CONFIG: Record<SectionTheme, ThemeColors> = {
 	peanut: {
 		screenBg: '#ff8c30',
 		headerBg: '#4e2408',
-		border: '#4e2408',
 		text: '#ff8c30',
 		btnBg: '#ff8c30',
 		btnText: '#4e2408'
@@ -61,7 +54,6 @@ export const THEME_CONFIG: Record<SectionTheme, ThemeColors> = {
 	mixed: {
 		screenBg: '#240340',
 		headerBg: '#3b0764',
-		border: '#e24bff',
 		text: '#e24bff',
 		btnBg: '#e24bff',
 		btnText: '#240340'
