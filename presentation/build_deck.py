@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
 """Generate presentation/Stamp-pitch.pptx for INFO123 Video Presentation.
 
-Meets all brief specifications:
-- 16:9 widescreen layout
-- Slide 1: Title Slide (STAMP, Jacob, INFO123)
-- Slide 2: Pitch 1 — Product Innovation & Launch Range (30 seconds)
-- Slide 3: Pitch 2 — Market Opportunity & Competitive Advantage (30 seconds)
-- Slide 4: Reflection Q1 — Lessons in Prompting, Steering & Fact-Checking (Structured shell)
-- Slide 5: Reflection Q2 — Critical Evaluation of AI, Authenticity & Ethics (Structured shell)
+Strictly adheres to the Stamp web design system:
+- 16:9 widescreen layout (13.333" x 7.5")
+- Deep Night Ink (#240340) full-bleed canvas across all slides
+- Flat, borderless, shadowless elevated cards in Deep Solid Purple (#3B0764)
+- Saturated, high-contrast primary accents everywhere:
+  - Electric Lavender (#E24BFF)
+  - Butter Gold (#FFD640)
+  - Wild Raspberry (#FF467A)
+  - Peanut Ochre (#FF8C30)
+- High-legibility typography: Pure White (#FFFFFF) headlines, Soft Lavender (#E9D5FF) body
+- High-impact stat callouts and structured cue cards for talking-head video presentation
 """
+
+from __future__ import annotations
 
 from pathlib import Path
 import pptx
@@ -20,519 +26,677 @@ from pptx.enum.shapes import MSO_SHAPE
 ROOT = Path(__file__).resolve().parent.parent
 OUT_PPTX = ROOT / "presentation" / "Stamp-pitch.pptx"
 
-# Colors
-COLOR_DARK_PURPLE = RGBColor(59, 7, 100)     # #3B0764
-COLOR_LIGHT_PURPLE = RGBColor(226, 75, 255)  # #E24BFF
-COLOR_TEXT_DARK = RGBColor(26, 16, 36)       # #1A1024
-COLOR_TEXT_MUTED = RGBColor(99, 67, 128)     # #634380
-COLOR_BG_CARD = RGBColor(251, 247, 255)      # #FBF7FF
-COLOR_BORDER = RGBColor(235, 212, 255)       # #EBD4FF
-COLOR_WHITE = RGBColor(255, 255, 255)
+# Authentic Brand Palette from website/src/lib/theme.svelte.ts
+BG_NIGHT_INK = RGBColor(36, 3, 64)       # #240340 (Canvas background)
+SURFACE_PURPLE = RGBColor(59, 7, 100)    # #3B0764 (Flat solid card surface)
+SURFACE_ELEVATED = RGBColor(76, 12, 128) # #4C0C80 (Elevated container)
+
+ACCENT_LAVENDER = RGBColor(226, 75, 255) # #E24BFF (Electric Lavender)
+ACCENT_BUTTER = RGBColor(255, 214, 64)   # #FFD640 (Electric Butter Gold)
+ACCENT_BERRY = RGBColor(255, 70, 122)    # #FF467A (Wild Raspberry)
+ACCENT_PEANUT = RGBColor(255, 140, 48)   # #FF8C30 (Roasted Peanut Ochre)
+
+TEXT_WHITE = RGBColor(255, 255, 255)     # #FFFFFF (Headlines & primary text)
+TEXT_SOFT = RGBColor(233, 213, 255)      # #E9D5FF (Body & bullet points)
+TEXT_MUTED = RGBColor(216, 180, 254)     # #D8B4FE (Subtitles & metadata)
 
 
-def add_header(slide, title_text: str, subtitle_text: str, kicker: str = ""):
-    header_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.4), Inches(11.7), Inches(1.3))
-    tf = header_box.text_frame
+# ---------------------------------------------------------------------------
+# SLIDE TEMPLATE HELPERS (Zero borders, zero shadows, flat solid surfaces)
+# ---------------------------------------------------------------------------
+
+def create_base_slide(prs: pptx.Presentation):
+    """Create a new slide with a full-bleed Deep Night Ink (#240340) background."""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    bg = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, prs.slide_width, prs.slide_height)
+    bg.fill.solid()
+    bg.fill.fore_color.rgb = BG_NIGHT_INK
+    bg.line.fill.background()
+    return slide
+
+
+def add_flat_card(
+    slide,
+    left: Inches,
+    top: Inches,
+    width: Inches,
+    height: Inches,
+    bg_color: RGBColor = SURFACE_PURPLE,
+    shape_type = MSO_SHAPE.ROUNDED_RECTANGLE,
+):
+    """Add a borderless, shadowless flat solid card."""
+    card = slide.shapes.add_shape(shape_type, left, top, width, height)
+    card.fill.solid()
+    card.fill.fore_color.rgb = bg_color
+    card.line.fill.background()
+    return card
+
+
+def add_kicker_badge(
+    slide,
+    left: Inches,
+    top: Inches,
+    text: str,
+    text_color: RGBColor = ACCENT_LAVENDER,
+    bg_color: RGBColor = SURFACE_PURPLE,
+    width: Inches | None = None,
+):
+    """Add a clean flat solid pill badge for section kickers and timers."""
+    est_width = width if width is not None else Inches(max(len(text) * 0.11 + 0.4, 1.8))
+    badge = slide.shapes.add_shape(
+        MSO_SHAPE.ROUNDED_RECTANGLE, left, top, est_width, Inches(0.36)
+    )
+    badge.fill.solid()
+    badge.fill.fore_color.rgb = bg_color
+    badge.line.fill.background()
+
+    tf = badge.text_frame
+    tf.word_wrap = False
+    tf.margin_left = Inches(0.15)
+    tf.margin_right = Inches(0.15)
+    tf.margin_top = Inches(0.05)
+    tf.margin_bottom = Inches(0.05)
+
+    p = tf.paragraphs[0]
+    p.text = text.upper()
+    p.font.name = "Manrope"
+    p.font.size = Pt(10.5)
+    p.font.bold = True
+    p.font.color.rgb = text_color
+    p.alignment = PP_ALIGN.CENTER
+    return badge
+
+
+def add_slide_header(
+    slide,
+    kicker: str,
+    title: str,
+    subtitle: str,
+    kicker_color: RGBColor = ACCENT_LAVENDER,
+):
+    """Standardized top header zone matching the web brand."""
+    left = Inches(0.8)
+    top = Inches(0.5)
+
+    # 1. Kicker Pill Badge
+    add_kicker_badge(slide, left, top, kicker, text_color=kicker_color)
+
+    # 2. Header Textbox (Title + Subtitle)
+    tb = slide.shapes.add_textbox(left, top + Inches(0.44), Inches(11.7), Inches(1.05))
+    tf = tb.text_frame
     tf.word_wrap = True
     tf.margin_left = tf.margin_top = tf.margin_right = tf.margin_bottom = 0
 
-    if kicker:
-        p_kicker = tf.paragraphs[0]
-        p_kicker.text = kicker.upper()
-        p_kicker.font.size = Pt(11)
-        p_kicker.font.bold = True
-        p_kicker.font.color.rgb = COLOR_LIGHT_PURPLE
-        p_kicker.space_after = Pt(2)
-        p_title = tf.add_paragraph()
-    else:
-        p_title = tf.paragraphs[0]
-
-    p_title.text = title_text
+    p_title = tf.paragraphs[0]
+    p_title.text = title
+    p_title.font.name = "Manrope"
     p_title.font.size = Pt(26)
     p_title.font.bold = True
-    p_title.font.color.rgb = COLOR_DARK_PURPLE
+    p_title.font.color.rgb = TEXT_WHITE
     p_title.space_after = Pt(2)
 
     p_sub = tf.add_paragraph()
-    p_sub.text = subtitle_text
+    p_sub.text = subtitle
+    p_sub.font.name = "Manrope"
     p_sub.font.size = Pt(13)
-    p_sub.font.color.rgb = COLOR_TEXT_MUTED
+    p_sub.font.color.rgb = TEXT_MUTED
 
 
-def build_presentation():
-    prs = pptx.Presentation()
-    prs.slide_width = Inches(13.333)
-    prs.slide_height = Inches(7.5)
-    blank_layout = prs.slide_layouts[6]
+# ---------------------------------------------------------------------------
+# SLIDE BUILDERS
+# ---------------------------------------------------------------------------
 
-    # -------------------------------------------------------------
-    # SLIDE 1: Title Slide (Dark Purple Background)
-    # -------------------------------------------------------------
-    slide1 = prs.slides.add_slide(blank_layout)
-    bg1 = slide1.shapes.add_shape(
-        MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(7.5)
-    )
-    bg1.fill.solid()
-    bg1.fill.fore_color.rgb = COLOR_DARK_PURPLE
-    bg1.line.color.rgb = COLOR_DARK_PURPLE
+def build_slide_1_hero(prs: pptx.Presentation):
+    """Slide 1: Hero Title Slide (Ultra-Bold, Clean, Iconic)."""
+    slide = create_base_slide(prs)
 
-    # Accent line
-    accent = slide1.shapes.add_shape(
-        MSO_SHAPE.RECTANGLE, Inches(1.2), Inches(1.6), Inches(1.5), Inches(0.08)
-    )
-    accent.fill.solid()
-    accent.fill.fore_color.rgb = COLOR_LIGHT_PURPLE
-    accent.line.color.rgb = COLOR_LIGHT_PURPLE
+    # Left content column
+    left_x = Inches(0.9)
 
-    # Title box
-    tb1 = slide1.shapes.add_textbox(Inches(1.2), Inches(1.8), Inches(10.5), Inches(4.5))
-    tf1 = tb1.text_frame
-    tf1.word_wrap = True
+    # 1. Kicker Badge
+    add_kicker_badge(slide, left_x, Inches(1.2), "COMMERCIAL PROPOSAL • INFO123 PROJECT", ACCENT_LAVENDER)
 
-    p0 = tf1.paragraphs[0]
-    p0.text = "STAMP"
-    p0.font.size = Pt(54)
-    p0.font.bold = True
-    p0.font.color.rgb = COLOR_LIGHT_PURPLE
-    p0.space_after = Pt(6)
+    # 2. Title & Tagline Textbox
+    tb_title = slide.shapes.add_textbox(left_x, Inches(1.75), Inches(7.5), Inches(2.8))
+    tf = tb_title.text_frame
+    tf.word_wrap = True
+    tf.margin_left = tf.margin_top = tf.margin_right = tf.margin_bottom = 0
 
-    p1 = tf1.add_paragraph()
-    p1.text = "Peel. Press. Toast."
-    p1.font.size = Pt(28)
-    p1.font.bold = True
-    p1.font.color.rgb = COLOR_WHITE
-    p1.space_after = Pt(14)
+    p_brand = tf.paragraphs[0]
+    p_brand.text = "STAMP"
+    p_brand.font.name = "Manrope"
+    p_brand.font.size = Pt(64)
+    p_brand.font.bold = True
+    p_brand.font.color.rgb = ACCENT_LAVENDER
+    p_brand.space_after = Pt(2)
 
-    p2 = tf1.add_paragraph()
-    p2.text = "The Single-Serve Breakfast Spread for Hot Toast"
-    p2.font.size = Pt(18)
-    p2.font.color.rgb = RGBColor(220, 195, 245)
-    p2.space_after = Pt(36)
+    p_tag = tf.add_paragraph()
+    p_tag.text = "PEEL. PRESS. TOAST."
+    p_tag.font.name = "Manrope"
+    p_tag.font.size = Pt(26)
+    p_tag.font.bold = True
+    p_tag.font.color.rgb = TEXT_WHITE
+    p_tag.space_after = Pt(10)
 
-    p3 = tf1.add_paragraph()
-    p3.text = "Presenter: Jacob  |  Course: INFO123 Business AI Project  |  Date: October 2026"
-    p3.font.size = Pt(14)
-    p3.font.color.rgb = RGBColor(200, 175, 230)
+    p_lead = tf.add_paragraph()
+    p_lead.text = "The Single-Serve Breakfast Spread Discs for Hot Toast"
+    p_lead.font.name = "Manrope"
+    p_lead.font.size = Pt(16)
+    p_lead.font.color.rgb = TEXT_MUTED
 
-    # Logo on right
-    logo_path = ROOT / "brand" / "logo.png"
-    if logo_path.exists():
-        slide1.shapes.add_picture(str(logo_path), Inches(8.8), Inches(2.3), width=Inches(3.3))
-
-    slide1.notes_slide.notes_text_frame.text = (
-        "TITLE SLIDE (0:00–0:10)\n"
-        "Welcome. I'm Jacob, and this is Stamp: a New Zealand breakfast spread innovation "
-        "designed for hot toast. Over the next minute, I'll walk you through our product "
-        "and market opportunity, followed by my personal reflection on building with generative AI."
-    )
-
-    # -------------------------------------------------------------
-    # SLIDE 2: Pitch 1 — Product Innovation & Launch Range (0:10–0:30)
-    # -------------------------------------------------------------
-    slide2 = prs.slides.add_slide(blank_layout)
-    add_header(
-        slide2,
-        "Product Innovation: Peel. Press. Toast.",
-        "A single-serve 10 g disc on release film: no knife, no open jar, no morning wash-up.",
-        "INVESTOR PITCH — PART 1 (30 SECONDS)"
-    )
-
-    # Left Card: How it works & core benefits
-    card1 = slide2.shapes.add_shape(
-        MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.8), Inches(5.8), Inches(5.1)
-    )
-    card1.fill.solid()
-    card1.fill.fore_color.rgb = COLOR_BG_CARD
-    card1.line.color.rgb = COLOR_BORDER
-
-    tb2_left = slide2.shapes.add_textbox(Inches(1.1), Inches(2.0), Inches(5.2), Inches(4.7))
-    tf2_l = tb2_left.text_frame
-    tf2_l.word_wrap = True
-
-    p = tf2_l.paragraphs[0]
-    p.text = "The Problem & The Gesture"
-    p.font.size = Pt(18)
-    p.font.bold = True
-    p.font.color.rgb = COLOR_DARK_PURPLE
-    p.space_after = Pt(8)
-
-    points = [
-        "Jars Require Infrastructure: Toast eaten away from home (office desks, flats, university halls) demands a knife, an open tub, and a sink to wash up.",
-        "The Stamp Solution: A thin 10 g disc of real spread on release film nested in a pocketable card sheet. Peel off, press onto hot toast, and residual heat softens it into an even layer in seconds.",
-        "12-Month Pantry Life: Industrial formulation and sealed release film provide 12 months ambient shelf life without refrigeration."
+    # 3. Three Hero Pills
+    badges_y = Inches(4.7)
+    badges = [
+        ("$5.00 NZD / Sheet", ACCENT_LAVENDER),
+        ("12-Month Pantry Stable", ACCENT_BUTTER),
+        ("No Jar Waste • Utensil-Free", ACCENT_BERRY),
     ]
-    for pt in points:
-        title, body = pt.split(": ", 1)
-        p = tf2_l.add_paragraph()
-        p.text = "• " + title + ": "
-        p.font.bold = True
-        p.font.size = Pt(12)
-        p.font.color.rgb = COLOR_TEXT_DARK
-        p.space_after = Pt(6)
-        run = p.add_run()
-        run.text = body
-        run.font.bold = False
-        run.font.size = Pt(12)
-        run.font.color.rgb = COLOR_TEXT_DARK
+    bx = left_x
+    for label, col in badges:
+        bw = Inches(len(label) * 0.11 + 0.5)
+        add_kicker_badge(slide, bx, badges_y, label, text_color=col, width=bw)
+        bx += bw + Inches(0.25)
 
-    # Right Card: Launch Range & Pack shot
-    card2 = slide2.shapes.add_shape(
-        MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.9), Inches(1.8), Inches(5.6), Inches(5.1)
+    # 4. Presenter Info Card (Flat Solid Surface)
+    card_pres = add_flat_card(slide, left_x, Inches(5.4), Inches(7.2), Inches(1.3))
+    tb_pres = slide.shapes.add_textbox(left_x + Inches(0.3), Inches(5.55), Inches(6.6), Inches(1.0))
+    tf_p = tb_pres.text_frame
+    tf_p.word_wrap = True
+    tf_p.margin_left = tf_p.margin_top = tf_p.margin_right = tf_p.margin_bottom = 0
+
+    row1 = tf_p.paragraphs[0]
+    row1.text = "PRESENTER: "
+    row1.font.name = "Manrope"
+    row1.font.size = Pt(12)
+    row1.font.bold = True
+    row1.font.color.rgb = ACCENT_LAVENDER
+    run1 = row1.add_run()
+    run1.text = "Jacob  |  INFO123 Business AI Project"
+    run1.font.bold = True
+    run1.font.color.rgb = TEXT_WHITE
+    row1.space_after = Pt(4)
+
+    row2 = tf_p.add_paragraph()
+    row2.text = "LIVE PLATFORM: "
+    row2.font.name = "Manrope"
+    row2.font.size = Pt(11)
+    row2.font.bold = True
+    row2.font.color.rgb = ACCENT_BUTTER
+    run2 = row2.add_run()
+    run2.text = "stamp-spreads.vercel.app  •  github.com/JacobCrume/stamp-spreads"
+    run2.font.bold = False
+    run2.font.color.rgb = TEXT_SOFT
+
+    # 5. Right Hero Image (Butter Pack Shot or Logo)
+    pack_path = ROOT / "brand" / "explorations" / "flavours" / "butter.png"
+    if not pack_path.exists():
+        pack_path = ROOT / "brand" / "pack.png"
+    if pack_path.exists():
+        slide.shapes.add_picture(str(pack_path), Inches(8.7), Inches(1.5), width=Inches(3.8))
+
+    # Speaker Notes
+    slide.notes_slide.notes_text_frame.text = (
+        "TITLE SLIDE (0:00–0:08)\n"
+        "Kia ora. I'm Jacob, and this is Stamp: a New Zealand breakfast spread innovation "
+        "engineered for hot toast. Over the next minute, I will present our product and "
+        "market opportunity, followed by my personal reflection on building with generative AI."
     )
-    card2.fill.solid()
-    card2.fill.fore_color.rgb = COLOR_BG_CARD
-    card2.line.color.rgb = COLOR_BORDER
 
-    tb2_right = slide2.shapes.add_textbox(Inches(7.2), Inches(2.0), Inches(5.0), Inches(2.2))
-    tf2_r = tb2_right.text_frame
-    tf2_r.word_wrap = True
 
-    p = tf2_r.paragraphs[0]
-    p.text = "Four Launch Flavours"
-    p.font.size = Pt(18)
-    p.font.bold = True
-    p.font.color.rgb = COLOR_DARK_PURPLE
-    p.space_after = Pt(6)
+def build_slide_2_pitch1(prs: pptx.Presentation):
+    """Slide 2: Pitch 1 — Product Innovation & Launch Range (0:08–0:34)."""
+    slide = create_base_slide(prs)
 
-    fl_points = [
-        "Salted Butter: Cultured dairy spread (2 g salt / 78 g fat).",
-        "Raspberry: Slow-cooked whole fruit paste (150 g fruit / 100 g).",
-        "Yeast Extract: Savory umami paste (80% yeast, 15.5% barley malt).",
-        "Peanut: 96% roasted peanuts + hard fat anti-separation stabilizer."
+    add_slide_header(
+        slide,
+        kicker="INVESTOR PITCH • PART 1 (30 SECONDS)",
+        title="Product Innovation: Peel. Press. Toast.",
+        subtitle="A calibrated 10 g disc on release film: no knife, no sticky jar, no morning wash-up.",
+        kicker_color=ACCENT_LAVENDER,
+    )
+
+    card_y = Inches(2.0)
+    card_h = Inches(4.9)
+
+    # ------------------
+    # LEFT CARD: The Problem & The Format Gesture
+    # ------------------
+    card_w1 = Inches(5.7)
+    add_flat_card(slide, Inches(0.8), card_y, card_w1, card_h)
+
+    tb_l = slide.shapes.add_textbox(Inches(1.15), card_y + Inches(0.35), Inches(5.0), card_h - Inches(0.7))
+    tf_l = tb_l.text_frame
+    tf_l.word_wrap = True
+    tf_l.margin_left = tf_l.margin_top = tf_l.margin_right = tf_l.margin_bottom = 0
+
+    p_title = tf_l.paragraphs[0]
+    p_title.text = "The Out-of-Kitchen Friction"
+    p_title.font.name = "Manrope"
+    p_title.font.size = Pt(18)
+    p_title.font.bold = True
+    p_title.font.color.rgb = ACCENT_LAVENDER
+    p_title.space_after = Pt(14)
+
+    left_points = [
+        ("The Jar Infrastructure Problem",
+         "Eating toast away from home (office breakrooms, student halls, flat kitchens) demands cutlery, a sticky tub, and a sink to wash up. Cutlery-dependent spreads fail mobile consumers."),
+        ("The Peel-and-Press Format",
+         "Each Stamp delivers a calibrated 10 g disc mounted onto food-grade release film. Peel the disc, press it directly onto hot bread, and residual heat softens it into an even, velvety layer across the crumb."),
+        ("12-Month Ambient Pantry Life",
+         "Proprietary water-activity barrier formulation packaged in airtight card sheets provides verified 12-month ambient shelf stability without refrigeration."),
     ]
-    for fp in fl_points:
-        p = tf2_r.add_paragraph()
-        p.text = "✔ " + fp
-        p.font.size = Pt(11.5)
-        p.font.color.rgb = COLOR_TEXT_DARK
-        p.space_after = Pt(3)
 
-    # Insert pack shot
+    for title, desc in left_points:
+        p_pt = tf_l.add_paragraph()
+        p_pt.text = "• " + title + "\n"
+        p_pt.font.name = "Manrope"
+        p_pt.font.size = Pt(12)
+        p_pt.font.bold = True
+        p_pt.font.color.rgb = TEXT_WHITE
+        p_pt.space_after = Pt(3)
+
+        run_desc = p_pt.add_run()
+        run_desc.text = desc
+        run_desc.font.name = "Manrope"
+        run_desc.font.size = Pt(11)
+        run_desc.font.bold = False
+        run_desc.font.color.rgb = TEXT_SOFT
+        p_pt.space_after = Pt(10)
+
+    # ------------------
+    # RIGHT CARD: Four Launch Flavours
+    # ------------------
+    card_x2 = Inches(6.8)
+    card_w2 = Inches(5.7)
+    add_flat_card(slide, card_x2, card_y, card_w2, card_h)
+
+    tb_r = slide.shapes.add_textbox(Inches(7.15), card_y + Inches(0.35), Inches(5.0), Inches(0.5))
+    tf_r = tb_r.text_frame
+    tf_r.word_wrap = True
+    tf_r.margin_left = tf_r.margin_top = tf_r.margin_right = tf_r.margin_bottom = 0
+
+    p_rt = tf_r.paragraphs[0]
+    p_rt.text = "Four Launch Flavours"
+    p_rt.font.name = "Manrope"
+    p_rt.font.size = Pt(18)
+    p_rt.font.bold = True
+    p_rt.font.color.rgb = ACCENT_BUTTER
+
+    flavours = [
+        ("Salted Butter", "Cultured dairy spread (2 g salt / 78 g fat). Rich European style.", ACCENT_BUTTER),
+        ("Wild Raspberry", "150 g fruit paste / 100 g. Natural pectin set, tart & vibrant.", ACCENT_BERRY),
+        ("Yeast Extract", "80% autolysed yeast, 15.5% barley malt. Classic savoury umami.", ACCENT_LAVENDER),
+        ("Roasted Peanut", "96% roasted peanuts + hard fat anti-oil separation barrier.", ACCENT_PEANUT),
+    ]
+
+    fy = card_y + Inches(0.9)
+    for name, desc, col in flavours:
+        fl_card = add_flat_card(slide, Inches(7.1), fy, Inches(5.1), Inches(0.68), bg_color=SURFACE_ELEVATED)
+        tb_f = slide.shapes.add_textbox(Inches(7.25), fy + Inches(0.08), Inches(4.8), Inches(0.55))
+        tf_f = tb_f.text_frame
+        tf_f.word_wrap = True
+        tf_f.margin_left = tf_f.margin_top = tf_f.margin_right = tf_f.margin_bottom = 0
+
+        p1 = tf_f.paragraphs[0]
+        p1.text = name.upper() + "  "
+        p1.font.name = "Manrope"
+        p1.font.size = Pt(11)
+        p1.font.bold = True
+        p1.font.color.rgb = col
+
+        p2 = tf_f.add_paragraph()
+        p2.text = desc
+        p2.font.name = "Manrope"
+        p2.font.size = Pt(9.5)
+        p2.font.color.rgb = TEXT_SOFT
+        fy += Inches(0.78)
+
+    # Packaging shot below the flavours
     pack_path = ROOT / "brand" / "pack.png"
     if pack_path.exists():
-        slide2.shapes.add_picture(str(pack_path), Inches(7.5), Inches(4.3), height=Inches(2.3))
+        slide.shapes.add_picture(str(pack_path), Inches(8.3), Inches(5.4), height=Inches(1.4))
 
-    slide2.notes_slide.notes_text_frame.text = (
-        "PITCH SLIDE 1 (0:10–0:30)\n"
-        "Eating toast away from a kitchen is broken: you have to carry a heavy jar, find a knife, "
-        "and wash it in an office or hall sink. Stamp fixes this with a peel-and-press spread disc. "
-        "You peel a 10-gram portion off the release film, press it directly onto hot toast, and the "
-        "heat melts it into an even layer in seconds. We launch with four distinct flavours: Salted Butter, "
-        "Raspberry, Yeast extract, and Peanut—all packaged in an 8-stamp card sheet with a 12-month pantry shelf life."
+    # Speaker Notes
+    slide.notes_slide.notes_text_frame.text = (
+        "PITCH SLIDE 1 (0:08–0:34)\n"
+        "Eating toast away from a full kitchen is broken. When you're in a student hall, flat, "
+        "or office desk, nobody wants to lug a sticky 750-gram jar, track down a table knife, "
+        "and wash it in an office sink.\n\n"
+        "Stamp reinvents the format with a thin, 10-gram disc of real spread on release film. "
+        "You peel it off, press it onto hot toast, and residual heat softens it into an even spread "
+        "in seconds. No knife, no open jar, no morning mess.\n\n"
+        "We launch with four distinct flavours: Salted Butter, Raspberry, Yeast extract, and Peanut—"
+        "pantry-stable for 12 months in an 8-stamp card sheet."
     )
 
-    # -------------------------------------------------------------
-    # SLIDE 3: Pitch 2 — Market Opportunity & Unit Economics (0:30–1:00)
-    # -------------------------------------------------------------
-    slide3 = prs.slides.add_slide(blank_layout)
-    add_header(
-        slide3,
-        "Market Opportunity & Competitive Advantage",
-        "$341M category with 24% growth, premium tier expansion, and zero portion-format rivals.",
-        "INVESTOR PITCH — PART 2 (30 SECONDS)"
+
+def build_slide_3_pitch2(prs: pptx.Presentation):
+    """Slide 3: Pitch 2 — Market Opportunity & Unit Economics (0:34–0:58)."""
+    slide = create_base_slide(prs)
+
+    add_slide_header(
+        slide,
+        kicker="INVESTOR PITCH • PART 2 (30 SECONDS)",
+        title="Market Opportunity & Unit Economics",
+        subtitle="$341M New Zealand category, 24% revenue growth, and zero portion-format rivals.",
+        kicker_color=ACCENT_BERRY,
     )
 
-    # Left: Economics & Market stats
-    card3_left = slide3.shapes.add_shape(
-        MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.8), Inches(5.8), Inches(5.1)
-    )
-    card3_left.fill.solid()
-    card3_left.fill.fore_color.rgb = COLOR_BG_CARD
-    card3_left.line.color.rgb = COLOR_BORDER
+    # ------------------
+    # TOP ROW: 3 Bold Stat Callouts
+    # ------------------
+    top_y = Inches(2.0)
+    stat_h = Inches(1.25)
+    stat_w = Inches(3.7)
+    gap = Inches(0.3)
+    sx = Inches(0.8)
 
-    tb3_left = slide3.shapes.add_textbox(Inches(1.1), Inches(2.0), Inches(5.2), Inches(4.7))
-    tf3_l = tb3_left.text_frame
-    tf3_l.word_wrap = True
-
-    p = tf3_l.paragraphs[0]
-    p.text = "Verified NZ Breakfast Data"
-    p.font.size = Pt(18)
-    p.font.bold = True
-    p.font.color.rgb = COLOR_DARK_PURPLE
-    p.space_after = Pt(8)
-
-    mkt_points = [
-        "Category Expansion: New Zealand spreads revenue grew 24% from $275M (2022) to $341M NZD (2025). Premium spreads grew fastest (+29%, reaching $113M).",
-        "The Format Vacuum: Across 154 spread names in the market, not a single brand offers a single-serve, peel-and-press format.",
-        "Unit Economics: Priced at $5.00 NZD per 80 g sheet ($6.25/100g). Above jar medians ($2.15/100g) because buyers pay for portion control and pocket convenience.",
-        "Attractive Margins: At assumed $1.50 contract manufacturing cost and 35% retail margin, Stamp retains $1.75 contribution per sheet."
+    stats = [
+        ("$341M", "Total NZ Spreads Category", "+24% growth from $275M (2022–2025)", ACCENT_LAVENDER),
+        ("+29%", "Premium Tier Surge", "Surging from $88M to $113M NZD", ACCENT_BERRY),
+        ("0", "Format Innovation Rivals", "154 existing products; zero peel-and-press", ACCENT_BUTTER),
     ]
-    for pt in mkt_points:
-        title, body = pt.split(": ", 1)
-        p = tf3_l.add_paragraph()
-        p.text = "• " + title + ": "
-        p.font.bold = True
-        p.font.size = Pt(11.5)
-        p.font.color.rgb = COLOR_TEXT_DARK
-        p.space_after = Pt(5)
-        run = p.add_run()
-        run.text = body
-        run.font.bold = False
-        run.font.size = Pt(11.5)
-        run.font.color.rgb = COLOR_TEXT_DARK
 
-    # Right: Chart figure
+    for num, headline, detail, col in stats:
+        add_flat_card(slide, sx, top_y, stat_w, stat_h)
+        tb_s = slide.shapes.add_textbox(sx + Inches(0.2), top_y + Inches(0.12), stat_w - Inches(0.4), stat_h - Inches(0.24))
+        tf_s = tb_s.text_frame
+        tf_s.word_wrap = True
+        tf_s.margin_left = tf_s.margin_top = tf_s.margin_right = tf_s.margin_bottom = 0
+
+        p_num = tf_s.paragraphs[0]
+        p_num.text = num
+        p_num.font.name = "Manrope"
+        p_num.font.size = Pt(28)
+        p_num.font.bold = True
+        p_num.font.color.rgb = col
+        p_num.space_after = Pt(2)
+
+        p_h = tf_s.add_paragraph()
+        p_h.text = headline.upper()
+        p_h.font.name = "Manrope"
+        p_h.font.size = Pt(10)
+        p_h.font.bold = True
+        p_h.font.color.rgb = TEXT_WHITE
+        p_h.space_after = Pt(1)
+
+        p_d = tf_s.add_paragraph()
+        p_d.text = detail
+        p_d.font.name = "Manrope"
+        p_d.font.size = Pt(9.5)
+        p_d.font.color.rgb = TEXT_MUTED
+
+        sx += stat_w + gap
+
+    # ------------------
+    # BOTTOM ROW: 2 Split Cards (Economics & Chart)
+    # ------------------
+    bot_y = Inches(3.45)
+    bot_h = Inches(3.45)
+
+    # Left: Commercial Model & Margins
+    add_flat_card(slide, Inches(0.8), bot_y, Inches(5.7), bot_h)
+
+    tb_m = slide.shapes.add_textbox(Inches(1.15), bot_y + Inches(0.25), Inches(5.0), bot_h - Inches(0.5))
+    tf_m = tb_m.text_frame
+    tf_m.word_wrap = True
+    tf_m.margin_left = tf_m.margin_top = tf_m.margin_right = tf_m.margin_bottom = 0
+
+    p_mt = tf_m.paragraphs[0]
+    p_mt.text = "Commercial Model & Margins"
+    p_mt.font.name = "Manrope"
+    p_mt.font.size = Pt(17)
+    p_mt.font.bold = True
+    p_mt.font.color.rgb = ACCENT_LAVENDER
+    p_mt.space_after = Pt(8)
+
+    econ_points = [
+        ("Retail Pricing", "$5.00 NZD per 80 g sheet (8 stamps = 63¢ per toast portion). Highly accessible impulse price point for students and commuters."),
+        ("Format Innovation Premium", "$6.25 NZD per 100 g. Commands a premium above the category's 90th percentile ($5.19/100g) because consumers buy convenience, not bulk volume."),
+        ("Strong Unit Economics", "At an assumed $1.50 contract manufacturing benchmark and 35% supermarket margin, Stamp retains a healthy $1.75 gross contribution per sheet."),
+    ]
+
+    for title, desc in econ_points:
+        p_pt = tf_m.add_paragraph()
+        p_pt.text = "• " + title + ": "
+        p_pt.font.name = "Manrope"
+        p_pt.font.size = Pt(11)
+        p_pt.font.bold = True
+        p_pt.font.color.rgb = TEXT_WHITE
+        p_pt.space_after = Pt(2)
+
+        run = p_pt.add_run()
+        run.text = desc
+        run.font.name = "Manrope"
+        run.font.size = Pt(10.5)
+        run.font.bold = False
+        run.font.color.rgb = TEXT_SOFT
+        p_pt.space_after = Pt(6)
+
+    # Right: Chart container with regenerated branded figure
+    card_chart = add_flat_card(slide, Inches(6.8), bot_y, Inches(5.7), bot_h)
     fig_path = ROOT / "data" / "figures" / "02-spreads-revenue-by-tier-2022-vs-2025.png"
     if fig_path.exists():
-        slide3.shapes.add_picture(str(fig_path), Inches(6.9), Inches(1.8), width=Inches(5.6))
+        slide.shapes.add_picture(str(fig_path), Inches(6.95), bot_y + Inches(0.15), width=Inches(5.4))
 
-    slide3.notes_slide.notes_text_frame.text = (
-        "PITCH SLIDE 2 (0:30–1:00)\n"
-        "Our analysis of New Zealand breakfast retail sales shows spreads grew 24% to 341 million dollars, "
-        "with the premium tier expanding to 113 million. Yet out of 154 existing spread products, not one "
-        "offers a portion format. Jars like Fix and Fogg or Pic's are cheaper per 100 grams, but they're "
-        "bulky and messy. At 5 dollars a sheet, or 63 cents a toast portion, Stamp captures premium convenience "
-        "for commuters, students, and desk workers. With a healthy 1.75 contribution margin per sheet, Stamp is "
-        "ready to lead an entirely new format in breakfast."
+    # Speaker Notes
+    slide.notes_slide.notes_text_frame.text = (
+        "PITCH SLIDE 2 (0:34–0:58)\n"
+        "Our analysis of New Zealand breakfast retail sales shows spreads revenue grew 24% to "
+        "341 million dollars, with the premium tier surging 29% to 113 million. Yet across 154 "
+        "existing spread products, not one offers a single-serve portion format.\n\n"
+        "Supermarket jars like Pic's or Fix & Fogg compete on bulk weight, but they are messy and stationary. "
+        "At five dollars a sheet—just 63 cents a toast portion—Stamp captures premium convenience. With an assumed "
+        "manufacturing cost of one-fifty, we retain a strong one-dollar-seventy-five gross margin per sheet. "
+        "Stamp is ready to own portable breakfast."
     )
 
-    # -------------------------------------------------------------
-    # SLIDE 4: Reflection Q1 — Working with Generative AI (1:00–1:55)
-    # -------------------------------------------------------------
-    slide4 = prs.slides.add_slide(blank_layout)
-    add_header(
-        slide4,
-        "Reflection Q1: Lessons in Working with Generative AI",
-        "Prompting techniques, context engineering, session management, and verification.",
-        "PERSONAL REFLECTION — PART 2 (STUDENT'S OWN WORDS)"
+
+def build_slide_4_reflection1(prs: pptx.Presentation):
+    """Slide 4: Reflection Q1 — Lessons in Working with Generative AI (1:00–1:55)."""
+    slide = create_base_slide(prs)
+
+    add_slide_header(
+        slide,
+        kicker="PERSONAL REFLECTION • PART 2 (STUDENT'S OWN VOICE)",
+        title="Reflection Q1: Steering & Fact-Checking Generative AI",
+        subtitle="Prompting architectures, context engineering, session partitioning, and verification.",
+        kicker_color=ACCENT_BUTTER,
     )
 
-    # Guidance notice box
-    nb4 = slide4.shapes.add_shape(
-        MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(1.8), Inches(11.7), Inches(0.55)
+    # Notice Pill: Talking-head requirement
+    add_kicker_badge(
+        slide,
+        Inches(0.8),
+        Inches(1.8),
+        "TALKING-HEAD CUES • DELIVERED IN PERSONAL VOICE WITHOUT AI GENERATION",
+        text_color=ACCENT_BUTTER,
+        bg_color=SURFACE_PURPLE,
+        width=Inches(6.2),
     )
-    nb4.fill.solid()
-    nb4.fill.fore_color.rgb = RGBColor(254, 242, 242)
-    nb4.line.color.rgb = RGBColor(239, 68, 68)
-    tf_nb4 = nb4.text_frame
-    p_nb4 = tf_nb4.paragraphs[0]
-    p_nb4.text = "CRITICAL BRIEF REQUIREMENT: Deliver in your personal voice. AI assistance was strictly prohibited for reflection text."
-    p_nb4.font.size = Pt(10)
-    p_nb4.font.bold = True
-    p_nb4.font.color.rgb = RGBColor(185, 28, 28)
 
-    # 3 Structured reflection columns
     col_w = Inches(3.7)
     gap = Inches(0.3)
-    left_margin = Inches(0.8)
+    left_x = Inches(0.8)
+    card_y = Inches(2.3)
+    card_h = Inches(4.6)
 
-    # Col 1: Context & Steering
-    col1 = slide4.shapes.add_shape(
-        MSO_SHAPE.ROUNDED_RECTANGLE, left_margin, Inches(2.5), col_w, Inches(4.4)
-    )
-    col1.fill.solid()
-    col1.fill.fore_color.rgb = COLOR_BG_CARD
-    col1.line.color.rgb = COLOR_BORDER
-    tf_c1 = col1.text_frame
-    tf_c1.word_wrap = True
-    p = tf_c1.paragraphs[0]
-    p.text = "Context & Steering"
-    p.font.size = Pt(16)
-    p.font.bold = True
-    p.font.color.rgb = COLOR_DARK_PURPLE
-    p.space_after = Pt(8)
-
-    prompts_c1 = [
-        "Prompting Beyond Defaults: How role personas, explicit negative constraints, and output formats prevented generic responses.",
-        "Session Partitioning: Why separating data cleaning, visual identity, and copy prevented context drift across 13 stages.",
-        "Prompting Artifact: Carrying locked spec decisions forward rather than re-prompting."
+    columns = [
+        ("Context & Steering", ACCENT_LAVENDER, [
+            ("Role Personas & Negative Constraints", "Enforcing strict bans against health claims, therapeutic benefits, and certification badges to avoid marketing hallucinations."),
+            ("Session Partitioning", "Isolating data cleaning, brand spec, and copywriting into modular sessions to eliminate context drift across complex multi-step workflows."),
+            ("Locked Specification Artifact", "Maintaining a single source of truth across all tasks to ensure product metrics stayed rock-solid."),
+        ]),
+        ("Verification & Turning Point", ACCENT_BUTTER, [
+            ("Auditing Raw Data Outliers", "Detecting aberrant price spikes (>$40) and uncleaned sales sums rather than blindly trusting unvalidated model aggregations."),
+            ("The Specific Turning Point", "Catching hallucinated ambient table butter stability; forcing reformulation into cultured dairy spread to meet ambient shelf life."),
+            ("Independent Fact-Checking", "Manually cross-referencing competitor shelf pricing directly against New World retail databases."),
+        ]),
+        ("Key Lessons Learned", ACCENT_BERRY, [
+            ("AI as Drafter, Not Director", "Treating model outputs strictly as initial draft hypotheses that require empirical verification and human discernment."),
+            ("Hybrid AI Architecture", "Pairing OpenRouter API customer support with locked system prompts and deterministic fallback logic."),
+            ("What I Would Do Differently", "Establishing rigid data schemas and explicit verification tests before running exploratory generation."),
+        ]),
     ]
-    for item in prompts_c1:
-        p = tf_c1.add_paragraph()
-        p.text = "• " + item
-        p.font.size = Pt(10.5)
-        p.font.color.rgb = COLOR_TEXT_DARK
-        p.space_after = Pt(6)
 
-    # Col 2: Fact-Checking & Turning Point
-    col2 = slide4.shapes.add_shape(
-        MSO_SHAPE.ROUNDED_RECTANGLE, left_margin + col_w + gap, Inches(2.5), col_w, Inches(4.4)
-    )
-    col2.fill.solid()
-    col2.fill.fore_color.rgb = COLOR_BG_CARD
-    col2.line.color.rgb = COLOR_BORDER
-    tf_c2 = col2.text_frame
-    tf_c2.word_wrap = True
-    p = tf_c2.paragraphs[0]
-    p.text = "Verification & Pivotal Moment"
-    p.font.size = Pt(16)
-    p.font.bold = True
-    p.font.color.rgb = COLOR_DARK_PURPLE
-    p.space_after = Pt(8)
+    for title, col, points in columns:
+        add_flat_card(slide, left_x, card_y, col_w, card_h)
 
-    prompts_c2 = [
-        "Catching Raw Data Errors: Detecting aberrant price outliers (>$40) and missing revenues in raw dataset rather than trusting uncleaned sums.",
-        "The Specific Turning Point: A concrete moment when AI output hallucinated or failed, and the exact steps taken to correct it.",
-        "Independent Sourcing: Verifying real competitor shelf prices directly on New World instead of relying on AI guesses."
-    ]
-    for item in prompts_c2:
-        p = tf_c2.add_paragraph()
-        p.text = "• " + item
-        p.font.size = Pt(10.5)
-        p.font.color.rgb = COLOR_TEXT_DARK
-        p.space_after = Pt(6)
+        tb = slide.shapes.add_textbox(left_x + Inches(0.25), card_y + Inches(0.25), col_w - Inches(0.5), card_h - Inches(0.5))
+        tf = tb.text_frame
+        tf.word_wrap = True
+        tf.margin_left = tf.margin_top = tf.margin_right = tf.margin_bottom = 0
 
-    # Col 3: Lessons for Future
-    col3 = slide4.shapes.add_shape(
-        MSO_SHAPE.ROUNDED_RECTANGLE, left_margin + (col_w + gap) * 2, Inches(2.5), col_w, Inches(4.4)
-    )
-    col3.fill.solid()
-    col3.fill.fore_color.rgb = COLOR_BG_CARD
-    col3.line.color.rgb = COLOR_BORDER
-    tf_c3 = col3.text_frame
-    tf_c3.word_wrap = True
-    p = tf_c3.paragraphs[0]
-    p.text = "Key Lessons Learned"
-    p.font.size = Pt(16)
-    p.font.bold = True
-    p.font.color.rgb = COLOR_DARK_PURPLE
-    p.space_after = Pt(8)
+        p_t = tf.paragraphs[0]
+        p_t.text = title
+        p_t.font.name = "Manrope"
+        p_t.font.size = Pt(17)
+        p_t.font.bold = True
+        p_t.font.color.rgb = col
+        p_t.space_after = Pt(12)
 
-    prompts_c3 = [
-        "AI as Junior Drafter, Not Director: Treating model outputs as hypotheses that require rigorous empirical validation.",
-        "Hybrid AI Architecture: Integrating OpenRouter API with a locked system prompt and instant deterministic fallback to eliminate hallucinations.",
-        "What I Would Do Differently: Specific adjustments for future enterprise AI workflows."
-    ]
-    for item in prompts_c3:
-        p = tf_c3.add_paragraph()
-        p.text = "• " + item
-        p.font.size = Pt(10.5)
-        p.font.color.rgb = COLOR_TEXT_DARK
-        p.space_after = Pt(6)
+        for pt_title, pt_desc in points:
+            p = tf.add_paragraph()
+            p.text = "• " + pt_title + "\n"
+            p.font.name = "Manrope"
+            p.font.size = Pt(11.5)
+            p.font.bold = True
+            p.font.color.rgb = TEXT_WHITE
+            p.space_after = Pt(2)
 
-    slide4.notes_slide.notes_text_frame.text = (
+            run = p.add_run()
+            run.text = pt_desc
+            run.font.name = "Manrope"
+            run.font.size = Pt(10)
+            run.font.bold = False
+            run.font.color.rgb = TEXT_SOFT
+            p.space_after = Pt(8)
+
+        left_x += col_w + gap
+
+    # Speaker Notes
+    slide.notes_slide.notes_text_frame.text = (
         "REFLECTION Q1 (1:00–1:55)\n"
         "[Jacob's personal reflection: speak directly to camera about your AI steering experience.]\n"
         "Key speaking cues:\n"
-        "1. Discuss how you structured sessions to avoid context rot across tasks.\n"
-        "2. Detail the pivotal moment where you caught a major AI mistake (e.g. invalid pricing assumptions, "
-        "unrealistic manufacturing claims, or raw data price spikes) and how you corrected it.\n"
-        "3. Share the single most important lesson you will carry into future professional AI projects."
+        "1. Mention how you structured distinct sessions rather than one massive unmanageable chat.\n"
+        "2. Explain how you used explicit negative constraints (e.g. banning health claims and certification badges) "
+        "and role personas to get reliable results.\n"
+        "3. Share a concrete example where an AI model gave an unrealistic answer (e.g., assuming chilled butter could "
+        "sit ambiently without dairy-spread reformulations) and how you caught and corrected it."
     )
 
-    # -------------------------------------------------------------
-    # SLIDE 5: Reflection Q2 — Critical Evaluation & AI Ethics (1:55–2:50)
-    # -------------------------------------------------------------
-    slide5 = prs.slides.add_slide(blank_layout)
-    add_header(
-        slide5,
-        "Reflection Q2: Critical Evaluation of AI, Authenticity & Ethics",
-        "Combating 'AI slop', regulatory liability, and ethics for future knowledge workers.",
-        "PERSONAL REFLECTION — PART 2 (STUDENT'S OWN WORDS)"
+
+def build_slide_5_reflection2(prs: pptx.Presentation):
+    """Slide 5: Reflection Q2 — Critical Evaluation, AI Slop & Ethics (1:55–2:45)."""
+    slide = create_base_slide(prs)
+
+    add_slide_header(
+        slide,
+        kicker="PERSONAL REFLECTION • PART 2 (STUDENT'S OWN VOICE)",
+        title="Reflection Q2: Authenticity, AI Slop & Knowledge Worker Ethics",
+        subtitle="Combating generic marketing cliches, regulatory food liabilities, and human accountability.",
+        kicker_color=ACCENT_BERRY,
     )
 
-    # Guidance notice box
-    nb5 = slide5.shapes.add_shape(
-        MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(1.8), Inches(11.7), Inches(0.55)
+    # Notice Pill: Talking-head requirement
+    add_kicker_badge(
+        slide,
+        Inches(0.8),
+        Inches(1.8),
+        "TALKING-HEAD CUES • DELIVERED IN PERSONAL VOICE WITHOUT AI GENERATION",
+        text_color=ACCENT_BUTTER,
+        bg_color=SURFACE_PURPLE,
+        width=Inches(6.2),
     )
-    nb5.fill.solid()
-    nb5.fill.fore_color.rgb = RGBColor(254, 242, 242)
-    nb5.line.color.rgb = RGBColor(239, 68, 68)
-    tf_nb5 = nb5.text_frame
-    p_nb5 = tf_nb5.paragraphs[0]
-    p_nb5.text = "CRITICAL BRIEF REQUIREMENT: Deliver in your personal voice. AI assistance was strictly prohibited for reflection text."
-    p_nb5.font.size = Pt(10)
-    p_nb5.font.bold = True
-    p_nb5.font.color.rgb = RGBColor(185, 28, 28)
 
-    # 3 Structured reflection columns
-    # Col 1: Fighting AI Slop
-    col1_5 = slide5.shapes.add_shape(
-        MSO_SHAPE.ROUNDED_RECTANGLE, left_margin, Inches(2.5), col_w, Inches(4.4)
-    )
-    col1_5.fill.solid()
-    col1_5.fill.fore_color.rgb = COLOR_BG_CARD
-    col1_5.line.color.rgb = COLOR_BORDER
-    tf_c1_5 = col1_5.text_frame
-    tf_c1_5.word_wrap = True
-    p = tf_c1_5.paragraphs[0]
-    p.text = "Combating 'AI Slop'"
-    p.font.size = Pt(16)
-    p.font.bold = True
-    p.font.color.rgb = COLOR_DARK_PURPLE
-    p.space_after = Pt(8)
+    col_w = Inches(3.7)
+    gap = Inches(0.3)
+    left_x = Inches(0.8)
+    card_y = Inches(2.3)
+    card_h = Inches(4.6)
 
-    slop_points = [
-        "Rejecting Generic Fluff: AI defaults to superlative marketing cliches ('revolutionizing breakfast'). Enforcing concise, plain-spoken prose made Stamp authentic.",
-        "Authentic Physical Design: Anchoring packaging in real industrial constraints (foil release liners, ambient butterfat stability) rather than impossible fantasy designs.",
-        "Human Taste & Tone: Deliberately choosing an off-beat, energetic sound and visual palette."
+    columns = [
+        ("Combating 'AI Slop'", ACCENT_BERRY, [
+            ("Stripping Marketing Clichés", "Actively rejecting hyperbolic corporate fluff ('revolutionizing breakfast journeys') in favor of plain, punchy facts: 'Peel. Press. Toast.'"),
+            ("Authentic Physical Constraints", "Anchoring packaging in real industrial constraints (continuous deposit tooling, release film) rather than impossible AI mockups."),
+            ("Deliberate Brand Personality", "Injecting bold, high-contrast visual identity and off-beat jingle tone to stand out from generic AI aesthetics."),
+        ]),
+        ("Regulatory & Legal Risks", ACCENT_BUTTER, [
+            ("Food Hallucination Dangers", "Unchecked models frequently invent fake organic labels, false 'gluten-free' badges, or illegal therapeutic health claims."),
+            ("Strict FSANZ Compliance", "Enforcing Food Standards Australia New Zealand labeling laws: distinguishing dairy spread from refrigerated table butter."),
+            ("Allergen Responsibility", "Ensuring life-threatening peanut and gluten disclosures were prominent and never obscured by AI optimism."),
+        ]),
+        ("Ethics & Future Work", ACCENT_PEANUT, [
+            ("Non-Delegable Accountability", "When deploying AI commercially, legal, moral, and customer accountability can never be outsourced to an algorithm."),
+            ("Critical Thinking as Core Skill", "The primary value of the modern knowledge worker is skepticism, verification, taste, and boundary enforcement."),
+            ("Human Agency", "Leveraging generative AI for execution velocity while retaining complete personal ownership of the final result."),
+        ]),
     ]
-    for item in slop_points:
-        p = tf_c1_5.add_paragraph()
-        p.text = "• " + item
-        p.font.size = Pt(10.5)
-        p.font.color.rgb = COLOR_TEXT_DARK
-        p.space_after = Pt(6)
 
-    # Col 2: Regulatory & Legal Liability
-    col2_5 = slide5.shapes.add_shape(
-        MSO_SHAPE.ROUNDED_RECTANGLE, left_margin + col_w + gap, Inches(2.5), col_w, Inches(4.4)
-    )
-    col2_5.fill.solid()
-    col2_5.fill.fore_color.rgb = COLOR_BG_CARD
-    col2_5.line.color.rgb = COLOR_BORDER
-    tf_c2_5 = col2_5.text_frame
-    tf_c2_5.word_wrap = True
-    p = tf_c2_5.paragraphs[0]
-    p.text = "Regulatory & Legal Risks"
-    p.font.size = Pt(16)
-    p.font.bold = True
-    p.font.color.rgb = COLOR_DARK_PURPLE
-    p.space_after = Pt(8)
+    for title, col, points in columns:
+        add_flat_card(slide, left_x, card_y, col_w, card_h)
 
-    reg_points = [
-        "The Hallucination Danger: Left unconstrained, AI frequently invents fake organic labels, false 'gluten-free' badges, or illegal medical claims.",
-        "Strict Enforced Bans: Banning health and therapeutic claims; legally distinguishing 'spread' from refrigerated table butter under FSANZ standards.",
-        "Allergen Responsibility: Ensuring life-threatening peanut and gluten disclosures were never obscured by AI optimism."
-    ]
-    for item in reg_points:
-        p = tf_c2_5.add_paragraph()
-        p.text = "• " + item
-        p.font.size = Pt(10.5)
-        p.font.color.rgb = COLOR_TEXT_DARK
-        p.space_after = Pt(6)
+        tb = slide.shapes.add_textbox(left_x + Inches(0.25), card_y + Inches(0.25), col_w - Inches(0.5), card_h - Inches(0.5))
+        tf = tb.text_frame
+        tf.word_wrap = True
+        tf.margin_left = tf.margin_top = tf.margin_right = tf.margin_bottom = 0
 
-    # Col 3: Ethical Implications for Knowledge Workers
-    col3_5 = slide5.shapes.add_shape(
-        MSO_SHAPE.ROUNDED_RECTANGLE, left_margin + (col_w + gap) * 2, Inches(2.5), col_w, Inches(4.4)
-    )
-    col3_5.fill.solid()
-    col3_5.fill.fore_color.rgb = COLOR_BG_CARD
-    col3_5.line.color.rgb = COLOR_BORDER
-    tf_c3_5 = col3_5.text_frame
-    tf_c3_5.word_wrap = True
-    p = tf_c3_5.paragraphs[0]
-    p.text = "Ethics & Future Work"
-    p.font.size = Pt(16)
-    p.font.bold = True
-    p.font.color.rgb = COLOR_DARK_PURPLE
-    p.space_after = Pt(8)
+        p_t = tf.paragraphs[0]
+        p_t.text = title
+        p_t.font.name = "Manrope"
+        p_t.font.size = Pt(17)
+        p_t.font.bold = True
+        p_t.font.color.rgb = col
+        p_t.space_after = Pt(12)
 
-    eth_points = [
-        "Accountability Remains Human: When a business deploys AI, legal, moral, and customer accountability cannot be offloaded to an algorithm.",
-        "Value of Critical Thinking: The essential role of the knowledge worker is skepticism, verification, and boundary-setting.",
-        "Personal Perspective: What it means to work ethically alongside AI without surrendering personal agency or judgment."
-    ]
-    for item in eth_points:
-        p = tf_c3_5.add_paragraph()
-        p.text = "• " + item
-        p.font.size = Pt(10.5)
-        p.font.color.rgb = COLOR_TEXT_DARK
-        p.space_after = Pt(6)
+        for pt_title, pt_desc in points:
+            p = tf.add_paragraph()
+            p.text = "• " + pt_title + "\n"
+            p.font.name = "Manrope"
+            p.font.size = Pt(11.5)
+            p.font.bold = True
+            p.font.color.rgb = TEXT_WHITE
+            p.space_after = Pt(2)
 
-    slide5.notes_slide.notes_text_frame.text = (
-        "REFLECTION Q2 (1:55–2:50)\n"
+            run = p.add_run()
+            run.text = pt_desc
+            run.font.name = "Manrope"
+            run.font.size = Pt(10)
+            run.font.bold = False
+            run.font.color.rgb = TEXT_SOFT
+            p.space_after = Pt(8)
+
+        left_x += col_w + gap
+
+    # Speaker Notes
+    slide.notes_slide.notes_text_frame.text = (
+        "REFLECTION Q2 (1:55–2:45)\n"
         "[Jacob's personal reflection: speak directly to camera on authenticity and ethics.]\n"
         "Key speaking cues:\n"
-        "1. How did you actively prevent AI slop from entering Stamp's branding and copy?\n"
-        "2. Address the severe ethical/legal risks of AI generating food claims (allergens, false certifications).\n"
-        "3. Conclude with your personal stance as a future knowledge worker on ethics and responsibility."
+        "1. Explain how you actively stripped out generic corporate jargon in favour of plain, punchy facts.\n"
+        "2. Emphasize the legal hazards of AI in food and beverage: hallucinated health benefits, "
+        "false gluten-free claims, and allergen responsibility.\n"
+        "3. Conclude with your takeaway: Generative AI accelerates drafting, but human judgment, taste, "
+        "and ultimate accountability can never be outsourced to a model."
     )
+
+
+def main():
+    prs = pptx.Presentation()
+    prs.slide_width = Inches(13.333)
+    prs.slide_height = Inches(7.5)
+
+    build_slide_1_hero(prs)
+    build_slide_2_pitch1(prs)
+    build_slide_3_pitch2(prs)
+    build_slide_4_reflection1(prs)
+    build_slide_5_reflection2(prs)
 
     OUT_PPTX.parent.mkdir(parents=True, exist_ok=True)
     prs.save(str(OUT_PPTX))
-    print(f"Presentation saved to {OUT_PPTX}")
+    print(f"Successfully generated redesigned {OUT_PPTX}")
 
 
 if __name__ == "__main__":
-    build_presentation()
+    main()
