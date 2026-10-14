@@ -12,9 +12,10 @@ Branding strictly honors the clean, flat, modern Stamp web platform:
   the 4 authentic brand flavour palettes (Yeast, Butter, Raspberry, Peanut),
   with primary-colored title and concise subtitle, and brand footer.
 - Content Pages: Pure white (#FFFFFF) background with dark legible ink typography
-  (#1A1024), primary-colored section headings, and brand footer (STAMP wordmark
-  on bottom left, page number on bottom right).
-- Clean, frameless flat surfaces for visual figures.
+  (#1A1024), primary-colored section headings, clickable links (#6D28D9), and
+  brand footer (STAMP wordmark on bottom left, page number on bottom right).
+- Bold Elevated Containers: Distinct solid surface (#EEF2F6), solid 5pt primary
+  accent bar, and crisp bold typography. Zero wireframe borders.
 """
 
 from __future__ import annotations
@@ -94,7 +95,7 @@ SCHEMES = [
     },
 ]
 
-# Refined Section Titles & Concise Subtitles
+# Section Titles & Concise Subtitles
 SECTION_METADATA: dict[str, dict[str, str]] = {
     "Executive summary": {
         "title": "Executive Summary",
@@ -190,9 +191,9 @@ def styles() -> dict[str, ParagraphStyle]:
         "cap": ParagraphStyle(
             "cap",
             fontName="Manrope-Semi",
-            fontSize=8.5,
-            leading=11.5,
-            textColor=HexColor("#475569"),
+            fontSize=8.8,
+            leading=12.5,
+            textColor=HexColor("#334155"),
             spaceBefore=0,
             spaceAfter=0,
             alignment=TA_CENTER,
@@ -298,6 +299,11 @@ def xml_text(text: str) -> str:
 
     def soften(match: re.Match[str]) -> str:
         url = match.group(0)
+        punct = ""
+        while url and url[-1] in ".,;:!?)":
+            punct = url[-1] + punct
+            url = url[:-1]
+
         plain = url.replace("&amp;", "&")
         limit = 480
 
@@ -305,7 +311,7 @@ def xml_text(text: str) -> str:
             return pdfmetrics.stringWidth(value, "Manrope", 10.0)
 
         if wide(plain) <= limit:
-            return url
+            return f'<a href="{url}" color="#6D28D9"><u>{url}</u></a>{punct}'
         pieces = url.split("/")
         lines: list[str] = []
         current = pieces[0]
@@ -319,9 +325,12 @@ def xml_text(text: str) -> str:
                 current += addition
         if current:
             lines.append(current)
-        return "<br/>".join(lines)
+        display = "<br/>".join(lines)
+        return f'<a href="{url}" color="#6D28D9"><u>{display}</u></a>{punct}'
 
+    # Make raw URLs clickable hyperlinks
     text = re.sub(r"https?://[^\s<]+", soften, text)
+    # Bold text
     text = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", text)
     return text
 
@@ -336,7 +345,7 @@ def prepare_image(src: Path, dest: Path) -> tuple[int, int]:
     image = PILImage.open(src)
     if image.mode in ("RGBA", "LA") or (image.mode == "P" and "transparency" in image.info):
         image = image.convert("RGBA")
-        base = PILImage.new("RGBA", image.size, (248, 250, 252, 255))
+        base = PILImage.new("RGBA", image.size, (238, 242, 246, 255))
         flat = PILImage.alpha_composite(base, image).convert("RGB")
     else:
         flat = image.convert("RGB")
@@ -429,77 +438,111 @@ class MinimalCover(Flowable):
 
 
 class CleanSectionPage(Flowable):
-    """Dedicated full-bleed section divider page with primary title & subtitle."""
+    """Dedicated full-bleed section divider page with wrapping primary title & subtitle."""
 
     def __init__(self, title: str, subtitle: str, scheme: dict):
         super().__init__()
-        self.title = title
-        self.subtitle = subtitle
         self.scheme = scheme
+        title_style = ParagraphStyle(
+            f"sec_title_{scheme['id']}",
+            fontName="Manrope-Bold",
+            fontSize=32,
+            leading=38,
+            textColor=scheme["primary"],
+            spaceBefore=0,
+            spaceAfter=14,
+            alignment=TA_LEFT,
+        )
+        sub_style = ParagraphStyle(
+            f"sec_sub_{scheme['id']}",
+            fontName="Manrope-Semi",
+            fontSize=15,
+            leading=21,
+            textColor=scheme["primary"],
+            spaceBefore=0,
+            spaceAfter=0,
+            alignment=TA_LEFT,
+        )
+        self.title_p = Paragraph(xml_text(title), title_style)
+        self.sub_p = Paragraph(xml_text(subtitle), sub_style) if subtitle else None
 
     def wrap(self, avail_width, avail_height):
         self.avail_width = avail_width
         self.avail_height = avail_height
+        _w1, self.t_h = self.title_p.wrap(avail_width, avail_height)
+        self.s_h = 0
+        if self.sub_p:
+            _w2, self.s_h = self.sub_p.wrap(avail_width, avail_height)
         return avail_width, avail_height
 
     def draw(self):
         canv = self.canv
-        H = self.avail_height
+        # Vertically align around 58% of available height
+        total_h = self.t_h + (14 + self.s_h if self.sub_p else 0)
+        y_top = (self.avail_height * 0.58) + total_h / 2
 
-        # Position title and subtitle in upper-middle area
-        y_anchor = H * 0.60
-
-        # Title: Primary colored
-        canv.setFillColor(self.scheme["primary"])
-        canv.setFont("Manrope-Bold", 34)
-        canv.drawString(0, y_anchor, self.title)
-
-        # Subtitle: Short, also Primary colored (no line between them)
-        if self.subtitle:
-            canv.setFillColor(self.scheme["primary"])
-            canv.setFont("Manrope-Semi", 15)
-            canv.drawString(0, y_anchor - 30, self.subtitle)
+        self.title_p.drawOn(canv, 0, y_top - self.t_h)
+        if self.sub_p:
+            self.sub_p.drawOn(canv, 0, y_top - self.t_h - 14 - self.s_h)
 
 
 class CleanFigureBlock(Flowable):
-    """Clean frameless visual block on white canvas."""
+    """Bold, elevated visual block on white canvas."""
 
-    def __init__(self, path: str, caption: str, max_height: float, pref_width: float | None):
+    def __init__(self, path: str, caption: str, max_height: float, pref_width: float | None, scheme: dict):
         super().__init__()
         self.path = path
         self.caption = caption
         self.max_height = max_height
         self.pref_width = pref_width
+        self.scheme = scheme
         with PILImage.open(path) as image:
             self.px_w, self.px_h = image.size
 
     def wrap(self, avail_width, avail_height):
         self.avail_width = avail_width
         card_w = avail_width if self.pref_width is None else min(avail_width, self.pref_width)
-        pad = 12
+        pad = 14
         inner_w = card_w - 2 * pad
-        inner_max_h = self.max_height - 35
+        inner_max_h = self.max_height - 42
         scale = min(inner_w / self.px_w, inner_max_h / self.px_h)
         self.draw_w = self.px_w * scale
         self.draw_h = self.px_h * scale
 
         self.card_w = self.draw_w + 2 * pad
-        self.paragraph = Paragraph(xml_text(self.caption), styles()["cap"])
-        _cw, self.cap_h = self.paragraph.wrap(self.card_w, 800)
-        self.card_h = self.draw_h + pad + 6 + self.cap_h
+        cap_style = ParagraphStyle(
+            f"fig_cap_{self.scheme['id']}",
+            fontName="Manrope-Semi",
+            fontSize=8.8,
+            leading=12.5,
+            textColor=HexColor("#334155"),
+            alignment=TA_CENTER,
+        )
+        self.paragraph = Paragraph(xml_text(self.caption), cap_style)
+        _cw, self.cap_h = self.paragraph.wrap(self.card_w - 20, 800)
+        self.card_h = self.draw_h + pad + 16 + self.cap_h + 6
         return avail_width, self.card_h
 
     def draw(self):
         canv = self.canv
         cx = (self.avail_width - self.card_w) / 2
+        W = self.card_w
+        H = self.card_h
+        r = 12
 
         canv.saveState()
-        # Light subtle card surface
-        canv.setFillColor(HexColor("#F8FAFC"))
-        canv.roundRect(cx, 0, self.card_w, self.card_h, 12, stroke=0, fill=1)
+        # 1. Bold elevated card surface (Slate 100 #EEF2F6)
+        canv.setFillColor(HexColor("#EEF2F6"))
+        canv.roundRect(cx, 0, W, H, r, stroke=0, fill=1)
 
-        img_x = cx + (self.card_w - self.draw_w) / 2
-        img_y = self.cap_h + 8
+        # 2. Bold top accent bar in section primary color
+        bar_h = 5
+        canv.setFillColor(self.scheme["primary"])
+        canv.roundRect(cx, H - bar_h, W, bar_h, 2.5, stroke=0, fill=1)
+
+        # 3. Image centered with generous padding
+        img_x = cx + (W - self.draw_w) / 2
+        img_y = self.cap_h + 12
         canv.drawImage(
             self.path,
             img_x,
@@ -510,17 +553,19 @@ class CleanFigureBlock(Flowable):
             preserveAspectRatio=True,
         )
 
-        self.paragraph.drawOn(canv, cx, 4)
+        # 4. Caption
+        self.paragraph.drawOn(canv, cx + 10, 8)
         canv.restoreState()
 
 
 class CleanImageRow(Flowable):
-    """Clean row of frameless images on white canvas."""
+    """Bold elevated row of images on white canvas."""
 
-    def __init__(self, items: list[tuple[str, str]], max_height: float):
+    def __init__(self, items: list[tuple[str, str]], max_height: float, scheme: dict):
         super().__init__()
         self.items = items
         self.max_height = max_height
+        self.scheme = scheme
         self.sizes = []
         for p, _c in items:
             with PILImage.open(p) as img:
@@ -530,20 +575,27 @@ class CleanImageRow(Flowable):
         count = len(self.items)
         gap = 14
         col_w = (avail_width - gap * (count - 1)) / count
-        pad = 10
+        pad = 12
         inner_w = col_w - 2 * pad
-        inner_max_h = self.max_height - 35
+        inner_max_h = self.max_height - 42
         self.cols = []
         row_h = 0
-        cap_style = styles()["cap"]
+        cap_style = ParagraphStyle(
+            f"row_cap_{self.scheme['id']}",
+            fontName="Manrope-Semi",
+            fontSize=8.2,
+            leading=11.5,
+            textColor=HexColor("#334155"),
+            alignment=TA_CENTER,
+        )
 
         for (path, caption), (px_w, px_h) in zip(self.items, self.sizes):
             scale = min(inner_w / px_w, inner_max_h / px_h)
             draw_w = px_w * scale
             draw_h = px_h * scale
             paragraph = Paragraph(xml_text(caption), cap_style)
-            _cw, cap_h = paragraph.wrap(col_w - 8, 800)
-            card_h = draw_h + pad + 6 + cap_h
+            _cw, cap_h = paragraph.wrap(col_w - 16, 800)
+            card_h = draw_h + pad + 16 + cap_h + 6
             row_h = max(row_h, card_h)
             self.cols.append((path, draw_w, draw_h, paragraph, cap_h, col_w, card_h))
 
@@ -555,14 +607,22 @@ class CleanImageRow(Flowable):
     def draw(self):
         canv = self.canv
         x = 0
+        bar_h = 5
+        r = 12
         for path, draw_w, draw_h, paragraph, cap_h, col_w, card_h in self.cols:
             cy = self.row_h - card_h
             canv.saveState()
-            canv.setFillColor(HexColor("#F8FAFC"))
-            canv.roundRect(x, cy, col_w, card_h, 12, stroke=0, fill=1)
+            # 1. Bold elevated card surface
+            canv.setFillColor(HexColor("#EEF2F6"))
+            canv.roundRect(x, cy, col_w, card_h, r, stroke=0, fill=1)
 
+            # 2. Bold top accent bar
+            canv.setFillColor(self.scheme["primary"])
+            canv.roundRect(x, cy + card_h - bar_h, col_w, bar_h, 2.5, stroke=0, fill=1)
+
+            # 3. Image
             img_x = x + (col_w - draw_w) / 2
-            img_y = cy + cap_h + 8
+            img_y = cy + cap_h + 12
             canv.drawImage(
                 path,
                 img_x,
@@ -573,7 +633,7 @@ class CleanImageRow(Flowable):
                 preserveAspectRatio=True,
             )
 
-            paragraph.drawOn(canv, x + 4, cy + 4)
+            paragraph.drawOn(canv, x + 8, cy + 8)
             canv.restoreState()
             x += col_w + self.gap
 
@@ -648,7 +708,7 @@ def check_inputs(copy_text: str) -> None:
         raise SystemExit("missing inputs, PDF not written: " + ", ".join(missing))
 
 
-def visual_flowables(kind: str, payload, work: Path) -> list:
+def visual_flowables(kind: str, payload, work: Path, scheme: dict) -> list:
     if kind == "figure":
         src = resolve_src(payload["src"])
         caption = payload.get("caption", "").strip()
@@ -659,9 +719,9 @@ def visual_flowables(kind: str, payload, work: Path) -> list:
         pref = float(payload["width"]) if payload.get("width") else None
         max_h = float(payload["max-height"]) if payload.get("max-height") else 380
         return [
-            Spacer(1, 6),
-            CleanFigureBlock(str(flat), caption, max_h, pref),
-            Spacer(1, 10),
+            Spacer(1, 8),
+            CleanFigureBlock(str(flat), caption, max_h, pref, scheme),
+            Spacer(1, 12),
         ]
     if kind == "row":
         prepared = []
@@ -670,7 +730,7 @@ def visual_flowables(kind: str, payload, work: Path) -> list:
             flat = work / f"row-{len(list(work.iterdir()))}.png"
             prepare_image(src, flat)
             prepared.append((str(flat), item["caption"]))
-        return [Spacer(1, 6), CleanImageRow(prepared, 220), Spacer(1, 10)]
+        return [Spacer(1, 8), CleanImageRow(prepared, 220, scheme), Spacer(1, 12)]
     raise SystemExit(f"unknown block {kind}")
 
 
@@ -737,7 +797,7 @@ def build_story(sections: list[dict], work: Path, marks: dict[str, tuple[str, in
                     pending = body_paragraph(paragraphs[-1], styles()["body"])
                 continue
 
-            visuals = visual_flowables(kind, payload, work)
+            visuals = visual_flowables(kind, payload, work, scheme)
             if pending is not None:
                 story.append(KeepTogether([pending, *visuals]))
                 pending = None
@@ -772,7 +832,7 @@ def main() -> int:
     register_fonts()
     with tempfile.TemporaryDirectory(prefix="stamp-plan-") as temporary:
         work = Path(temporary)
-        
+
         # Generate recolored anti-aliased wordmarks for each scheme
         marks: dict[str, tuple[str, int, int]] = {}
         for s in SCHEMES:
