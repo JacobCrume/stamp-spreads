@@ -17,7 +17,11 @@
 </svelte:head>
 
 <!-- FLUID GOOEY MORPHING CURSOR -->
-<MorphCursor primaryColor={colorScheme.primary} />
+<MorphCursor
+	primaryColor={colorScheme.primary}
+	secondaryColor={colorScheme.secondary}
+	tertiaryColor={colorScheme.tertiary}
+/>
 
 <!-- FIXED STATIONARY BACKGROUND: SECONDARY COLOR (MORPHS SMOOTHLY) -->
 <div
@@ -215,16 +219,17 @@
 		text-decoration: none;
 		font-weight: 800;
 		font-size: 0.92rem;
-		transition: all 0.15s ease;
+		padding: 0.45rem 0.95rem;
+		border-radius: 9999px;
+		transition: all 0.2s ease;
 		background: transparent;
 		border: none;
 		cursor: pointer;
 		font-family: inherit;
 		letter-spacing: 0.02em;
-	}
-
-	.nav-link:hover {
-		opacity: 0.8;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.chat-btn {
