@@ -21,7 +21,6 @@
 		id: number;
 		sender: 'user' | 'bot';
 		text: string;
-		timestamp: string;
 	}
 
 	let isOpen = $state(false);
@@ -36,23 +35,9 @@
 		{
 			id: 1,
 			sender: 'bot',
-			text: "Kia ora! I'm Stamp's assistant. Ask me anything about our peel-and-press toast spreads, launch flavours, allergens, pricing ($5.00 NZD / sheet), or how to apply Stamp.",
-			timestamp: 'Just now'
+			text: "Kia ora! I'm Stamp's assistant. Ask me anything about our peel-and-press toast spreads, launch flavours, allergens, pricing ($5.00 NZD / sheet), or how to apply Stamp."
 		}
 	]);
-
-	const quickQuestions = [
-		'What is Stamp?',
-		'How do I use it?',
-		'4 Launch Flavours',
-		'Allergens info',
-		'Pantry shelf life'
-	];
-
-	function getTimeString() {
-		const now = new Date();
-		return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-	}
 
 	async function scrollToBottom() {
 		await tick();
@@ -96,7 +81,6 @@
 				const target = e.target as HTMLElement | null;
 				if (!target) return;
 
-				// If click was inside the bar container or popup, keep open
 				if (barElement && barElement.contains(target)) {
 					return;
 				}
@@ -121,8 +105,7 @@
 		const userMsg: Message = {
 			id: Date.now(),
 			sender: 'user',
-			text: query,
-			timestamp: getTimeString()
+			text: query
 		};
 		messages.push(userMsg);
 		userInput = '';
@@ -150,23 +133,20 @@
 				messages.push({
 					id: Date.now() + 1,
 					sender: 'bot',
-					text: data.answer,
-					timestamp: getTimeString()
+					text: data.answer
 				});
 			} else {
 				messages.push({
 					id: Date.now() + 1,
 					sender: 'bot',
-					text: "I couldn't reach the server right now. Stamp is a 10 g peel-and-press spread disc for hot toast ($5.00 NZD / sheet). Please try again shortly.",
-					timestamp: getTimeString()
+					text: "I couldn't reach the server right now. Stamp is a 10 g peel-and-press spread disc for hot toast ($5.00 NZD / sheet). Please try again shortly."
 				});
 			}
 		} catch {
 			messages.push({
 				id: Date.now() + 1,
 				sender: 'bot',
-				text: "Network connection error. Stamp discs are 10 g each, 8 per sheet for $5.00 NZD. Feel free to re-ask your question.",
-				timestamp: getTimeString()
+				text: "Network connection error. Stamp discs are 10 g each, 8 per sheet for $5.00 NZD. Feel free to re-ask your question."
 			});
 		} finally {
 			isThinking = false;
@@ -194,16 +174,12 @@
 			aria-label="Stamp Conversation"
 			style:background-color={colorScheme.tertiary}
 		>
-			<!-- Top Header of the Flyout -->
+			<!-- Top Header of the Flyout: Assistant title with close button in top right -->
 			<div class="flyout-header" style:color={colorScheme.primary}>
 				<div class="flyout-title-wrap">
 					<span class="bot-badge-small" style:background-color={colorScheme.primary} style:color={colorScheme.tertiary}>S</span>
 					<div class="flyout-title">
 						<strong>Stamp Assistant</strong>
-						<span class="online-pill">
-							<span class="online-dot" style:background-color={colorScheme.primary}></span>
-							Live
-						</span>
 					</div>
 				</div>
 				<button
@@ -217,23 +193,7 @@
 				</button>
 			</div>
 
-			<!-- Quick Chips -->
-			<div class="flyout-chips">
-				{#each quickQuestions as q}
-					<button
-						type="button"
-						class="chip-pill"
-						onclick={() => handleSend(q)}
-						disabled={isThinking}
-						style:color={colorScheme.primary}
-						style:background-color="rgba(255, 255, 255, 0.08)"
-					>
-						{q}
-					</button>
-				{/each}
-			</div>
-
-			<!-- Scrollable Messages Window -->
+			<!-- Scrollable Messages Window showing initial assistant greeting and conversation -->
 			<div class="flyout-messages" bind:this={messagesContainer}>
 				{#each messages as msg (msg.id)}
 					<div class="msg-row {msg.sender}">
@@ -247,9 +207,6 @@
 						>
 							<div class="msg-text prose">
 								{@html renderMarkdown(msg.text)}
-							</div>
-							<div class="msg-time" style:color={msg.sender === 'user' ? colorScheme.tertiary : colorScheme.primary}>
-								{msg.timestamp}
 							</div>
 						</div>
 					</div>
@@ -276,20 +233,7 @@
 		style:background-color={colorScheme.tertiary}
 		style:color={colorScheme.primary}
 	>
-		<!-- Left Icon / Indicator -->
-		<button
-			type="button"
-			class="bar-icon-wrap"
-			onclick={expandBar}
-			aria-label="Focus Stamp assistant input"
-			style:color={colorScheme.primary}
-		>
-			<svg class="chat-speech-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-				<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-			</svg>
-		</button>
-
-		<!-- Input field -->
+		<!-- Input field with placeholder "Ask about Stamp..." -->
 		<input
 			type="text"
 			class="bar-input"
@@ -297,39 +241,27 @@
 			bind:value={userInput}
 			onfocus={expandBar}
 			onkeydown={handleKeydown}
-			placeholder={isOpen ? "Type your question about Stamp..." : "Ask Stamp anything..."}
+			placeholder="Ask about Stamp..."
 			disabled={isThinking}
-			aria-label="Ask Stamp anything"
+			aria-label="Ask about Stamp"
 			style:color="#ffffff"
 		/>
 
-		<!-- Send Action or Status -->
-		{#if userInput.trim().length > 0}
-			<button
-				type="button"
-				class="bar-send-btn"
-				onclick={() => handleSend()}
-				disabled={isThinking}
-				aria-label="Send query"
-				style:background-color={colorScheme.primary}
-				style:color={colorScheme.tertiary}
-			>
-				<svg class="send-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-					<line x1="22" y1="2" x2="11" y2="13"></line>
-					<polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-				</svg>
-			</button>
-		{:else if isOpen}
-			<button
-				type="button"
-				class="bar-close-btn"
-				onclick={collapseBar}
-				aria-label="Minimize chat bar"
-				style:color={colorScheme.primary}
-			>
-				✕
-			</button>
-		{/if}
+		<!-- Send icon on the right (always visible) -->
+		<button
+			type="button"
+			class="bar-send-btn"
+			onclick={() => handleSend()}
+			disabled={!userInput.trim() || isThinking}
+			aria-label="Send query"
+			style:background-color={userInput.trim() ? colorScheme.primary : 'rgba(255, 255, 255, 0.14)'}
+			style:color={userInput.trim() ? colorScheme.tertiary : colorScheme.primary}
+		>
+			<svg class="send-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+				<line x1="22" y1="2" x2="11" y2="13"></line>
+				<polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+			</svg>
+		</button>
 	</div>
 </div>
 
@@ -341,7 +273,7 @@
 		left: 50%;
 		transform: translateX(-50%);
 		width: calc(100% - 32px);
-		max-width: 720px;
+		max-width: 680px;
 		z-index: 9999;
 		display: flex;
 		flex-direction: column;
@@ -351,13 +283,13 @@
 
 	/* BOTTOM CHAT BAR */
 	.bottom-chat-bar {
-		width: 320px;
+		width: 310px;
 		height: 52px;
 		border-radius: 9999px;
 		display: flex;
 		align-items: center;
-		padding: 0.35rem 0.6rem 0.35rem 1rem;
-		gap: 0.75rem;
+		padding: 0.35rem 0.5rem 0.35rem 1.4rem;
+		gap: 0.6rem;
 		cursor: text;
 		border: none;
 		box-shadow: 0 10px 32px rgba(0, 0, 0, 0.32);
@@ -369,29 +301,13 @@
 	}
 
 	.bottom-chat-bar:hover {
-		width: 360px;
+		width: 350px;
 	}
 
 	.bottom-chat-bar.expanded {
 		width: 100%;
-		max-width: 720px;
+		max-width: 680px;
 		height: 56px;
-	}
-
-	.bar-icon-wrap {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		background: transparent;
-		border: none;
-		cursor: pointer;
-		padding: 0;
-		flex-shrink: 0;
-	}
-
-	.chat-speech-svg {
-		width: 22px;
-		height: 22px;
 	}
 
 	.bar-input {
@@ -411,8 +327,8 @@
 	}
 
 	.bar-send-btn {
-		width: 38px;
-		height: 38px;
+		width: 40px;
+		height: 40px;
 		border-radius: 50%;
 		border: none;
 		display: inline-flex;
@@ -420,11 +336,16 @@
 		justify-content: center;
 		cursor: pointer;
 		flex-shrink: 0;
-		transition: transform 0.15s ease;
+		transition: transform 0.15s ease, background-color 0.2s ease, opacity 0.2s ease;
 	}
 
-	.bar-send-btn:hover {
+	.bar-send-btn:hover:not(:disabled) {
 		transform: scale(1.08);
+	}
+
+	.bar-send-btn:disabled {
+		cursor: default;
+		opacity: 0.6;
 	}
 
 	.send-arrow-svg {
@@ -433,28 +354,10 @@
 		transform: translate(-1px, 1px);
 	}
 
-	.bar-close-btn {
-		background: transparent;
-		border: none;
-		font-size: 1.1rem;
-		cursor: pointer;
-		padding: 0.4rem;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		flex-shrink: 0;
-		opacity: 0.75;
-		transition: opacity 0.15s ease;
-	}
-
-	.bar-close-btn:hover {
-		opacity: 1;
-	}
-
 	/* RESPONSES FLYOUT ABOVE THE BAR */
 	.responses-flyout {
 		width: 100%;
-		max-height: 480px;
+		max-height: 440px;
 		border-radius: 24px;
 		margin-bottom: 12px;
 		display: flex;
@@ -504,24 +407,8 @@
 
 	.flyout-title {
 		display: flex;
-		align-items: baseline;
-		gap: 0.6rem;
-		font-size: 0.95rem;
-	}
-
-	.online-pill {
-		font-size: 0.72rem;
-		font-weight: 700;
-		display: inline-flex;
 		align-items: center;
-		gap: 4px;
-		opacity: 0.85;
-	}
-
-	.online-dot {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
+		font-size: 0.95rem;
 	}
 
 	.close-flyout-btn {
@@ -536,32 +423,6 @@
 
 	.close-flyout-btn:hover {
 		opacity: 1;
-	}
-
-	.flyout-chips {
-		display: flex;
-		gap: 6px;
-		padding: 0.6rem 1.2rem;
-		overflow-x: auto;
-		white-space: nowrap;
-		flex-shrink: 0;
-		scrollbar-width: thin;
-	}
-
-	.chip-pill {
-		padding: 0.35rem 0.8rem;
-		border-radius: 9999px;
-		font-size: 0.75rem;
-		font-weight: 700;
-		border: none;
-		cursor: pointer;
-		flex-shrink: 0;
-		transition: transform 0.15s ease, background-color 0.15s ease;
-	}
-
-	.chip-pill:hover {
-		transform: scale(1.04);
-		background-color: rgba(255, 255, 255, 0.16) !important;
 	}
 
 	.flyout-messages {
@@ -598,10 +459,10 @@
 	}
 
 	.msg-bubble {
-		max-width: 82%;
-		padding: 0.75rem 1rem;
+		max-width: 84%;
+		padding: 0.8rem 1.1rem;
 		border-radius: 16px;
-		font-size: 0.9rem;
+		font-size: 0.92rem;
 		line-height: 1.5;
 		word-break: break-word;
 	}
@@ -636,15 +497,6 @@
 	.msg-text.prose :global(strong) {
 		font-weight: 900;
 		color: inherit;
-	}
-
-	.msg-time {
-		display: flex;
-		justify-content: flex-end;
-		margin-top: 4px;
-		font-size: 0.68rem;
-		font-weight: 700;
-		opacity: 0.8;
 	}
 
 	.msg-bubble.thinking {
@@ -687,7 +539,7 @@
 			width: 270px;
 		}
 		.responses-flyout {
-			max-height: 400px;
+			max-height: 380px;
 		}
 	}
 </style>
