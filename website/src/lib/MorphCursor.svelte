@@ -27,18 +27,13 @@
 	// Mouse coordinates
 	let mouseX = 0;
 	let mouseY = 0;
-	let prevMouseX = 0;
-	let prevMouseY = 0;
 
-	// Animated cursor blob state
+	// Animated cursor dot/pill state
 	let blobX = $state(-100);
 	let blobY = $state(-100);
-	let blobWidth = $state(30);
-	let blobHeight = $state(30);
+	let blobWidth = $state(22);
+	let blobHeight = $state(22);
 	let blobRadius = $state(999);
-	let blobScaleX = $state(1);
-	let blobScaleY = $state(1);
-	let blobAngle = $state(0);
 	let blobOpacity = $state(1);
 
 	onMount(() => {
@@ -56,8 +51,6 @@
 				visible = true;
 				blobX = mouseX;
 				blobY = mouseY;
-				prevMouseX = mouseX;
-				prevMouseY = mouseY;
 			}
 		};
 
@@ -85,13 +78,12 @@
 
 		let animId: number;
 
-		// Interactive target detection with an extended magnetic snap threshold (32px radius)
-		const SNAP_MARGIN = 28;
+		// Extended magnetic snap margin (40px)
+		const SNAP_MARGIN = 40;
 
 		const findInteractiveTarget = (mx: number, my: number): HTMLElement | null => {
-			// Find all clickable candidates in viewport
 			const candidates = document.querySelectorAll<HTMLElement>(
-				'a, button, [role="button"], .round-flip-btn, .chat-launcher, .nav-link'
+				'a, button, [role="button"], .round-flip-btn, .chat-launcher, .nav-link, .footer-link-btn'
 			);
 
 			let bestMatch: HTMLElement | null = null;
@@ -99,20 +91,18 @@
 
 			for (let i = 0; i < candidates.length; i++) {
 				const el = candidates[i];
-				// Guard: Exclude packaging cards or SVG card elements
+				// Exclude non-interactive packaging cards
 				if (el.closest('.flip-stage') && !el.classList.contains('round-flip-btn')) continue;
-				// Guard: Exclude interior chat contents
+				// Exclude internal chat message area
 				if (el.closest('.chat-messages') || el.closest('.chat-input-bar')) continue;
 
 				const r = el.getBoundingClientRect();
-				// Check if point is inside expanded bounding box
 				if (
 					mx >= r.left - SNAP_MARGIN &&
 					mx <= r.right + SNAP_MARGIN &&
 					my >= r.top - SNAP_MARGIN &&
 					my <= r.bottom + SNAP_MARGIN
 				) {
-					// Distance to center of element
 					const cx = r.left + r.width / 2;
 					const cy = r.top + r.height / 2;
 					const dist = Math.hypot(mx - cx, my - cy);
@@ -127,14 +117,6 @@
 		};
 
 		const tick = () => {
-			// Calculate velocity for natural stretching when traveling
-			const dx = mouseX - prevMouseX;
-			const dy = mouseY - prevMouseY;
-			const speed = Math.sqrt(dx * dx + dy * dy);
-			prevMouseX = mouseX;
-			prevMouseY = mouseY;
-
-			// Check for magnet targets
 			const detected = findInteractiveTarget(mouseX, mouseY);
 
 			if (detected) {
@@ -155,22 +137,16 @@
 				targetRect.height = r.height;
 				targetRect.radius = Math.min(br, r.height / 2);
 
-				// Fluidly morph cursor dimensions and position into the target component
 				const targetCenterX = targetRect.x + targetRect.width / 2;
 				const targetCenterY = targetRect.y + targetRect.height / 2;
 
-				blobX += (targetCenterX - blobX) * 0.28;
-				blobY += (targetCenterY - blobY) * 0.28;
-				blobWidth += (targetRect.width - blobWidth) * 0.28;
-				blobHeight += (targetRect.height - blobHeight) * 0.28;
-				blobRadius += (targetRect.radius - blobRadius) * 0.28;
-
-				// While morphing into a component, lock angle and scale to 0 and 1 (no rotation during morph)
-				blobAngle = 0;
-				blobScaleX += (1 - blobScaleX) * 0.3;
-				blobScaleY += (1 - blobScaleY) * 0.3;
-				// Maintain full solid presence as the component's back fill
-				blobOpacity += (1 - blobOpacity) * 0.3;
+				// Slower, graceful morph interpolation (0.14 rate)
+				blobX += (targetCenterX - blobX) * 0.14;
+				blobY += (targetCenterY - blobY) * 0.14;
+				blobWidth += (targetRect.width - blobWidth) * 0.14;
+				blobHeight += (targetRect.height - blobHeight) * 0.14;
+				blobRadius += (targetRect.radius - blobRadius) * 0.14;
+				blobOpacity += (1 - blobOpacity) * 0.14;
 			} else {
 				if (targetElement) {
 					targetElement.classList.remove('morph-cursor-hovered');
@@ -178,27 +154,15 @@
 				}
 				isHovered = false;
 
-				// Free travel: vibrant fluid dot that stretches slightly along direction of travel
-				const baseSize = isPressed ? 22 : 30;
-				const stretch = Math.min(speed * 0.015, 0.4);
+				// Free travel: perfectly crisp, clean solid circular cursor dot (no fluid wobble or bubble stretch)
+				const baseSize = isPressed ? 18 : 22;
 
-				// Only calculate angle if real motion exists to avoid jitter
-				if (speed > 2.5) {
-					blobAngle = Math.atan2(dy, dx);
-				}
-
-				blobX += (mouseX - blobX) * 0.26;
-				blobY += (mouseY - blobY) * 0.26;
-				blobWidth += (baseSize - blobWidth) * 0.24;
-				blobHeight += (baseSize - blobHeight) * 0.24;
-				blobRadius += (999 - blobRadius) * 0.24;
-
-				const targetScaleX = 1 + stretch;
-				const targetScaleY = 1 / (1 + stretch);
-
-				blobScaleX += (targetScaleX - blobScaleX) * 0.22;
-				blobScaleY += (targetScaleY - blobScaleY) * 0.22;
-				blobOpacity += (1 - blobOpacity) * 0.25;
+				blobX += (mouseX - blobX) * 0.18;
+				blobY += (mouseY - blobY) * 0.18;
+				blobWidth += (baseSize - blobWidth) * 0.14;
+				blobHeight += (baseSize - blobHeight) * 0.14;
+				blobRadius += (999 - blobRadius) * 0.14;
+				blobOpacity += (1 - blobOpacity) * 0.14;
 			}
 
 			animId = requestAnimationFrame(tick);
@@ -222,7 +186,7 @@
 </script>
 
 {#if hasPointer}
-	<!-- Morphing Cursor Layer: Sits behind component text/icons (z-index 990) so it morphs seamlessly into the component's background -->
+	<!-- Morphing Cursor Layer: z-index 10000 ensures it sits over the header, but underneath active text/icons -->
 	<div
 		class="morph-cursor-layer"
 		class:is-visible={visible}
@@ -231,9 +195,9 @@
 		aria-hidden="true"
 	>
 		<div
-			class="fluid-cursor-blob"
+			class="clean-cursor-blob"
 			style="
-				transform: translate3d({blobX - blobWidth / 2}px, {blobY - blobHeight / 2}px, 0) {isHovered ? '' : `rotate(${blobAngle}rad)`} scale({blobScaleX}, {blobScaleY});
+				transform: translate3d({blobX - blobWidth / 2}px, {blobY - blobHeight / 2}px, 0);
 				width: {blobWidth}px;
 				height: {blobHeight}px;
 				border-radius: {blobRadius}px;
@@ -253,11 +217,13 @@
 		cursor: none !important;
 	}
 
+	/* High z-index (10000) so it morphs directly over top of the fixed floating header (z-index 1000)
+	   while interactive content text/icons sit at z-index 10001 */
 	.morph-cursor-layer {
 		position: fixed;
 		inset: 0;
 		pointer-events: none;
-		z-index: 990;
+		z-index: 10000;
 		opacity: 0;
 		transition: opacity 0.25s ease;
 		overflow: hidden;
@@ -267,20 +233,19 @@
 		opacity: 1;
 	}
 
-	.fluid-cursor-blob {
+	.clean-cursor-blob {
 		position: absolute;
 		top: 0;
 		left: 0;
 		pointer-events: none;
-		will-change: transform, width, height, border-radius, opacity;
-		transform-origin: center center;
+		will-change: transform, width, height, border-radius;
 		transition: background-color 0.4s ease;
-		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22);
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
 	}
 
-	/* ALL INTERACTIVE HOVERED STATES:
-	   Elements morph to/from a visible background using authentic palette colors (NEVER white),
-	   with their text/icons sitting clearly above the morphed cursor shape */
+	/* INTERACTIVE HOVERED STATES:
+	   Text, labels, and icons sit visibly above the morphed cursor shape (z-index 10001),
+	   and all interactive components adopt their brand-specific background colors (never white) */
 	:global(a.morph-cursor-hovered),
 	:global(button.morph-cursor-hovered),
 	:global(.round-flip-btn.morph-cursor-hovered),
@@ -290,14 +255,16 @@
 	:global(.flat-outline-btn.morph-cursor-hovered),
 	:global(.chat-btn.morph-cursor-hovered),
 	:global(.chat-launcher.morph-cursor-hovered),
-	:global(.nav-link.morph-cursor-hovered) {
+	:global(.nav-link.morph-cursor-hovered),
+	:global(.footer-links a.morph-cursor-hovered),
+	:global(.footer-link-btn.morph-cursor-hovered) {
 		position: relative;
-		z-index: 1005 !important;
+		z-index: 10001 !important;
 		transform: scale(1.05) !important;
-		transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.22s ease, background-color 0.22s ease !important;
+		transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease, background-color 0.25s ease !important;
 	}
 
-	/* Primary action buttons shift into tertiary color with electric primary text */
+	/* Primary action buttons shift to tertiary surface with primary text */
 	:global(.hero-btn-primary.morph-cursor-hovered),
 	:global(.flat-action-btn.morph-cursor-hovered),
 	:global(.chat-btn.morph-cursor-hovered),
@@ -306,7 +273,7 @@
 		color: var(--color-primary) !important;
 	}
 
-	/* Tertiary buttons and round-flip buttons switch to electric primary background with tertiary icons/text */
+	/* Tertiary buttons and round flip buttons switch to primary background with tertiary text */
 	:global(.hero-btn-secondary.morph-cursor-hovered),
 	:global(.flat-outline-btn.morph-cursor-hovered),
 	:global(.round-flip-btn.morph-cursor-hovered) {
@@ -316,6 +283,13 @@
 
 	/* Header navigation links gain a sleek tertiary pill background and vibrant primary text */
 	:global(.nav-link.morph-cursor-hovered:not(.chat-btn)) {
+		background-color: var(--color-primary) !important;
+		color: var(--color-tertiary) !important;
+	}
+
+	/* Footer links gain an elevated brand background pill with high-contrast text */
+	:global(.footer-links a.morph-cursor-hovered),
+	:global(.footer-link-btn.morph-cursor-hovered) {
 		background-color: var(--color-primary) !important;
 		color: var(--color-tertiary) !important;
 	}

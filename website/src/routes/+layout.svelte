@@ -306,19 +306,22 @@
 		color: #f4c7ff;
 		text-decoration: none;
 		font-size: 0.92rem;
-		transition: all 0.15s;
+		transition: all 0.2s ease;
 		background: transparent;
 		border: none;
 		cursor: pointer;
-		padding: 0;
+		padding: 0.4rem 0.85rem;
+		border-radius: 9999px;
 		text-align: left;
 		font-family: inherit;
-		font-weight: 600;
+		font-weight: 700;
+		display: inline-block;
+		width: fit-content;
 	}
 
 	.footer-links a:hover,
 	.footer-link-btn:hover {
-		color: #e24bff;
+		color: var(--color-primary);
 		transform: translateX(3px);
 	}
 
