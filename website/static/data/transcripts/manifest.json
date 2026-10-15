@@ -1,0 +1,32 @@
+[
+  {
+    "id": "fb13d08c-ba8b-42fd-8e58-9d70652a6fbf",
+    "title": "STAMP Core Development & Engineering Audit",
+    "date": "Oct 14\u201315, 2026",
+    "turnsCount": 63,
+    "totalSteps": 3261,
+    "toolCallsCount": 1538,
+    "subagentsCount": 7,
+    "file": "/data/transcripts/fb13d08c-ba8b-42fd-8e58-9d70652a6fbf.json"
+  },
+  {
+    "id": "69824ff3-2636-4937-aeb1-2ca3f2275a64",
+    "title": "STAMP Brand Design & Market Comparison",
+    "date": "Oct 14, 2026",
+    "turnsCount": 2,
+    "totalSteps": 48,
+    "toolCallsCount": 22,
+    "subagentsCount": 0,
+    "file": "/data/transcripts/69824ff3-2636-4937-aeb1-2ca3f2275a64.json"
+  },
+  {
+    "id": "01a0f0ef-46f6-7293-ac76-76dd3273fac0",
+    "title": "Grok Build: Stamp Toast Spread Build Plan",
+    "date": "Sep 30\u2013Oct 1, 2026",
+    "turnsCount": 15,
+    "totalSteps": 878,
+    "toolCallsCount": 560,
+    "subagentsCount": 3,
+    "file": "/data/transcripts/01a0f0ef-46f6-7293-ac76-76dd3273fac0.json"
+  }
+]

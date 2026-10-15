@@ -1,10 +1,12 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { page } from '$app/state';
 	import ChatWidget from '../lib/ChatWidget.svelte';
 	import Wordmark from '../lib/Wordmark.svelte';
 	import { colorScheme } from '../lib/theme.svelte';
 
 	let { children }: { children: Snippet } = $props();
+	let isTranscriptRoute = $derived(page.url.pathname.startsWith('/transcripts'));
 </script>
 
 <svelte:head>
@@ -27,32 +29,35 @@
 	style="--color-primary: {colorScheme.primary}; --color-secondary: {colorScheme.secondary}; --color-tertiary: {colorScheme.tertiary};"
 >
 	<!-- FLOATING DYNAMIC HEADER - TERTIARY BG, PRIMARY TEXT, ZERO OUTLINES -->
-	<header
-		class="site-header floating-header"
-		style:background-color={colorScheme.tertiary}
-		style:color={colorScheme.primary}
-	>
-		<div class="header-inner">
-			<a href="/" class="brand-link" style:color={colorScheme.primary}>
-				<div class="header-wordmark-wrap">
-					<Wordmark color={colorScheme.primary} />
-				</div>
-			</a>
-			<nav class="site-nav">
-				<a href="/#steps" class="nav-link">How It Works</a>
-				<a href="/#flavours" class="nav-link">Flavours</a>
-				<a href="/flavours" class="nav-link">Specs</a>
-			</nav>
-		</div>
-	</header>
+	{#if !isTranscriptRoute}
+		<header
+			class="site-header floating-header"
+			style:background-color={colorScheme.tertiary}
+			style:color={colorScheme.primary}
+		>
+			<div class="header-inner">
+				<a href="/" class="brand-link" style:color={colorScheme.primary}>
+					<div class="header-wordmark-wrap">
+						<Wordmark color={colorScheme.primary} />
+					</div>
+				</a>
+				<nav class="site-nav">
+					<a href="/#steps" class="nav-link">How It Works</a>
+					<a href="/#flavours" class="nav-link">Flavours</a>
+					<a href="/flavours" class="nav-link">Specs</a>
+				</nav>
+			</div>
+		</header>
+	{/if}
 
-	<main class="site-main">
+	<main class="site-main" class:transcript-main={isTranscriptRoute}>
 		{@render children()}
 	</main>
 
-	<ChatWidget />
+	{#if !isTranscriptRoute}
+		<ChatWidget />
 
-	<footer class="site-footer">
+		<footer class="site-footer">
 		<div class="footer-inner">
 			<div class="footer-col">
 				<div class="footer-brand-wrap">
@@ -91,9 +96,16 @@
 			<p>© 2026 Stamp Spreads Ltd — Auckland, New Zealand. All rights reserved.</p>
 		</div>
 	</footer>
+	{/if}
 </div>
 
 <style>
+	.transcript-main {
+		padding: 0;
+		margin: 0;
+		max-width: 100%;
+		width: 100%;
+	}
 	@font-face {
 		font-family: 'Manrope';
 		src: url('/fonts/Manrope-400.ttf') format('truetype');
